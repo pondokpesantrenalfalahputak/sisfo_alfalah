@@ -4,32 +4,55 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 // Pastikan Anda mengimpor semua Model yang berelasi
 use App\Models\User;
 use App\Models\KelasSantri;
 use App\Models\Tagihan;
 use App\Models\AbsensiRekapitulasi; 
-// Model Absensi Harian yang baru kita buat
 use App\Models\AbsensiHarian; 
 
 class Santri extends Model
 {
     use HasFactory;
     
-    // Atribut yang tidak boleh diisi mass assignable
-    protected $guarded = ['id'];
+    // --------------------------------------------------------
+    // --- KONFIGURASI PENTING UNTUK MASS ASSIGNMENT (REGISTER) ---
+    // --------------------------------------------------------
     
-    // Casting tipe data
-    protected $casts = ['tanggal_lahir' => 'date']; 
+    /**
+     * Atribut yang dapat diisi secara massal (digunakan oleh controller@store)
+     * Tambahkan semua kolom yang diisi saat registrasi di sini.
+     */
+    protected $fillable = [
+        'wali_santri_id',
+        'nama_lengkap',
+        'nisn', 
+        'tanggal_lahir', 
+        'kelas_id',
+        'alamat',
+        'tempat_lahir',
+        // Tambahkan field lain yang mungkin ada di tabel 'santris'
+    ];
+    
+    /**
+     * Casting tipe data
+     */
+    protected $casts = [
+        'tanggal_lahir' => 'date'
+    ]; 
 
-    // --- ACCESSOR ---
+    // --------------------------------------------------------
+    // --- ACCESSOR (Untuk mapping nama kolom di View/Blade) ---
+    // --------------------------------------------------------
 
     /**
      * Accessor: Memetakan kolom 'nama_lengkap' (di DB) 
      * menjadi properti 'nama' (di view: $santri->nama).
      */
-    public function getNamaAttribute()
+    public function getNamaAttribute(): string
     {
         return $this->attributes['nama_lengkap'];
     }
@@ -38,18 +61,19 @@ class Santri extends Model
      * Accessor: Memetakan kolom 'nisn' (di DB) 
      * menjadi properti 'nis' (di view: $santri->nis).
      */
-    public function getNisAttribute()
+    public function getNisAttribute(): ?string
     {
         return $this->attributes['nisn'];
     }
 
-    // --- RELASI ---
+    // --------------------------------------------------------
+    // --- RELASI (Relationships) ---
+    // --------------------------------------------------------
 
     /**
      * Relasi ke Model User (Wali Santri).
-     * Kolom foreign key: 'wali_santri_id'.
      */
-    public function waliSantri()
+    public function waliSantri(): BelongsTo
     {
         return $this->belongsTo(User::class, 'wali_santri_id');
     }
@@ -57,7 +81,7 @@ class Santri extends Model
     /**
      * Relasi ke Model KelasSantri.
      */
-    public function kelas()
+    public function kelas(): BelongsTo
     {
         return $this->belongsTo(KelasSantri::class, 'kelas_id');
     }
@@ -65,23 +89,23 @@ class Santri extends Model
     /**
      * Relasi ke Model Tagihan (One-to-Many).
      */
-    public function tagihans() 
+    public function tagihans(): HasMany
     {
         return $this->hasMany(Tagihan::class);
     }
 
     /**
-     * Relasi ke Model AbsensiRekapitulasi (One-to-Many, untuk rekap bulanan).
+     * Relasi ke Model AbsensiRekapitulasi (One-to-Many, rekap bulanan).
      */
-    public function absensiRekapitulasi() 
+    public function absensiRekapitulasi(): HasMany
     {
         return $this->hasMany(AbsensiRekapitulasi::class);
     }
     
     /**
-     * Relasi ke Model AbsensiHarian (One-to-Many, untuk log harian).
+     * Relasi ke Model AbsensiHarian (One-to-Many, log harian).
      */
-    public function absensiHarians() 
+    public function absensiHarians(): HasMany
     {
         return $this->hasMany(AbsensiHarian::class);
     }

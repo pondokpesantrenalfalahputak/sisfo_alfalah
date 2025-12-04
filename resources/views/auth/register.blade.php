@@ -14,20 +14,30 @@
     
     {{-- CSS KUSTOM (Untuk Styling Layout) --}}
     <style>
+        :root {
+            /* Definisi warna kustom */
+            --blue-primary: #2563EB;
+            --blue-dark: #1D4ED8;
+            --gray-text: #6B7280;
+            --background-body: #F3F4F6;
+        }
+
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #F3F4F6; /* Mirip bg-gray-100 */
+            background-color: var(--background-body);
         }
         .bg-login-image {
             /* Ganti path image sesuai lokasi file Anda */
-            background-image: url('{{ asset('images/1728115006026 copy.png') }}');
+            background-image: url('{{ asset('Images/1728115006026 copy.png') }}');
             background-size: cover;
-            background-position: center 30%;
-            min-height: 250px;
+            /* 💥 PERBAIKAN: Background position disetel ke tengah-bawah untuk menampilkan subjek utama */
+            background-position: center 25%; 
+            min-height: 280px;
         }
-        @media (min-width: 768px) {
+        @media (min-width: 568px) {
             .bg-login-image {
                 min-height: auto;
+                /* Background position disetel ke tengah untuk tampilan desktop */
                 background-position: center;
             }
         }
@@ -38,7 +48,7 @@
         .hero-text-overlay {
             position: absolute;
             inset: 0;
-            background-color: rgba(17, 24, 39, 0.7); /* Overlay Biru Gelap */
+            background-color: rgba(17, 24, 39, 0.5); /* Sedikit lebih gelap: 0.7 -> 0.75 */
         }
         .password-input-container {
             position: relative;
@@ -49,17 +59,18 @@
             top: 50%;
             transform: translateY(-50%);
             cursor: pointer;
-            color: #6B7280;
+            color: var(--gray-text);
             z-index: 10;
         }
+        /* Style untuk tombol kustom */
         .btn-primary-custom {
-            background-color: #2563EB;
-            border-color: #2563EB;
+            background-color: var(--blue-primary);
+            border-color: var(--blue-primary);
             transition: background-color 0.2s;
         }
         .btn-primary-custom:hover {
-            background-color: #1D4ED8;
-            border-color: #1D4ED8;
+            background-color: var(--blue-dark);
+            border-color: var(--blue-dark);
         }
     </style>
 </head>
@@ -71,18 +82,18 @@
                 <div class="col-md-6 bg-login-image d-flex flex-column justify-content-end position-relative text-white p-4 p-md-5">
                     <div class="hero-text-overlay"></div>
                     <div class="position-relative z-1">
-                        <span class="bg-warning text-black fw-bold badge px-3 py-1 rounded-pill mb-3">
+                        <span class="bg-warning text-black fw-bold badge px-3 py-1 rounded-pill mb-1">
                             SELAMAT DATANG
                         </span>
-                        <h1 class="h3 fw-bold lh-sm mb-2">Sistem Informasi Akademik</h1>
-                        <p class="h5">PONPES AL-FALAH PUTAK</p>
+                        <h1 class="h3 fw-bold lh-sm mb-1">Sistem Informasi Akademik Pesantren</h1>
+                        <p class="h5">AL-FALAH PUTAK</p>
                     </div>
                 </div>
 
                 {{-- Kanan: Form Register --}}
                 <div class="col-md-6 bg-white p-4 p-md-5">
                     <div class="text-center mb-4">
-                        <img src="{{ asset('images/kop pondok.png') }}" alt="Logo pesantren" style="width: 80px; height: 80px;">
+                        <img src="{{ asset('Images/kop pondok.png') }}" alt="Logo pesantren" style="width: 80px; height: 80px;">
                     </div>
 
                     <h2 class="h4 fw-bold text-center text-gray-800">Buat Akun Wali Santri</h2>
@@ -93,7 +104,7 @@
                     {{-- Menampilkan Error Validasi --}}
                     @if ($errors->any())
                         <div class="alert alert-danger py-2" role="alert">
-                            <h4 class="alert-heading small fw-bold mb-1">Pendaftaran Gagal!</h4>
+                            <h4 class="alert-heading small fw-bold mb-1"><i class="fas fa-exclamation-triangle me-1"></i> Pendaftaran Gagal!</h4>
                             <ul class="mb-0 small ps-3">
                                 @foreach ($errors->all() as $error)
                                     <li>{{ $error }}</li>
@@ -103,7 +114,6 @@
                     @endif
 
                     {{-- FORM REGISTER --}}
-                    {{-- Pastikan action diarahkan ke route POST/store di RegisteredUserController --}}
                     <form action="{{ route('register') }}" method="POST">
                         @csrf
                         
@@ -145,14 +155,21 @@
                         </div>
                         
                         <div class="row">
-                            {{-- 4. Field: NISN (nis) --}}
-                            {{-- Menggunakan 'nis' di form, divalidasi dan disimpan sebagai 'nisn' di DB --}}
+                            {{-- 4. Field: Kelas Santri (kelas_id) --}}
                             <div class="col-md-6 mb-3">
-                                <label for="nis" class="form-label small fw-medium text-gray-700">NISN (Opsional)</label>
-                                <input type="text" id="nis" name="nis" placeholder="Nomor Induk Siswa Nasional (jika ada)"
-                                    class="form-control @error('nis') is-invalid @enderror"
-                                    value="{{ old('nis') }}">
-                                @error('nis')
+                                <label for="kelas_id" class="form-label small fw-medium text-gray-700">Pilih Kelas*</label>
+                                <select id="kelas_id" name="kelas_id" class="form-select @error('kelas_id') is-invalid @enderror" required>
+                                    <option value="" disabled selected>Pilih Kelas...</option>
+                                    {{-- Loop data kelas yang dikirim dari controller --}}
+                                    @isset($kelas)
+                                        @foreach ($kelas as $k)
+                                            <option value="{{ $k->id }}" {{ old('kelas_id') == $k->id ? 'selected' : '' }}>
+                                                {{ $k->nama_kelas }}
+                                            </option>
+                                        @endforeach
+                                    @endisset
+                                </select>
+                                @error('kelas_id')
                                     <div class="invalid-feedback small">{{ $message }}</div>
                                 @enderror
                             </div>
@@ -169,9 +186,31 @@
                             </div>
                         </div>
 
+                        {{-- 6. Field: Alamat Santri (alamat_santri) --}}
+                        <div class="mb-3">
+                            <label for="alamat_santri" class="form-label small fw-medium text-gray-700">Alamat Santri*</label>
+                            <textarea id="alamat_santri" name="alamat_santri" placeholder="Alamat lengkap santri saat ini"
+                                class="form-control @error('alamat_santri') is-invalid @enderror" rows="3"
+                                required>{{ old('alamat_santri') }}</textarea>
+                            @error('alamat_santri')
+                                <div class="invalid-feedback small">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        
+                        {{-- 7. Field: NISN (nis) --}}
+                        <div class="mb-3">
+                            <label for="nis" class="form-label small fw-medium text-gray-700">NISN (Opsional)</label>
+                            <input type="text" id="nis" name="nis" placeholder="Nomor Induk Siswa Nasional (jika ada)"
+                                class="form-control @error('nis') is-invalid @enderror"
+                                value="{{ old('nis') }}">
+                            @error('nis')
+                                <div class="invalid-feedback small">{{ $message }}</div>
+                            @enderror
+                        </div>
+
                         <h5 class="fs-6 fw-bold text-dark border-bottom pb-2 mb-3 mt-4">Buat Password Akun</h5>
 
-                        {{-- 6. Field: Password (password) --}}
+                        {{-- 8. Field: Password (password) --}}
                         <div class="mb-3">
                             <label for="password" class="form-label small fw-medium text-gray-700">Password*</label>
                             <div class="password-input-container">
@@ -187,12 +226,13 @@
                             @enderror
                         </div>
 
-                        {{-- 7. Field: Konfirmasi Password (password_confirmation) --}}
+                        {{-- 9. Field: Konfirmasi Password (password_confirmation) --}}
                         <div class="mb-4">
                             <label for="password_confirmation" class="form-label small fw-medium text-gray-700">Konfirmasi Password*</label>
                             <div class="password-input-container">
                                 <input type="password" id="password_confirmation" name="password_confirmation" placeholder="Ulangi password Anda"
                                     class="form-control" required autocomplete="one-time-code">
+                                {{-- 💥 PERBAIKAN: Pastikan ikon default adalah fa-eye (mata terbuka) karena tipe input adalah 'password' --}}
                                 <span class="toggle-password" data-target="password_confirmation">
                                     <i class="fas fa-eye"></i>
                                 </span>
@@ -207,7 +247,7 @@
                     <div class="mt-4 text-center">
                         <p class="small text-secondary">
                             Sudah punya akun?
-                            <a href="{{ route('login') }}" class="fw-medium text-decoration-none" style="color: #2563EB;">Masuk</a>
+                            <a href="{{ route('login') }}" class="fw-medium text-decoration-none" style="color: var(--blue-primary);">Masuk</a>
                         </p>
                     </div>
 
@@ -234,16 +274,19 @@
                     const icon = button.querySelector('i');
 
                     // Toggle tipe input
-                    const type = targetInput.getAttribute('type') === 'password' ? 'text' : 'password';
-                    targetInput.setAttribute('type', type);
+                    const isPassword = targetInput.getAttribute('type') === 'password';
+                    const newType = isPassword ? 'text' : 'password';
+                    targetInput.setAttribute('type', newType);
 
                     // Toggle ikon mata
-                    if (type === 'password') {
-                        icon.classList.remove('fa-eye-slash');
-                        icon.classList.add('fa-eye');
-                    } else {
+                    if (isPassword) {
+                        // Jika berubah dari 'password' ke 'text' (terbuka)
                         icon.classList.remove('fa-eye');
                         icon.classList.add('fa-eye-slash');
+                    } else {
+                        // Jika berubah dari 'text' ke 'password' (tertutup)
+                        icon.classList.remove('fa-eye-slash');
+                        icon.classList.add('fa-eye');
                     }
                 });
             });

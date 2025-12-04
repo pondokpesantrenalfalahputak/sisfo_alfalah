@@ -72,7 +72,7 @@
             }
         }
         
-        /* === 2. HERO SECTION STYLING === */
+        /* === 2. HERO SECTION STYLING (DIREVISI UNTUK KONTRAST) === */
         .hero-section {
             background-size: cover;
             background-position: center;
@@ -112,12 +112,23 @@
         .hero-title {
             font-size: 1.8rem; 
         }
+        .hero-subtitle { /* Dibuat lebih besar dan tebal */
+            font-size: 1.3rem; 
+            text-shadow: 0 0 5px rgba(0, 0, 0, 0.6); /* Efek bayangan ringan agar menonjol */
+        }
+        .hero-body-text { /* NEW STYLE: Untuk Paragraf Muqaddimah */
+            font-size: 1rem;
+            text-shadow: 0 0 5px rgba(0, 0, 0, 0.4);
+            line-height: 1.6; /* Tambah jarak baris */
+        }
         @media (min-width: 768px) {
             .hero-title {
                 font-size: 2.5rem; 
             }
+            .hero-subtitle {
+                font-size: 1.8rem;
+            }
         }
-
         /* === 3. UTILITY STYLING === */
         .btn-teal {
             background-color: var(--teal-primary);
@@ -204,19 +215,23 @@
         <section class="hero-section text-white" style="background-image: url('{{ asset('Images/Gambar WhatsApp 2025-08-08 pukul 19.51.39_1513872e.jpg') }}');">
             <div class="hero-overlay"></div>
             <div class="hero-content container py-5">
+                {{-- ⬇️ KONTEN DENGAN PERBAIKAN KONTRAST --}}
                 <h2 class="hero-title fw-bolder mb-3 lh-sm">
-                    SELAMAT DATANG DI<br>PONDOK PESANTREN AL-FALAH PUTAK
+                    SELAMAT DATANG DI<br>PONDOK PESANTREN MODERN AL-FALAH PUTAK
                 </h2>
-                <p class="lead fw-light mb-4">
-                    Membentuk Generasi Qur'ani, Cerdas, dan Berakhlak Mulia
+                <p class="hero-subtitle fw-bold mb-4 text-light">
+                    Mencetak Generasi Terbaik yang Qur'ani, Cerdas, Mandiri, dan Berakhlak Mulia
                 </p>
                 <div class="row justify-content-center">
                     <div class="col-lg-8">
-                        <p class="mb-5 text-secondary-emphasis">
-                            Assalamu'alaikum Warahmatullahi Wabarakatuh. Kami dengan bangga menyambut Anda di gerbang digital kami, sebuah lembaga yang berkomitmen menyeimbangkan ilmu agama, pengetahuan umum, dan teknologi.
+                        {{-- Menggunakan text-white dan class hero-body-text untuk kontras maksimal --}}
+                        <p class="mb-5 text-white fw-medium hero-body-text">
+                            Assalamu'alaikum Warahmatullahi Wabarakatuh. Kami adalah lembaga pendidikan Islam yang teguh memegang komitmen menciptakan keseimbangan sempurna: mendalam dalam Ilmu Agama (Tahfidz & Diniyah), unggul dalam Pengetahuan Umum, dan adaptif terhadap Teknologi terkini.
                         </p>
                     </div>
                 </div>
+                {{-- ⬆️ AKHIR PERBAIKAN KONTRAST --}}
+                
                 {{-- Tombol Dibuat Stacked di Mobile --}}
                 <div class="d-grid gap-3 col-10 col-sm-8 col-md-6 mx-auto d-md-flex justify-content-center">
                     <a href="#profil" class="btn btn-light btn-lg btn-explore fw-bold px-4">
@@ -384,16 +399,16 @@
                 {{-- Grid gambar yang responsif --}}
                 <div class="row g-3">
                     <div class="col-6 col-md-3">
-                        <img class="img-fluid rounded shadow-sm object-fit-cover w-100" src="{{ asset('images/WhatsApp Image 2025-06-11 at 23.53.25.jpeg') }}" alt="Galeri foto 1" loading="lazy" style="aspect-ratio: 1/1;">
+                        <img class="img-fluid rounded shadow-sm object-fit-cover w-100" src="{{ asset('Images/WhatsApp Image 2025-06-11 at 23.53.25.jpeg') }}" alt="Galeri foto 1" loading="lazy" style="aspect-ratio: 1/1;">
                     </div>
                     <div class="col-6 col-md-3">
-                        <img class="img-fluid rounded shadow-sm object-fit-cover w-100" src="{{ asset('images/IMG-20250806-WA0019.jpg') }}" alt="Galeri foto 2" loading="lazy" style="aspect-ratio: 1/1;">
+                        <img class="img-fluid rounded shadow-sm object-fit-cover w-100" src="{{ asset('Images/IMG-20250806-WA0019.jpg') }}" alt="Galeri foto 2" loading="lazy" style="aspect-ratio: 1/1;">
                     </div>
                     <div class="col-6 col-md-3">
-                        <img class="img-fluid rounded shadow-sm object-fit-cover w-100" src="{{ asset('images/WhatsApp Image 2024-10-02 at 09.00.59.jpeg') }}" alt="Galeri foto 3" loading="lazy" style="aspect-ratio: 1/1;">
+                        <img class="img-fluid rounded shadow-sm object-fit-cover w-100" src="{{ asset('Images/WhatsApp Image 2024-10-02 at 09.00.59.jpeg') }}" alt="Galeri foto 3" loading="lazy" style="aspect-ratio: 1/1;">
                     </div>
                     <div class="col-6 col-md-3">
-                        <img class="img-fluid rounded shadow-sm object-fit-cover w-100" src="{{ asset('images/IMG_2785.JPG') }}" alt="Galeri foto 4" loading="lazy" style="aspect-ratio: 1/1;">
+                        <img class="img-fluid rounded shadow-sm object-fit-cover w-100" src="{{ asset('Images/IMG_2785.JPG') }}" alt="Galeri foto 4" loading="lazy" style="aspect-ratio: 1/1;">
                     </div>
                 </div>
             </div>

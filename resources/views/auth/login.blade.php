@@ -19,7 +19,7 @@
             background-color: #F3F4F6;
         }
         .bg-login-image {
-            background-image: url('{{ asset('images/1728115006026 copy.png') }}');
+            background-image: url('{{ asset('Images/1728115006026 copy.png') }}');
             background-size: cover;
             background-position: center 30%;
             /* 🚀 TINGGI KHUSUS UNTUK MOBILE */
@@ -97,11 +97,11 @@
                 <div class="col-12 col-md-6 bg-login-image d-flex flex-column justify-content-end position-relative text-white p-4 p-md-5">
                     <div class="hero-text-overlay"></div>
                     <div class="position-relative z-1">
-                        <span class="bg-warning text-black fw-bold badge px-3 py-1 rounded-pill mb-3">
+                        <span class="bg-warning text-black fw-bold badge px-3 py-1 rounded-pill mb-1">
                             SELAMAT DATANG
                         </span>
-                        {{-- 🚀 JUDUL DAN TEKS SEKARANG TERLIHAT DI MOBILE (d-none d-md-block Dihapus!) --}}
-                        <h1 class="h3 fw-bold lh-sm mb-2">Sistem Informasi Akademik</h1>
+
+                        <h1 class="h3 fw-bold lh-sm mb-1">Sistem Informasi Akademik</h1>
                         <p class="h5">PONPES AL-FALAH PUTAK</p>
                         <p class="small">kec.Gelumbang kab.Muara Enim</p>
                     </div>
@@ -111,10 +111,10 @@
                 <div class="col-12 col-md-6 bg-white p-form"> 
                     
                     <div class="text-center mb-4 mb-md-5"> 
-                        <img src="{{ asset('images/kop pondok.png') }}" alt="Logo Pesantren" style="width: 80px; height: 80px;">
+                        <img src="{{ asset('Images/kop pondok.png') }}" alt="Logo Pesantren" style="width: 80px; height: 80px;">
                     </div>
                     
-                    <h2 class="h3 fw-bolder text-gray-800 text-center mb-4 mb-md-5">MASUK AKUN WALI/SANTRI</h2> 
+                    <h2 class="h3 fw-bolder text-gray-800 text-center mb-4 mb-md-5">MASUK AKUN WALISANTRI</h2> 
                     
                     <p class="text-center text-secondary mt-2 mb-4 mb-md-5 small"> 
                         Gunakan Email, NIS, atau NISN Santri dan Password Anda untuk masuk ke sistem.

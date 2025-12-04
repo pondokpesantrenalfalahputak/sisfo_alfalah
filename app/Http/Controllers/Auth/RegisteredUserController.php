@@ -4,7 +4,8 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
-use App\Models\Santri; // Pastikan Model Santri sudah diimpor
+use App\Models\Santri; 
+use App\Models\KelasSantri; // HARUS DIIMPOR!
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -12,7 +13,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 use Illuminate\View\View;
-use Illuminate\Support\Facades\DB; // Tambahkan ini untuk transaksi
+use Illuminate\Support\Facades\DB; 
 
 class RegisteredUserController extends Controller
 {
@@ -21,7 +22,10 @@ class RegisteredUserController extends Controller
      */
     public function create(): View
     {
-        return view('auth.register');
+        // 🚀 Mengambil data kelas untuk dropdown di form
+        $kelas = KelasSantri::all(); 
+
+        return view('auth.register', compact('kelas')); // Kirim variabel $kelas ke view
     }
 
     /**
@@ -33,20 +37,20 @@ class RegisteredUserController extends Controller
     {
         // 1. VALIDASI DATA WALI DAN SANTRI
         $request->validate([
-            // --- Validasi Data Wali ---
-            'name' => ['required', 'string', 'max:255'], // Nama Wali
+            // --- Validasi Data Wali (User) ---
+            'name' => ['required', 'string', 'max:255'], 
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
             
-            // --- Validasi Data Santri (dari form) ---
+            // --- Validasi Data Santri ---
             'nama_santri' => ['required', 'string', 'max:255'],
-            // 🚀 PERBAIKAN: NISN diubah dari 'nullable' menjadi 'required'
-            'nis' => ['required', 'string', 'max:20', 'unique:'.Santri::class.',nisn'], 
-            
+            'nis' => ['nullable', 'string', 'max:20', 'unique:'.Santri::class.',nisn'], // NISN diubah ke 'nullable' karena opsional di form
             'tanggal_lahir_santri' => ['required', 'date', 'before:today'],
+            'kelas_id' => ['required', 'exists:kelas_santris,id'], // <-- FIELD BARU
+            'alamat_santri' => ['required', 'string', 'max:500'], // <-- FIELD BARU
         ]);
 
-        // Gunakan Transaksi untuk memastikan kedua data (User dan Santri) tersimpan dengan aman
+        // Gunakan Transaksi untuk memastikan kedua data tersimpan atau tidak sama sekali
         DB::transaction(function () use ($request) {
             
             // 2. SIMPAN AKUN WALI SANTRI (Tabel users)
@@ -61,20 +65,21 @@ class RegisteredUserController extends Controller
             Santri::create([
                 'wali_santri_id' => $wali->id,
                 'nama_lengkap' => $request->nama_santri, 
-                'nisn' => $request->nis, // Kini dijamin tidak NULL
+                'nisn' => $request->nis, 
                 'tanggal_lahir' => $request->tanggal_lahir_santri, 
                 
-                // Kolom opsional yang tidak diisi di form register
-                'kelas_id' => null, 
-                'tempat_lahir' => null,
-                'alamat' => null,
+                'kelas_id' => $request->kelas_id,      // <-- DIISI DARI FORM
+                'alamat' => $request->alamat_santri,   // <-- DIISI DARI FORM
+                
+                // Kolom opsional lain:
+                'tempat_lahir' => null, 
             ]);
 
             event(new Registered($wali)); 
             Auth::login($wali); 
         });
 
-        // Redirect ke dashboard (route 'dashboard' harus didefinisikan)
+        // Redirect ke dashboard
         return redirect(route('dashboard', absolute: false));
     }
 }
