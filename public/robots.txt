@@ -1,0 +1,4 @@
+User-agent: *
+Disallow:
+
+Sitemap: https://sisfoalfalahputak.online/sitemap.xml

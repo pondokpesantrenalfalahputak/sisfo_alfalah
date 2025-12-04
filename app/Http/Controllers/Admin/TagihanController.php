@@ -5,11 +5,23 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Tagihan;
 use App\Models\Santri;
+use App\Models\User; 
+use App\Events\PaymentStatusUpdated; 
 use Illuminate\Http\Request;
-use Illuminate\Support\Carbon; // Wajib diimport
+use Illuminate\Support\Carbon;
 
 class TagihanController extends Controller
 {
+    // Daftar jenis tagihan yang sudah diperbarui
+    protected $jenisTagihan = [
+        'Kos Makan',
+        'Galon',
+        'Kas Diniah',
+        'Denda',
+        'Tabungan Wali Songo',
+        'Lainnya'
+    ];
+    
     public function index()
     {
         $tagihans = Tagihan::with('santri')->get();
@@ -19,8 +31,7 @@ class TagihanController extends Controller
     public function create()
     {
         $santris = Santri::all();
-        // Variabel ini diperlukan oleh view/form
-        $jenisTagihan = ['SPP', 'Uang Pangkal', 'Daftar Ulang', 'Lainnya'];
+        $jenisTagihan = $this->jenisTagihan;
         return view('admin.tagihan.create', compact('santris', 'jenisTagihan'));
     }
 
@@ -29,13 +40,11 @@ class TagihanController extends Controller
         $validatedData = $request->validate([
             'santri_id' => 'required|exists:santris,id',
             'jenis_tagihan' => 'required|string|max:255',
-            // Gunakan 'jumlah_tagihan' sesuai nama field di form
             'jumlah_tagihan' => 'required|numeric|min:0', 
             'tanggal_jatuh_tempo' => 'required|date|after_or_equal:' . Carbon::now()->toDateString(),
             'keterangan' => 'nullable|string',
         ]);
         
-        // Isi tanggal_tagihan dan status secara otomatis
         $validatedData['tanggal_tagihan'] = Carbon::now()->toDateString();
         $validatedData['status'] = 'Belum Lunas';
 
@@ -52,8 +61,7 @@ class TagihanController extends Controller
     public function edit(Tagihan $tagihan)
     {
         $santris = Santri::all();
-        // Variabel ini diperlukan oleh view/form
-        $jenisTagihan = ['SPP', 'Uang Pangkal', 'Daftar Ulang', 'Lainnya'];
+        $jenisTagihan = $this->jenisTagihan;
         return view('admin.tagihan.edit', compact('tagihan', 'santris', 'jenisTagihan'));
     }
 
@@ -62,13 +70,11 @@ class TagihanController extends Controller
         $request->validate([
             'santri_id' => 'required|exists:santris,id',
             'jenis_tagihan' => 'required|string|max:255',
-            // Gunakan 'jumlah_tagihan' sesuai nama field di form
             'jumlah_tagihan' => 'required|numeric|min:0', 
             'tanggal_jatuh_tempo' => 'required|date',
             'keterangan' => 'nullable|string',
         ]);
         
-        // Hanya update field yang ada di request, kecualikan field yang tidak boleh diubah
         $dataToUpdate = $request->except(['tanggal_tagihan', 'status']); 
 
         $tagihan->update($dataToUpdate);
@@ -90,53 +96,49 @@ class TagihanController extends Controller
 
     /**
      * Memproses konfirmasi atau penolakan pembayaran dari Admin.
-     * Mengubah $request->action menjadi $request->status agar sesuai dengan field name di view.
      */
     public function prosesKonfirmasi(Request $request, \App\Models\Pembayaran $pembayaran)
     {
         $request->validate([
-            // 💡 PERBAIKAN: Mengganti 'action' menjadi 'status'
             'status' => 'required|in:Dikonfirmasi,Ditolak',
         ]);
 
-        // Gunakan $request->status yang sudah divalidasi
         $newStatus = $request->status;
         
         // 1. Update Status Pembayaran
         $pembayaran->update([
             'status_konfirmasi' => $newStatus,
-            // Anda mungkin ingin menambahkan admin_id dan tanggal konfirmasi di sini
-            // 'admin_id' => auth()->id(), 
-            // 'tanggal_konfirmasi' => Carbon::now(),
         ]);
         
         $tagihan = $pembayaran->tagihan;
         
         // 2. Update status tagihan jika diperlukan
         if ($newStatus === 'Dikonfirmasi') {
-            // Logika untuk mengecek apakah semua bagian tagihan sudah dikonfirmasi
-            // (Logika ini hanya memeriksa status konfirmasi, bukan jumlah nominal)
-            // Jika ada status 'Menunggu' atau 'Ditolak', status Tagihan TIDAK boleh Lunas
             $totalPembayaranBelumDikonfirmasi = $tagihan->pembayarans()
                                                 ->where('status_konfirmasi', '!=', 'Dikonfirmasi')
                                                 ->count();
                                                 
-            // Catatan: Logika yang lebih aman adalah membandingkan SUM(jumlah_bayar) vs jumlah_tagihan
-            // Namun, mengikuti logika Anda saat ini: jika tidak ada lagi yang berstatus selain 'Dikonfirmasi'
             if ($totalPembayaranBelumDikonfirmasi === 0) {
                  $tagihan->update(['status' => 'Lunas']);
             }
         } 
+
+        // 🚀 START NOTIFIKASI WALI SANTRI - Pemicu Event
+        $santri = $tagihan->santri;
         
-        // Jika ditolak, tagihan harusnya tetap Belum Lunas (atau status sebelumnya)
-        // Kita tidak perlu melakukan apa-apa pada tagihan jika ditolak.
-
+        if ($santri && $santri->wali_santri_id) {
+            $waliSantri = User::find($santri->wali_santri_id);
+            
+            if ($waliSantri) {
+                event(new PaymentStatusUpdated($waliSantri, $pembayaran, $newStatus));
+            }
+        }
+        // 🚀 END NOTIFIKASI WALI SANTRI
+        
         $pesan = ($newStatus === 'Dikonfirmasi') 
-                 ? 'Pembayaran berhasil dikonfirmasi dan status tagihan diperbarui (jika lunas).' 
-                 : 'Pembayaran berhasil ditolak.';
+                 ? 'Pembayaran berhasil dikonfirmasi dan notifikasi telah dikirim.' 
+                 : 'Pembayaran berhasil ditolak dan notifikasi telah dikirim.';
 
-
-        // 3. Redirect ke halaman konfirmasi
         return redirect()->route('admin.tagihan.konfirmasi.index')->with('success', $pesan);
     }
 

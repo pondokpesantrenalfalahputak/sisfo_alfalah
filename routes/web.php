@@ -19,7 +19,6 @@ use App\Http\Controllers\Admin\PengumumanController as AdminPengumuman;
 use App\Http\Controllers\Admin\RekeningController as AdminRekening;
 use App\Http\Controllers\Admin\AbsensiRekapitulasiController as AdminAbsensiRekap;
 use App\Http\Controllers\Admin\AbsensiHarianController as AdminAbsensiHarian; 
-// ✅ BARU: Import Controller Absensi Harian Sistem Baru
 use App\Http\Controllers\Admin\AbsensiHarianBaruController; 
 
 
@@ -29,6 +28,9 @@ use App\Http\Controllers\WaliSantri\TagihanController as WaliTagihan;
 use App\Http\Controllers\WaliSantri\SantriController as WaliSantri;
 use App\Http\Controllers\WaliSantri\PengumumanController as WaliPengumuman;
 use App\Http\Controllers\WaliSantri\AbsensiController as WaliAbsensi; 
+
+// 🚀 BARU: Import Controller Notifikasi
+use App\Http\Controllers\WaliSantri\WaliNotifikasiController; 
 
 
 // =========================================================================
@@ -116,7 +118,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     // RUTE ABSENSI HARIAN (SISTEM BARU: Kelas -> Kegiatan)
     // URL: /admin/absensi-baru
     // ---------------------------------------------------------------------
-    Route::prefix('absensi-baru')->name('absensi_baru.')->group(function () {
+    Route::prefix('absensi')->name('absensi_baru.')->group(function () {
         // [Langkah 1] Tampilkan daftar kelas
         Route::get('/', [AbsensiHarianBaruController::class, 'index'])->name('index'); 
 
@@ -180,4 +182,14 @@ Route::middleware(['auth', 'wali_santri'])->prefix('wali')->name('wali.')->group
     // RUTE ABSENSI
     Route::get('/absensi', [WaliAbsensi::class, 'index'])->name('absensi.index');
     Route::get('/absensi/{santri}', [WaliAbsensi::class, 'show'])->name('absensi.show'); 
-});
+    
+    // 🚀 BLOK ROUTE NOTIFIKASI KUSTOM
+    // Ini adalah blok yang ditambahkan untuk mendefinisikan rute wali.notifikasi.*
+    Route::controller(WaliNotifikasiController::class)->prefix('notifikasi')->name('notifikasi.')->group(function () {
+        Route::get('/', 'index')->name('index'); // wali.notifikasi.index (Daftar Notifikasi)
+        Route::post('/read-all', 'markAllRead')->name('mark_all_read'); // wali.notifikasi.mark_all_read
+        // Menggunakan Route Model Binding untuk Model Kustom Notifikasi Anda
+        Route::post('/{notifikasi}/read', 'markRead')->name('mark_read'); // wali.notifikasi.mark_read
+    });
+
+}); // Akhir dari grup route WALI SANTRI

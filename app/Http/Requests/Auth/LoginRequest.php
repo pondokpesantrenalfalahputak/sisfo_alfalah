@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
+use App\Models\Santri; // Pastikan model Santri di-import
 
 class LoginRequest extends FormRequest
 {
@@ -27,7 +28,8 @@ class LoginRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'email' => ['required', 'string', 'email'],
+            // Input login (bisa email atau NISN)
+            'login_id' => ['required', 'string'], 
             'password' => ['required', 'string'],
         ];
     }
@@ -41,11 +43,49 @@ class LoginRequest extends FormRequest
     {
         $this->ensureIsNotRateLimited();
 
-        if (! Auth::attempt($this->only('email', 'password'), $this->boolean('remember'))) {
+        $loginId = $this->input('login_id');
+        $password = $this->input('password');
+        $attemptSuccessful = false;
+
+        // 1. Cek apakah input adalah EMAIL
+        if (filter_var($loginId, FILTER_VALIDATE_EMAIL)) {
+            $credentials = [
+                'email' => $loginId,
+                'password' => $password,
+            ];
+            $attemptSuccessful = Auth::attempt($credentials, $this->boolean('remember'));
+
+        } 
+        // 2. Jika input BUKAN email, asumsikan itu adalah NISN Santri
+        else {
+            // Lakukan lookup ID Wali Santri (User ID) berdasarkan NISN di tabel Santri
+            $santri = Santri::where('nisn', $loginId)->first();
+
+            // Jika santri ditemukan dan memiliki wali
+            if ($santri && $santri->wali_santri_id) {
+                
+                // Coba login menggunakan ID Wali Santri (user ID) dan Password
+                $credentials = [
+                    'id' => $santri->wali_santri_id,
+                    'password' => $password,
+                ];
+                
+                // Menggunakan Auth::attempt untuk memverifikasi password terhadap user ID
+                $attemptSuccessful = Auth::attempt($credentials, $this->boolean('remember'));
+                
+            } else {
+                // Santri dengan NISN ini tidak ditemukan atau belum memiliki wali
+                $attemptSuccessful = false;
+            }
+        }
+        
+        // 3. Penanganan Kegagalan
+        if (! $attemptSuccessful) {
             RateLimiter::hit($this->throttleKey());
 
             throw ValidationException::withMessages([
-                'email' => trans('auth.failed'),
+                // Pesan error diarahkan ke field input utama 'login_id'
+                'login_id' => trans('auth.failed'),
             ]);
         }
 
@@ -68,7 +108,7 @@ class LoginRequest extends FormRequest
         $seconds = RateLimiter::availableIn($this->throttleKey());
 
         throw ValidationException::withMessages([
-            'email' => trans('auth.throttle', [
+            'login_id' => trans('auth.throttle', [
                 'seconds' => $seconds,
                 'minutes' => ceil($seconds / 60),
             ]),
@@ -80,6 +120,7 @@ class LoginRequest extends FormRequest
      */
     public function throttleKey(): string
     {
-        return Str::transliterate(Str::lower($this->string('email')).'|'.$this->ip());
+        // Gunakan 'login_id' untuk throttle key
+        return Str::transliterate(Str::lower($this->string('login_id')).'|'.$this->ip());
     }
 }
