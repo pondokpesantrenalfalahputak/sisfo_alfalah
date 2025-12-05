@@ -7,6 +7,8 @@ use App\Models\Santri;
 use App\Models\Tagihan;
 use App\Models\Pembayaran;
 use App\Models\Pengumuman; 
+use App\Models\AbsensiHarian; // Pastikan menggunakan model yang benar
+use Carbon\Carbon;       
 use Illuminate\Http\Request;
 
 class DashboardController extends Controller
@@ -18,6 +20,7 @@ class DashboardController extends Controller
     {
         // Mendapatkan ID Wali Santri yang sedang login
         $waliSantriId = auth()->id();
+        $hariIni = Carbon::today(); 
 
         // 1. Data Santri
         $santris = Santri::where('wali_santri_id', $waliSantriId)
@@ -34,6 +37,7 @@ class DashboardController extends Controller
         $tagihanLunasCount = 0;
         
         foreach ($semuaTagihan as $tagihan) {
+            // Asumsi model Tagihan memiliki metode isLunas()
             if ($tagihan->isLunas()) {
                 $tagihanLunasCount++;
             } else {
@@ -49,11 +53,27 @@ class DashboardController extends Controller
         ->count();
 
         // 4. Pengumuman Terbaru
-        // PERBAIKAN: Mengganti 'aktif' menjadi 'published'
         $pengumumanTerbaru = Pengumuman::where('status', 'published') 
                                  ->orderBy('tanggal_publikasi', 'desc')
                                  ->take(3)
                                  ->get();
+        
+        // =========================================================
+        // ✅ PERBAIKAN LOGIKA ABSENSI HARIAN (Menggunakan Grouping)
+        // =========================================================
+        $santris->each(function ($santri) use ($hariIni) {
+            // Ambil SEMUA data absensi untuk hari ini
+            $absensis = AbsensiHarian::where('santri_id', $santri->id)
+                              ->whereDate('tanggal_absensi', $hariIni) 
+                              ->get();
+                              
+            // Kelompokkan absensi berdasarkan jenis_kegiatan (keyBy)
+            // Ini akan menghasilkan koleksi yang bisa diakses seperti: $absensiHariIni['Shubuh']
+            $absensiGrouped = $absensis->keyBy('jenis_kegiatan');
+
+            // Lampirkan hasil grouping ke objek santri
+            $santri->absensiHariIni = $absensiGrouped;
+        });
 
         // Mengirim semua data yang dibutuhkan ke view
         return view('wali.dashboard', compact(
