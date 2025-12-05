@@ -3,64 +3,85 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Route;
-use Spatie\Sitemap\Sitemap;
-use Spatie\Sitemap\SitemapGenerator;
+use Spatie\Sitemap\Sitemap; 
 use Spatie\Sitemap\Tags\Url;
+use App\Models\Pengumuman; // Model sudah terkonfirmasi benar
 
 class GenerateSitemap extends Command
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
     protected $signature = 'sitemap:generate';
+    protected $description = 'Generate the sitemap file for public URLs only.';
 
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
-    protected $description = 'Generate the sitemap.';
-
-    /**
-     * Execute the console command.
-     */
     public function handle(): int
     {
-        $this->info('Generating sitemap via crawler...');
+        $this->info('Memulai pembuatan Sitemap untuk konten publik...');
 
         try {
-            $baseUrl = config('app.url', 'https://sisfoalfalahputak.online');
+            $baseUrl = config('app.url'); 
+            
+            if (!$baseUrl) {
+                $this->error("APP_URL tidak didefinisikan di .env.");
+                return 1;
+            }
 
-            SitemapGenerator::create($baseUrl)
-                ->shouldCrawl(function (\Psr\Http\Message\UriInterface $url) {
-                    // Only crawl the main domain
-                    if (!str_contains($url->getHost(), 'sisfoalfalahputak.online')) {
-                        return false;
-                    }
+            $sitemap = Sitemap::create(); 
 
-                    $path = $url->getPath();
+            // =======================================================
+            // A. Halaman Statis Publik
+            // =======================================================
+            $this->info('Menambahkan halaman statis publik...');
 
-                    // Exclude auth/admin/internal paths
-                    $exclude = ['/login', '/register', '/password', '/admin', '/dashboard', '/api'];
-                    foreach ($exclude as $pattern) {
-                        if (str_contains($path, $pattern)) {
-                            return false;
-                        }
-                    }
+            // Halaman Beranda
+            $sitemap->add(Url::create($baseUrl . '/')
+                ->setPriority(1.0)
+                ->setChangeFrequency(Url::CHANGE_FREQUENCY_DAILY) 
+            );
 
-                    return true;
-                })
-                ->getSitemap()
-                ->writeToDisk('public', 'sitemap.xml');
+            // Halaman Login & Register
+            $sitemap->add(Url::create($baseUrl . '/login')->setPriority(0.8));
+            $sitemap->add(Url::create($baseUrl . '/register')->setPriority(0.8));
+            
+            
+            // =======================================================
+            // B. Konten Dinamis Publik (Koreksi Query Sesuai Model)
+            // =======================================================
+            $this->info('Menambahkan konten dinamis publik dari database...');
 
-            $this->info('Sitemap written to ' . public_path('sitemap.xml'));
+            // --- Koreksi Query untuk Model Pengumuman ---
+            try {
+                // KOREKSI 1: Menggunakan kolom 'status' dengan nilai 'published' (Asumsi)
+                // KOREKSI 2: Menggunakan ->get() agar query berjalan
+                $pengumumans = Pengumuman::where('status', 'published')->get(); 
+                
+                foreach ($pengumumans as $item) {
+                    // KOREKSI 3: Menggunakan ID Pengumuman sebagai URL (bukan slug)
+                    // ASUMSI RUTE: /pengumuman-publik/{id}
+                    $sitemap->add(Url::create($baseUrl . "/pengumuman-publik/{$item->id}") 
+                        ->setLastModificationDate($item->tanggal_publikasi ?? $item->updated_at ?? now())
+                        ->setChangeFrequency(Url::CHANGE_FREQUENCY_WEEKLY)
+                        ->setPriority(0.9)
+                    );
+                }
+                $this->info('-> Berhasil menambahkan ' . $pengumumans->count() . ' Pengumuman publik.');
+            } catch (\Exception $e) {
+                // Jika error di sini, berarti koneksi DB gagal atau nilai 'published' salah
+                $this->error('-> Gagal query data Model Pengumuman. Periksa nilai kolom status (contoh: published vs 1).');
+            }
+            
+            
+            // =======================================================
+            // C. Simpan File ke Public Directory
+            // =======================================================
+            $sitemap->writeToFile(public_path('sitemap.xml'));
 
+            $this->info('Sitemap berhasil dibuat dan disimpan di ' . public_path('sitemap.xml'));
+            $this->info('STATUS: SIAP UNTUK DIKIRIMKAN KE GOOGLE SEARCH CONSOLE.');
+            
             return 0;
+
         } catch (\Throwable $e) {
-            $this->error('Failed to generate sitemap: ' . $e->getMessage());
+            $this->error('Gagal membuat sitemap secara keseluruhan.');
+            $this->error('Error: ' . $e->getMessage());
             return 1;
         }
     }
