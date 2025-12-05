@@ -399,16 +399,16 @@
                 
                 <div class="row g-3">
                     <div class="col-6 col-md-3">
-                        <img class="img-fluid rounded shadow-sm object-fit-cover w-100" src="<?php echo e(asset('images/WhatsApp Image 2025-06-11 at 23.53.25.jpeg')); ?>" alt="Galeri foto 1" loading="lazy" style="aspect-ratio: 1/1;">
+                        <img class="img-fluid rounded shadow-sm object-fit-cover w-100" src="<?php echo e(asset('Images/WhatsApp Image 2025-06-11 at 23.53.25.jpeg')); ?>" alt="Galeri foto 1" loading="lazy" style="aspect-ratio: 1/1;">
                     </div>
                     <div class="col-6 col-md-3">
-                        <img class="img-fluid rounded shadow-sm object-fit-cover w-100" src="<?php echo e(asset('images/IMG-20250806-WA0019.jpg')); ?>" alt="Galeri foto 2" loading="lazy" style="aspect-ratio: 1/1;">
+                        <img class="img-fluid rounded shadow-sm object-fit-cover w-100" src="<?php echo e(asset('Images/IMG-20250806-WA0019.jpg')); ?>" alt="Galeri foto 2" loading="lazy" style="aspect-ratio: 1/1;">
                     </div>
                     <div class="col-6 col-md-3">
-                        <img class="img-fluid rounded shadow-sm object-fit-cover w-100" src="<?php echo e(asset('images/WhatsApp Image 2024-10-02 at 09.00.59.jpeg')); ?>" alt="Galeri foto 3" loading="lazy" style="aspect-ratio: 1/1;">
+                        <img class="img-fluid rounded shadow-sm object-fit-cover w-100" src="<?php echo e(asset('Images/WhatsApp Image 2024-10-02 at 09.00.59.jpeg')); ?>" alt="Galeri foto 3" loading="lazy" style="aspect-ratio: 1/1;">
                     </div>
                     <div class="col-6 col-md-3">
-                        <img class="img-fluid rounded shadow-sm object-fit-cover w-100" src="<?php echo e(asset('images/IMG_2785.JPG')); ?>" alt="Galeri foto 4" loading="lazy" style="aspect-ratio: 1/1;">
+                        <img class="img-fluid rounded shadow-sm object-fit-cover w-100" src="<?php echo e(asset('Images/IMG_2785.JPG')); ?>" alt="Galeri foto 4" loading="lazy" style="aspect-ratio: 1/1;">
                     </div>
                 </div>
             </div>

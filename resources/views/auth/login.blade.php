@@ -22,7 +22,7 @@
             background-image: url('{{ asset('Images/1728115006026 copy.png') }}');
             background-size: cover;
             background-position: center 30%;
-            /* 🚀 TINGGI KHUSUS UNTUK MOBILE */
+            /* TINGGI KHUSUS UNTUK MOBILE */
             min-height: 300px; /* Ditingkatkan sedikit agar teks muat */
             height: 200px; 
         }
@@ -41,7 +41,7 @@
         .hero-text-overlay {
             position: absolute;
             inset: 0;
-            background-color: rgba(17, 24, 39, 0.7); 
+            background-color: rgba(17, 24, 39, 0.5); 
         }
         .btn-primary-custom {
             background-color: #2563EB;

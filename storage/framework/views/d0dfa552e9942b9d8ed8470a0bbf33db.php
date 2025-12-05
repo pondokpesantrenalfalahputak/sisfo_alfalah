@@ -22,7 +22,7 @@
             background-image: url('<?php echo e(asset('Images/1728115006026 copy.png')); ?>');
             background-size: cover;
             background-position: center 30%;
-            /* 🚀 TINGGI KHUSUS UNTUK MOBILE */
+            /* TINGGI KHUSUS UNTUK MOBILE */
             min-height: 300px; /* Ditingkatkan sedikit agar teks muat */
             height: 200px; 
         }
@@ -41,7 +41,7 @@
         .hero-text-overlay {
             position: absolute;
             inset: 0;
-            background-color: rgba(17, 24, 39, 0.7); 
+            background-color: rgba(17, 24, 39, 0.5); 
         }
         .btn-primary-custom {
             background-color: #2563EB;
@@ -114,7 +114,7 @@
                         <img src="<?php echo e(asset('Images/kop pondok.png')); ?>" alt="Logo Pesantren" style="width: 80px; height: 80px;">
                     </div>
                     
-                    <h2 class="h3 fw-bolder text-gray-800 text-center mb-4 mb-md-5">MASUK AKUN WALI/SANTRI</h2> 
+                    <h2 class="h3 fw-bolder text-gray-800 text-center mb-4 mb-md-5">MASUK AKUN WALISANTRI</h2> 
                     
                     <p class="text-center text-secondary mt-2 mb-4 mb-md-5 small"> 
                         Gunakan Email, NIS, atau NISN Santri dan Password Anda untuk masuk ke sistem.
