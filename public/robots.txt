@@ -1,0 +1,15 @@
+User-agent: *
+Disallow: /admin/
+Disallow: /dashboard/
+Disallow: /tagihan/
+Disallow: /absensi/
+Disallow: /login
+Disallow: /register
+Disallow: /password/
+Disallow: /api/
+
+# Izinkan semua crawler untuk mengakses root dan konten publik
+Allow: /
+
+# Tunjukkan di mana letak Sitemap Anda
+Sitemap: https://sisfoalfalahputak.online/sitemap.xml
