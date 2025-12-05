@@ -7,6 +7,9 @@
 
     <meta name="google-site-verification" content="YZijbyw0-7ALwnUh_RzgJxEJRToGG2qpLcvh6P5Oqls" />
     
+    <link rel="icon" type="image/png" href="{{ asset('Images/kop pondok.png') }}" />
+    
+    {{-- ✅ Bootstrap Bundle with Popper --}}
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" defer></script>
     
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
