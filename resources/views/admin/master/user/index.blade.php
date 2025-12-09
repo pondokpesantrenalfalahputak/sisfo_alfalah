@@ -3,10 +3,10 @@
 @section('title', 'Data User')
 @section('page_title', 'Daftar Pengguna Sistem')
 
+{{-- Tombol Tambah User (Hanya Tampil di Desktop: d-none d-md-flex) --}}
 @section('header_actions')
-    {{-- Tombol Tambah User --}}
-    <a href="{{ route('admin.user.create') }}" class="btn btn-primary shadow-sm rounded-pill d-flex align-items-center fw-semibold px-3">
-        <i class="fas fa-plus me-2"></i>
+    <a href="{{ route('admin.user.create') }}" class="btn btn-primary shadow-lg rounded-pill d-none d-md-flex align-items-center fw-bold px-4">
+        <i class="fas fa-user-plus me-2"></i>
         Tambah User Baru
     </a>
 @endsection
@@ -17,33 +17,37 @@
     <div class="row">
         <div class="col-12">
 
-            <h2 class="mb-4 text-dark fw-bold">⚙️ Daftar Pengguna Sistem</h2>
-
             {{-- Slot untuk Notifikasi Sukses/Gagal --}}
             @if (session('success'))
-                <div class="alert alert-success alert-dismissible fade show rounded-3 shadow-sm" role="alert">
+                <div class="alert alert-success alert-dismissible fade show rounded-3 shadow-sm border-0" role="alert">
                     <i class="fas fa-check-circle me-2"></i> {{ session('success') }}
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
             @endif
 
-            <div class="card shadow-lg border-0 rounded-4">
+            <div class="card shadow-lg border-0 rounded-4 overflow-hidden">
                 
-                {{-- CARD HEADER DENGAN WARNA PRIMER DAN SEARCH (SIAP PAKAI) --}}
-                <div class="card-header bg-primary text-white p-4 rounded-top-4">
+                {{-- CARD HEADER DENGAN SEARCH BAR DAN TOMBOL MOBILE --}}
+                <div class="card-header bg-white border-bottom p-4">
                     <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center">
-                        <h5 class="mb-2 mb-md-0 fw-bold fs-5"><i class="fas fa-users-cog me-2"></i> Data Seluruh Pengguna</h5>
                         
-                        {{-- Search Bar (Dapat diaktifkan jika diperlukan) --}}
-                        {{-- <div class="w-100 w-md-auto mt-2 mt-md-0">
-                            <form action="{{ route('admin.user.index') }}" method="GET" class="d-flex input-group input-group-sm">
-                                <input type="text" name="search" class="form-control" placeholder="Cari Nama/Email..." value="{{ request('search') }}">
-                                <button type="submit" class="btn btn-outline-light" title="Cari Data"><i class="fas fa-search"></i></button>
+                        {{-- KONTROL AKSI (Search dan Tombol Mobile) --}}
+                        <div class="w-100 w-md-auto">
+                            
+                            {{-- Search Bar Aktif (Rounded pill) --}}
+                            <form action="{{ route('admin.user.index') }}" method="GET" class="d-flex input-group input-group-sm rounded-pill overflow-hidden shadow-sm mb-3 mb-md-0">
+                                <input type="text" name="search" class="form-control border-0 ps-3" placeholder="Cari Nama/Email..." value="{{ request('search') }}">
+                                <button type="submit" class="btn btn-primary px-3" title="Cari Data"><i class="fas fa-search"></i></button>
                                 @if(request('search'))
-                                    <a href="{{ route('admin.user.index') }}" class="btn btn-outline-danger" title="Hapus Pencarian"><i class="fas fa-times"></i></a>
+                                    <a href="{{ route('admin.user.index') }}" class="btn btn-danger px-3" title="Hapus Pencarian"><i class="fas fa-times"></i></a>
                                 @endif
                             </form>
-                        </div> --}}
+
+                            {{-- Tombol Tambah User (Hanya Tampil di Mobile: d-md-none) --}}
+                            <a href="{{ route('admin.user.create') }}" class="btn btn-primary btn-block shadow-sm rounded-pill d-md-none fw-bold w-100">
+                                <i class="fas fa-user-plus me-1"></i> Tambah User Baru
+                            </a>
+                        </div>
                     </div>
                 </div>
                 
@@ -54,9 +58,9 @@
                     {{-- ========================================================= --}}
                     <div class="table-responsive d-none d-md-block">
                         <table class="table table-hover align-middle mb-0">
-                            <thead class="table-dark text-nowrap">
+                            <thead class="table-light text-nowrap">
                                 <tr>
-                                    <th style="width: 5%;" class="text-center">#</th>
+                                    <th style="width: 5%;" class="text-center">No</th>
                                     <th style="width: 25%;">Nama</th>
                                     <th style="width: 30%;">Email</th>
                                     <th style="width: 15%;">Role</th>
@@ -67,24 +71,24 @@
                                 @forelse($users as $user)
                                 @php
                                     $badgeClass = match($user->role) {
-                                        'admin' => 'primary',
-                                        'wali_santri' => 'info text-dark',
+                                        'admin' => 'danger',
+                                        'wali_santri' => 'primary',
                                         default => 'secondary',
                                     };
                                 @endphp
                                 <tr>
-                                    <td class="text-center">{{ $loop->iteration }}</td>
-                                    <td class="fw-bold">{{ $user->name }}</td>
-                                    <td>{{ $user->email }}</td>
+                                    <td class="text-center text-muted">{{ $loop->iteration }}</td>
+                                    <td class="fw-bold text-dark">{{ $user->name }}</td>
+                                    <td class="text-muted">{{ $user->email }}</td>
                                     <td>
-                                        <span class="badge bg-{{ $badgeClass }} fw-bold p-2">
+                                        <span class="badge bg-{{ $badgeClass }} fw-bold p-2 rounded-pill">
                                             {{ ucfirst(str_replace('_', ' ', $user->role)) }}
                                         </span>
                                     </td>
                                     <td class="text-center text-nowrap">
-                                        {{-- Tombol Aksi --}}
-                                        <div class="btn-group" role="group">
-                                            <a href="{{ route('admin.user.show', $user) }}" class="btn btn-sm btn-outline-info" title="Lihat Detail">
+                                        {{-- Tombol Aksi (DENGAN JARAK: d-flex gap-2) --}}
+                                        <div class="d-flex justify-content-center gap-2" role="group">
+                                            <a href="{{ route('admin.user.show', $user) }}" class="btn btn-sm btn-outline-primary" title="Lihat Detail">
                                                 <i class="fas fa-eye"></i>
                                             </a>
                                             <a href="{{ route('admin.user.edit', $user) }}" class="btn btn-sm btn-outline-warning" title="Edit Data">
@@ -95,7 +99,7 @@
                                             <form action="{{ route('admin.user.destroy', $user) }}" method="POST" class="d-inline">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button type="submit" class="btn btn-sm btn-danger" title="Hapus Data" onclick="return confirm('Apakah Anda yakin ingin menghapus user: {{ $user->name }}? Tindakan ini tidak dapat dibatalkan.')">
+                                                <button type="submit" class="btn btn-sm btn-outline-danger" title="Hapus Data" onclick="return confirm('Apakah Anda yakin ingin menghapus user: {{ $user->name }}? Tindakan ini tidak dapat dibatalkan.')">
                                                     <i class="fas fa-trash"></i>
                                                 </button>
                                             </form>
@@ -107,7 +111,7 @@
                                         <td colspan="5" class="text-center py-5 text-muted bg-light">
                                             <i class="fas fa-user-times me-2 fa-3x mb-3 text-secondary"></i>
                                             <h5 class="mb-0 fw-bold">Tidak ada data pengguna yang ditemukan.</h5>
-                                            <p class="mb-0 mt-2">Silakan klik tombol Tambah User Baru untuk membuat akun.</p>
+                                            <p class="mb-0 mt-2">Silakan klik tombol Tambah User Baru di atas.</p>
                                         </td>
                                     </tr>
                                 @endforelse
@@ -118,65 +122,76 @@
                     {{-- ========================================================= --}}
                     {{-- 2. Tampilan Mobile (Card List) --}}
                     {{-- ========================================================= --}}
-                    <div class="d-md-none p-3">
+                    <div class="d-md-none p-4">
                         @forelse($users as $user)
                             @php
                                 $badgeClass = match($user->role) {
-                                    'admin' => 'primary',
-                                    'wali_santri' => 'info text-dark',
+                                    'admin' => 'danger',
+                                    'wali_santri' => 'primary',
                                     default => 'secondary',
                                 };
                                 $roleDisplay = ucfirst(str_replace('_', ' ', $user->role));
                                 
                                 $borderColor = match($user->role) {
-                                    'admin' => 'warning',
+                                    'admin' => 'danger',
                                     'wali_santri' => 'primary',
                                     default => 'secondary',
                                 };
                             @endphp
-                            <div class="card mb-3 shadow-sm rounded-3 border-start border-4 border-{{ $borderColor }}">
+                            <div class="card mb-3 shadow-sm rounded-4 border-start border-4 border-{{ $borderColor }}">
                                 <div class="card-body p-3">
                                     
-                                    <div class="d-flex justify-content-between align-items-start mb-2 pb-2 border-bottom">
+                                    {{-- HEADER CARD MOBILE --}}
+                                    <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom border-dashed">
                                         <div>
-                                            <h6 class="text-muted mb-0 small">PENGGUNA (#{{ $loop->iteration }})</h6>
-                                            <h5 class="card-title fw-bold text-dark mb-1">{{ $user->name }}</h5>
+                                            <h6 class="text-muted mb-0 small fw-semibold">PENGGUNA {{ $loop->iteration }}</h6>
                                         </div>
-                                        <span class="badge bg-{{ $badgeClass }} p-2 fw-bold">{{ $roleDisplay }}</span>
+                                        <span class="badge bg-{{ $badgeClass }} p-2 fw-bold rounded-pill">{{ $roleDisplay }}</span>
                                     </div>
                                     
-                                    <div class="row small mb-3">
-                                        <div class="col-12">
-                                            <span class="text-muted d-block fw-semibold">Email</span>
-                                            <span class="fw-bold text-secondary">{{ $user->email }}</span>
+                                    {{-- DETAIL PENGGUNA --}}
+                                    <div class="mb-3">
+                                        <div class="d-flex align-items-center mb-2">
+                                            <i class="fas fa-user-circle me-3 text-primary fs-6"></i>
+                                            <div>
+                                                <span class="d-block small text-muted">Nama Lengkap</span>
+                                                <span class="fw-bold text-dark fs-6">{{ $user->name }}</span>
+                                            </div>
+                                        </div>
+                                        <div class="d-flex align-items-center">
+                                            <i class="fas fa-envelope me-3 text-primary fs-6"></i>
+                                            <div>
+                                                <span class="d-block small text-muted">Email</span>
+                                                <span class="fw-bold text-secondary small">{{ $user->email }}</span>
+                                            </div>
                                         </div>
                                     </div>
 
-                                    {{-- Aksi (Full-width buttons) --}}
-                                    <div class="d-grid gap-2 d-sm-flex justify-content-sm-end pt-2">
+                                    {{-- Aksi (Ringkas) --}}
+                                    <div class="d-flex gap-2 justify-content-end pt-2 border-top">
                                         
-                                        <a href="{{ route('admin.user.show', $user) }}" class="btn btn-sm btn-info text-white fw-semibold flex-fill" title="Lihat Detail">
-                                            <i class="fas fa-eye me-1"></i> Detail
+                                        <a href="{{ route('admin.user.show', $user) }}" class="btn btn-sm btn-outline-primary fw-semibold px-3" title="Lihat Detail">
+                                            <i class="fas fa-eye"></i>
                                         </a>
-                                        <a href="{{ route('admin.user.edit', $user) }}" class="btn btn-sm btn-warning text-dark fw-semibold flex-fill" title="Edit Data">
-                                            <i class="fas fa-edit me-1"></i> Edit
+                                        <a href="{{ route('admin.user.edit', $user) }}" class="btn btn-sm btn-outline-warning fw-semibold px-3" title="Edit Data">
+                                            <i class="fas fa-edit"></i>
                                         </a>
                                         
-                                        <form action="{{ route('admin.user.destroy', $user) }}" method="POST" class="d-inline flex-fill">
+                                        <form action="{{ route('admin.user.destroy', $user) }}" method="POST" class="d-inline">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="btn btn-sm btn-danger w-100 fw-semibold" title="Hapus Data" onclick="return confirm('Apakah Anda yakin ingin menghapus user: {{ $user->name }}? Tindakan ini tidak dapat dibatalkan.')">
-                                                <i class="fas fa-trash me-1"></i> Hapus
+                                            <button type="submit" class="btn btn-sm btn-outline-danger fw-semibold px-3" title="Hapus Data" onclick="return confirm('Apakah Anda yakin ingin menghapus user: {{ $user->name }}? Tindakan ini tidak dapat dibatalkan.')">
+                                                <i class="fas fa-trash"></i>
                                             </button>
                                         </form>
                                     </div>
                                 </div>
                             </div>
                         @empty
-                            <div class="text-center py-5 text-muted bg-light rounded-3 shadow-sm">
+                            <div class="text-center py-5 text-muted bg-light rounded-4 shadow-sm">
                                 <i class="fas fa-user-times me-2 fa-3x mb-3 text-secondary"></i>
                                 <h5 class="mb-0 fw-bold">Tidak ada data pengguna yang ditemukan.</h5>
-                                <p class="mb-0 mt-2">Silakan klik tombol Tambah User Baru untuk membuat akun.</p>
+                                <p class="mb-0 mt-2 small">Silakan gunakan tombol Tambah User Baru di atas.</p>
                             </div>
                         @endforelse
                     </div>
@@ -184,7 +199,7 @@
                     
                     {{-- Paginasi --}}
                     @if ($users instanceof \Illuminate\Pagination\LengthAwarePaginator)
-                        <div class="card-footer bg-light border-0 pt-3 rounded-bottom-4">
+                        <div class="card-footer bg-white border-top p-3 rounded-bottom-4">
                             <div class="d-flex justify-content-center justify-content-md-end">
                                 {{ $users->links() }}
                             </div>

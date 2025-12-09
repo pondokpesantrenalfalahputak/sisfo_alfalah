@@ -38,7 +38,7 @@ class DashboardController extends Controller
         
         foreach ($semuaTagihan as $tagihan) {
             // Asumsi model Tagihan memiliki metode isLunas()
-            if ($tagihan->isLunas()) {
+            if (method_exists($tagihan, 'isLunas') && $tagihan->isLunas()) {
                 $tagihanLunasCount++;
             } else {
                 $tagihanBelumLunasCount++;
@@ -59,20 +59,36 @@ class DashboardController extends Controller
                                  ->get();
         
         // =========================================================
-        // ✅ PERBAIKAN LOGIKA ABSENSI HARIAN (Menggunakan Grouping)
+        // ✅ PERBAIKAN & PENAMBAHAN LOGIKA ABSENSI HARIAN
         // =========================================================
-        $santris->each(function ($santri) use ($hariIni) {
-            // Ambil SEMUA data absensi untuk hari ini
-            $absensis = AbsensiHarian::where('santri_id', $santri->id)
-                              ->whereDate('tanggal_absensi', $hariIni) 
-                              ->get();
-                              
+        
+        // Ambil SEMUA data absensi untuk hari ini untuk SEMUA santri terkait
+        $absensiHariIni = AbsensiHarian::whereIn('santri_id', $santriIds)
+                                       ->whereDate('tanggal_absensi', $hariIni)
+                                       ->get();
+        
+        $santris->each(function ($santri) use ($absensiHariIni, $hariIni) {
+            
+            // --- Logika 1: Pengelompokan Absensi (Logika asli Anda) ---
+            
+            // Filter koleksi absensi yang sudah dimuat untuk santri ini
+            $absensis = $absensiHariIni->where('santri_id', $santri->id);
+
             // Kelompokkan absensi berdasarkan jenis_kegiatan (keyBy)
-            // Ini akan menghasilkan koleksi yang bisa diakses seperti: $absensiHariIni['Shubuh']
             $absensiGrouped = $absensis->keyBy('jenis_kegiatan');
 
             // Lampirkan hasil grouping ke objek santri
             $santri->absensiHariIni = $absensiGrouped;
+            
+            // --- Logika 2: Menghitung Total Ketidakhadiran Hari Ini (Penambahan Anda) ---
+            
+            // Hitung total status non-Hadir (Izin, Sakit, Alfa) untuk hari ini
+            $totalKetidakhadiran = $absensis->filter(function ($absensi) {
+                return in_array($absensi->status, ['Izin', 'Sakit', 'Alfa']);
+            })->count();
+
+            // Lampirkan hasil hitungan ke objek santri
+            $santri->totalKetidakhadiranHariIni = $totalKetidakhadiran;
         });
 
         // Mengirim semua data yang dibutuhkan ke view

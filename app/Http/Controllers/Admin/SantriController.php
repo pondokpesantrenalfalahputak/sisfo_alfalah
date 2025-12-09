@@ -10,11 +10,44 @@ use App\Models\User; // Untuk Wali Santri
 
 class SantriController extends Controller
 {
-    // READ (Tampilkan semua data)
-    public function index()
+    // READ (Tampilkan semua data) DENGAN FITUR PENCARIAN, PAGINASI, DAN FILTER WALI
+    public function index(Request $request)
     {
-        $santris = Santri::with(['kelas', 'waliSantri'])->latest()->get();
-        return view('admin.master.santri.index', compact('santris'));
+        // 1. Ambil input dari request
+        $search = $request->input('search');
+        $waliSantriId = $request->input('wali_santri_id');
+
+        // 2. Mulai query dasar untuk Model Santri
+        $query = Santri::query();
+
+        // 3. Terapkan filter PENCARIAN (NISN dan Nama Santri)
+        if ($search) {
+            $query->where(function($q) use ($search) {
+                // Cari berdasarkan NISN
+                $q->where('nisn', 'LIKE', "%{$search}%")
+                  // ATAU Cari berdasarkan Nama Lengkap Santri
+                  ->orWhere('nama_lengkap', 'LIKE', "%{$search}%");
+            });
+        }
+        
+        // 4. Terapkan filter BERDASARKAN WALI SANTRI
+        if ($waliSantriId) {
+            // Memfilter santri yang memiliki wali_santri_id sesuai input
+            $query->where('wali_santri_id', $waliSantriId);
+        }
+
+        // 5. Ambil data, tambahkan relasi dan paginasi
+        $santris = $query->with(['kelas', 'waliSantri'])
+                        ->orderBy('nama_lengkap', 'asc')
+                        ->paginate(10) // Paginasi 10 data per halaman
+                        // Mempertahankan filter saat navigasi paginasi
+                        ->withQueryString(); 
+
+        // Tambahkan daftar wali untuk digunakan di dropdown filter pada view
+        $walis = User::where('role', 'wali_santri')->get(); 
+
+        // Kirim data santri, daftar wali, dan nilai filter yang sedang aktif
+        return view('admin.master.santri.index', compact('santris', 'walis', 'waliSantriId'));
     }
 
     // CREATE (Tampilkan form)

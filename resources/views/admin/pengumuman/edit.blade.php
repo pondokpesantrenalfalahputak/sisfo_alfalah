@@ -3,21 +3,11 @@
 @section('title', 'Edit Pengumuman')
 @section('page_title', 'Edit Pengumuman: ' . $pengumuman->judul)
 
-@section('header_actions')
-    {{-- Tombol untuk kembali ke Daftar Pengumuman --}}
-    <a href="{{ route('admin.pengumuman.index') }}" class="btn btn-outline-secondary shadow-sm rounded-pill d-flex align-items-center fw-semibold px-3">
-        <i class="fas fa-bullhorn me-2"></i>
-        Daftar Pengumuman
-    </a>
-@endsection
-
 @section('content')
 
 <div class="container-fluid">
     <div class="row">
         <div class="col-12">
-
-            <h2 class="mb-4 text-dark fw-bold">📝 Edit Pengumuman</h2>
 
             {{-- Menambahkan border-start untuk visual 'Edit' --}}
             <div class="card shadow-lg border-0 rounded-4 border-start border-5 border-warning">

@@ -8,7 +8,7 @@
     <div class="card shadow-lg border-0 mb-4 rounded-4">
         
         {{-- CARD HEADER DENGAN ICON LEBIH BESAR --}}
-        <div class="card-header bg-primary text-white fw-bold d-flex align-items-center p-3 rounded-top-4">
+        <div class="card-header bg-primary text-white fw-bold d-flex align-items-center p-3 rounded-top-4 header-themed-primary">
             <i class="fas fa-users me-2 fs-4"></i> Daftar Santri yang Anda Asuh
         </div>
         
@@ -52,7 +52,7 @@
                                     
                                     {{-- KELAS --}}
                                     <td>
-                                        <span class="badge bg-info-subtle text-info-emphasis fw-bold p-2">
+                                        <span class="badge bg-info-subtle text-info-emphasis fw-bold p-2 rounded-pill">
                                             {{ $santri->kelas->nama_kelas ?? 'Belum Ada Kelas' }}
                                         </span>
                                     </td>
@@ -69,15 +69,16 @@
                     </table>
                 </div>
                 
-                {{-- Bagian Mobile: Menggunakan Stacked List Group (Ditingkatkan) --}}
+                {{-- Bagian Mobile: Menggunakan Stacked List Group (Jarak Diperlebar) --}}
                 <div class="list-group d-block d-md-none">
                     @foreach ($santris as $index => $santri)
-                        <div class="list-group-item list-group-item-action mb-3 shadow-sm border border-4 border-primary rounded-3 card-mobile-santri-detail">
+                        {{-- PERUBAHAN: my-3 diganti menjadi my-4 --}}
+                        <div class="list-group-item list-group-item-action my-4 shadow-sm border border-2 border-primary rounded-3 card-mobile-santri-detail">
                             <div class="d-flex w-100 justify-content-between align-items-start">
-                                <h6 class="mb-1 fw-bolder text-dark">
+                                <h6 class="mb-1 fw-bolder text-dark text-truncate">
                                     {{ $index + 1 }}. {{ strtoupper($santri->nama) }}
                                 </h6>
-                                <span class="badge bg-info-subtle text-info-emphasis fw-bold py-2">
+                                <span class="badge bg-info-subtle text-info-emphasis fw-bold py-1 px-2 rounded-pill flex-shrink-0"> 
                                     {{ $santri->kelas->nama_kelas ?? 'N/A' }}
                                 </span>
                             </div>
@@ -85,12 +86,12 @@
                             <hr class="my-2">
                             
                             <p class="mb-1 small text-muted d-flex justify-content-between">
-                                <span class="fw-semibold"><i class="fas fa-id-card-alt me-1"></i> NIS:</span> 
+                                <span class="fw-semibold"><i class="fas fa-id-card-alt me-1 text-primary"></i> NIS:</span> 
                                 <span class="fw-bold text-dark">{{ $santri->nis ?? '-' }}</span>
                             </p>
                             
                             <div class="text-end mt-3">
-                                 <a href="{{ route('wali.santri.show', $santri) }}" class="btn btn-sm btn-primary w-100 rounded-pill">
+                                 <a href="{{ route('wali.santri.show', $santri) }}" class="btn btn-sm btn-outline-primary rounded-pill px-3 fw-bold">
                                     <i class="fas fa-search me-1"></i> Lihat Detail Santri
                                 </a>
                             </div>
@@ -104,6 +105,12 @@
 
 @push('css')
     <style>
+        .header-themed-primary {
+            padding-top: 1rem !important; 
+            padding-bottom: 1rem !important;
+            font-size: 1.1rem;
+        }
+
         /* CSS Tambahan untuk pemisah dashed (jika ada pesan kosong) */
         .border-dashed {
             border-style: dashed !important;
@@ -116,7 +123,15 @@
 
         /* Peningkatan visibility Nama Santri */
         .card-mobile-santri-detail h6.fw-bolder {
-            font-size: 1.1rem;
+            font-size: 1.0rem; 
+        }
+        
+        /* Penyesuaian font utama Mobile Card */
+        @media (max-width: 767.98px) {
+            /* Menyesuaikan tombol outline agar terlihat lebih lembut */
+            .btn-outline-primary {
+                border-width: 1.5px !important; 
+            }
         }
     </style>
 @endpush

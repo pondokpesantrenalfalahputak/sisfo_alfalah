@@ -24,7 +24,7 @@
             background-size: cover;
             background-position: center 30%;
             /* TINGGI KHUSUS UNTUK MOBILE */
-            min-height: 300px; /* Ditingkatkan sedikit agar teks muat */
+            min-height: 300px;
             height: 200px; 
         }
         @media (min-width: 768px) {
@@ -53,6 +53,7 @@
             background-color: #1D4ED8;
             border-color: #1D4ED8;
         }
+        /* Penyesuaian agar toggle password tetap di atas input-group-text */
         .password-input-container {
             position: relative;
         }
@@ -71,21 +72,26 @@
         
         /* PADDING FORM RESPONSIF */
         .p-form {
-            padding: 2rem !important; /* Padding yang lebih kecil dan rapi untuk mobile (default) */
+            padding: 2rem !important; 
         }
         @media (min-width: 768px) {
             .p-form {
-                padding: 4.5rem !important; /* Padding besar untuk desktop (memanjangkan) */
+                padding: 4.5rem !important; 
             }
         }
         @media (min-width: 992px) {
             .p-form {
-                padding: 5rem !important; /* Padding ekstra besar pada layar lebar */
+                padding: 5rem !important; 
             }
         }
         .form-label.small {
             font-size: 0.9rem; 
             font-weight: 600 !important; 
+        }
+
+        /* Memastikan invalid-feedback muncul dengan gaya merah saat di luar input-group */
+        .invalid-feedback.d-block {
+            display: block !important;
         }
     </style>
 </head>
@@ -118,7 +124,7 @@
                     <h2 class="h3 fw-bolder text-gray-800 text-center mb-4 mb-md-5">MASUK AKUN WALISANTRI</h2> 
                     
                     <p class="text-center text-secondary mt-2 mb-4 mb-md-5 small"> 
-                        Gunakan Email, NIS, atau NISN Santri dan Password Anda untuk masuk ke sistem.
+                        Gunakan Email atau NIS Santri dan Password Anda untuk masuk ke sistem.
                     </p>
 
                     {{-- Form Login NIS/NISN --}}
@@ -127,26 +133,35 @@
                         
                         {{-- 1. Field: Email / NIS / NISN --}}
                         <div class="mb-4 mb-md-5"> 
-                            <label for="login_id" class="form-label small fw-medium text-gray-700">Email / NIS / NISN</label>
-                            <input 
-                                type="text" 
-                                id="login_id" 
-                                name="login_id" 
-                                placeholder="Masukkan Email, NIS, atau NISN" 
-                                class="form-control form-control-lg @error('login_id') is-invalid @enderror" 
-                                required 
-                                autocomplete="username"
-                                value="{{ old('login_id') }}"
-                            >
+                            <label for="login_id" class="form-label small fw-medium text-gray-700">Email / NIS</label>
+                            
+                            {{-- Tambahan: Input Group untuk Icon --}}
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-user-circle"></i></span>
+                                <input 
+                                    type="text" 
+                                    id="login_id" 
+                                    name="login_id" 
+                                    placeholder="Masukkan Email, NIS, atau NISN" 
+                                    class="form-control form-control-lg @error('login_id') is-invalid @enderror" 
+                                    required 
+                                    autocomplete="username"
+                                    value="{{ old('login_id') }}"
+                                >
+                            </div>
+
                             @error('login_id')
-                                <div class="invalid-feedback small">{{ $message }}</div>
+                                <div class="invalid-feedback small d-block">{{ $message }}</div>
                             @enderror
                         </div>
 
                         {{-- 2. Field: Password --}}
                         <div class="mb-4 mb-md-5">
                             <label for="password" class="form-label small fw-medium text-gray-700">Password</label>
-                            <div class="password-input-container">
+                            
+                            {{-- Tambahan: Input Group untuk Icon dan Container Password --}}
+                            <div class="password-input-container input-group">
+                                <span class="input-group-text"><i class="fas fa-lock"></i></span>
                                 <input type="password" id="password" name="password" placeholder="Masukkan password" 
                                     class="form-control form-control-lg @error('password') is-invalid @enderror" 
                                     required autocomplete="current-password">
@@ -154,8 +169,10 @@
                                     <i class="fas fa-eye" id="eye-icon"></i>
                                 </button>
                             </div>
+
                             @error('password')
-                                <div class="invalid-feedback small d-block">{{ $message }}</div>
+                                {{-- Menghapus d-block yang tidak perlu, biarkan Bootstrap yang mengurus --}}
+                                <div class="invalid-feedback small">{{ $message }}</div>
                             @enderror
                         </div>
 

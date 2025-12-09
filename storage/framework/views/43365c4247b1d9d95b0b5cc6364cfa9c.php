@@ -1,12 +1,7 @@
 <?php $__env->startSection('title', 'Edit Santri'); ?>
-<?php $__env->startSection('page_title', 'Edit Data Santri: ' . $santri->nama_lengkap); ?>
+<?php $__env->startSection('page_title', 'Edit Data Santri' ); ?>
 
 <?php $__env->startSection('header_actions'); ?>
-    
-    <a href="<?php echo e(route('admin.santri.index')); ?>" class="btn btn-outline-secondary shadow-sm rounded-pill d-flex align-items-center fw-semibold px-3">
-        <i class="fas fa-list me-2"></i>
-        Daftar Santri
-    </a>
 <?php $__env->stopSection(); ?>
 
 <?php $__env->startSection('content'); ?>
@@ -15,25 +10,27 @@
     <div class="row">
         <div class="col-12">
 
-            <h2 class="mb-4 text-dark fw-bold">✏️ Edit Santri: <?php echo e($santri->nama_lengkap); ?></h2>
+            
+            <h5 class="mb-4 text-dark fw-bold"><i class="fas fa-pencil-alt me-2 text-warning opacity-75"></i> Edit Santri: <?php echo e($santri->nama_lengkap); ?></h5>
 
             <div class="card shadow-lg border-0 rounded-4 border-start border-5 border-warning">
                 
                 
                 <div class="card-header bg-primary text-white p-4 rounded-top-4">
                     <h4 class="mb-0 fw-bold fs-5"><i class="fas fa-user-edit me-2"></i> Formulir Edit Data Santri</h4>
-                    <p class="text-white-50 small mb-0">Lakukan perubahan data untuk santri <?php echo e($santri->nama_lengkap); ?>.</p>
+                    <p class="text-white-50 small mb-0">Lakukan perubahan data untuk santri <?php echo e($santri->nama_lengkap); ?> dengan hati-hati.</p>
                 </div>
                 
-                <div class="card-body p-4">
+                <div class="card-body p-4 p-md-5">
 
                     
                     <?php if($errors->any()): ?>
-                        <div class="alert alert-danger alert-dismissible fade show rounded-3 shadow-sm" role="alert">
-                            <h6 class="alert-heading fw-bold"><i class="fas fa-exclamation-triangle me-2"></i> Mohon koreksi kesalahan berikut:</h6>
-                            <ul class="mb-0 ps-3">
+                        <div class="alert alert-danger alert-dismissible fade show rounded-3 shadow-sm border-0" role="alert">
+                            <h6 class="alert-heading fw-bold text-danger"><i class="fas fa-exclamation-circle me-2"></i> Ada Kesalahan Validasi!</h6>
+                            <p class="small mb-2">Mohon periksa dan koreksi input Anda:</p>
+                            <ul class="mb-0 ps-4 list-unstyled">
                                 <?php $__currentLoopData = $errors->all(); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $error): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                    <li><?php echo e($error); ?></li>
+                                    <li class="small text-danger"><i class="fas fa-dot-circle fa-xs me-2"></i><?php echo e($error); ?></li>
                                 <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                             </ul>
                             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
@@ -45,16 +42,19 @@
                         <?php echo method_field('PUT'); ?>
                         
                         
-                        <h5 class="fw-bold text-dark mb-4 mt-2 border-bottom pb-2 text-warning"><i class="fas fa-id-card me-2"></i> Data Pribadi</h5>
+                        
+                        <h6 class="fw-bold text-dark mb-1 mt-2 text-warning fs-6"><i class="fas fa-id-card me-2"></i> Data Pribadi</h6>
+                        <hr class="mt-2 mb-4 border-warning opacity-25">
+                        
                         <div class="row g-4">
                             
                             
                             <div class="col-md-6">
-                                <label for="nama_lengkap" class="form-label fw-semibold">Nama Lengkap <span class="text-danger">*</span></label>
+                                <label for="nama_lengkap" class="form-label fw-medium text-muted small">Nama Lengkap <span class="text-danger">*</span></label>
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="fas fa-user"></i></span>
                                     <input type="text" name="nama_lengkap" id="nama_lengkap" 
-                                           class="form-control form-control-lg <?php $__errorArgs = ['nama_lengkap'];
+                                           class="form-control <?php $__errorArgs = ['nama_lengkap'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
 if (isset($message)) { $__messageOriginal = $message; }
@@ -76,11 +76,11 @@ unset($__errorArgs, $__bag); ?>
                             
                             
                             <div class="col-md-6">
-                                <label for="nisn" class="form-label fw-semibold">NISN <span class="text-danger">*</span></label>
+                                <label for="nisn" class="form-label fw-medium text-muted small">NISN <span class="text-danger">*</span></label>
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="fas fa-fingerprint"></i></span>
                                     <input type="text" name="nisn" id="nisn" 
-                                           class="form-control form-control-lg <?php $__errorArgs = ['nisn'];
+                                           class="form-control <?php $__errorArgs = ['nisn'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
 if (isset($message)) { $__messageOriginal = $message; }
@@ -102,10 +102,10 @@ unset($__errorArgs, $__bag); ?>
                             
                             
                             <div class="col-md-6">
-                                <label for="jenis_kelamin" class="form-label fw-semibold">Jenis Kelamin <span class="text-danger">*</span></label>
+                                <label for="jenis_kelamin" class="form-label fw-medium text-muted small">Jenis Kelamin <span class="text-danger">*</span></label>
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="fas fa-venus-mars"></i></span>
-                                    <select name="jenis_kelamin" id="jenis_kelamin" class="form-select form-select-lg <?php $__errorArgs = ['jenis_kelamin'];
+                                    <select name="jenis_kelamin" id="jenis_kelamin" class="form-select <?php $__errorArgs = ['jenis_kelamin'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
 if (isset($message)) { $__messageOriginal = $message; }
@@ -130,11 +130,11 @@ unset($__errorArgs, $__bag); ?>
                             
                             
                             <div class="col-md-6">
-                                <label for="tanggal_lahir" class="form-label fw-semibold">Tanggal Lahir <span class="text-danger">*</span></label>
+                                <label for="tanggal_lahir" class="form-label fw-medium text-muted small">Tanggal Lahir <span class="text-danger">*</span></label>
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
                                     <input type="date" name="tanggal_lahir" id="tanggal_lahir" 
-                                           class="form-control form-control-lg <?php $__errorArgs = ['tanggal_lahir'];
+                                           class="form-control <?php $__errorArgs = ['tanggal_lahir'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
 if (isset($message)) { $__messageOriginal = $message; }
@@ -156,18 +156,20 @@ unset($__errorArgs, $__bag); ?>
                             
                         </div>
                         
-                        <hr class="mt-5 mb-4 border-primary opacity-25">
+                        <hr class="mt-5 mb-4 border-secondary opacity-25"> 
                         
                         
-                        <h5 class="fw-bold text-dark mb-4 mt-2 border-bottom pb-2 text-warning"><i class="fas fa-graduation-cap me-2"></i> Data Akademik & Wali</h5>
+                        
+                        <h6 class="fw-bold text-dark mb-1 mt-2 text-info fs-6"><i class="fas fa-graduation-cap me-2"></i> Data Akademik & Wali</h6>
+                        <hr class="mt-2 mb-4 border-info opacity-25">
                         <div class="row g-4">
                             
                             
                             <div class="col-md-6">
-                                <label for="kelas_id" class="form-label fw-semibold">Kelas <span class="text-danger">*</span></label>
+                                <label for="kelas_id" class="form-label fw-medium text-muted small">Kelas <span class="text-danger">*</span></label>
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="fas fa-school"></i></span>
-                                    <select name="kelas_id" id="kelas_id" class="form-select form-select-lg <?php $__errorArgs = ['kelas_id'];
+                                    <select name="kelas_id" id="kelas_id" class="form-select <?php $__errorArgs = ['kelas_id'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
 if (isset($message)) { $__messageOriginal = $message; }
@@ -195,10 +197,10 @@ unset($__errorArgs, $__bag); ?>
                             
                             
                             <div class="col-md-6">
-                                <label for="wali_santri_id" class="form-label fw-semibold">Wali Santri <span class="text-danger">*</span></label>
+                                <label for="wali_santri_id" class="form-label fw-medium text-muted small">Wali Santri <span class="text-danger">*</span></label>
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="fas fa-user-tie"></i></span>
-                                    <select name="wali_santri_id" id="wali_santri_id" class="form-select form-select-lg <?php $__errorArgs = ['wali_santri_id'];
+                                    <select name="wali_santri_id" id="wali_santri_id" class="form-select <?php $__errorArgs = ['wali_santri_id'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
 if (isset($message)) { $__messageOriginal = $message; }
@@ -227,15 +229,17 @@ unset($__errorArgs, $__bag); ?>
                             
                         </div>
                         
-                        <hr class="mt-5 mb-4 border-primary opacity-25">
+                        <hr class="mt-5 mb-4 border-secondary opacity-25">
 
                         
-                        <h5 class="fw-bold text-dark mb-4 mt-2 border-bottom pb-2 text-success"><i class="fas fa-map-marker-alt me-2"></i> Alamat & Status</h5>
+                        
+                        <h6 class="fw-bold text-dark mb-1 mt-2 text-success fs-6"><i class="fas fa-map-marker-alt me-2"></i> Alamat & Status</h6>
+                        <hr class="mt-2 mb-4 border-success opacity-25">
                         <div class="row g-4">
                             
                             
                             <div class="col-md-8">
-                                <label for="alamat" class="form-label fw-semibold">Alamat Lengkap</label>
+                                <label for="alamat" class="form-label fw-medium text-muted small">Alamat Lengkap</label>
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="fas fa-home"></i></span>
                                     <textarea name="alamat" id="alamat" class="form-control <?php $__errorArgs = ['alamat'];
@@ -260,10 +264,10 @@ unset($__errorArgs, $__bag); ?>
                             
                             
                             <div class="col-md-4">
-                                <label for="status" class="form-label fw-semibold">Status Keaktifan <span class="text-danger">*</span></label>
+                                <label for="status" class="form-label fw-medium text-muted small">Status Keaktifan <span class="text-danger">*</span></label>
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="fas fa-check-circle"></i></span>
-                                    <select name="status" id="status" class="form-select form-select-lg <?php $__errorArgs = ['status'];
+                                    <select name="status" id="status" class="form-select <?php $__errorArgs = ['status'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
 if (isset($message)) { $__messageOriginal = $message; }
@@ -287,10 +291,10 @@ unset($__errorArgs, $__bag); ?>
                             
                         </div>
                         
-                        <hr class="mt-5 mb-4 border-dark opacity-25">
+                        <hr class="mt-5 mb-4 border-dark opacity-10">
                         
                         
-                        <div class="d-flex justify-content-end gap-2">
+                        <div class="d-flex justify-content-end gap-2 pt-3">
                             <a href="<?php echo e(route('admin.santri.index')); ?>" class="btn btn-outline-secondary px-4 shadow-sm fw-semibold rounded-pill">
                                 <i class="fas fa-times me-2"></i> Batal
                             </a>

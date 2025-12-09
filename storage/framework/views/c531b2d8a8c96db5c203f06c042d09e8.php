@@ -5,56 +5,53 @@
 <div class="container-fluid">
     <div class="row">
         <div class="col-12">
-            <h2 class="mb-4 text-dark fw-bold">🗓️ Input Absensi Harian <span class="badge bg-primary fs-6 rounded-pill shadow-sm">Langkah 1</span></h2>
-            
             
             <?php if(session('success')): ?>
-                <div class="alert alert-success alert-dismissible fade show rounded-3 shadow-sm" role="alert">
+                <div class="alert alert-success alert-dismissible fade show border-0 shadow-sm rounded-3" role="alert">
                     <i class="fas fa-check-circle me-2"></i> <?php echo e(session('success')); ?>
 
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
             <?php endif; ?>
             <?php if(session('error')): ?>
-                <div class="alert alert-danger alert-dismissible fade show rounded-3 shadow-sm" role="alert">
+                <div class="alert alert-danger alert-dismissible fade show border-0 shadow-sm rounded-3" role="alert">
                     <i class="fas fa-exclamation-triangle me-2"></i> <?php echo e(session('error')); ?>
 
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
             <?php endif; ?>
             <?php if(session('warning')): ?>
-                <div class="alert alert-warning alert-dismissible fade show rounded-3 shadow-sm" role="alert">
+                <div class="alert alert-warning alert-dismissible fade show border-0 shadow-sm rounded-3" role="alert">
                     <i class="fas fa-exclamation-circle me-2"></i> <?php echo e(session('warning')); ?>
 
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
             <?php endif; ?>
             
-            <div class="card shadow mb-4 border-0 rounded-4">
-                <div class="card-header py-3 bg-primary text-white d-flex justify-content-between align-items-center rounded-top-4">
-                    <h5 class="m-0 font-weight-bold text-white fs-5">
-                        Pilih Kelas Absensi
-                    </h5>
-                    <small class="badge bg-light text-dark shadow-sm rounded-pill px-3 py-2 fw-bold">
-                         <i class="fas fa-calendar-alt me-1"></i> Tanggal: <?php echo e($date); ?>
+            
+            <div class="card shadow mb-4 border-left-primary rounded-4"> 
+                <div class="card-header py-3 bg-primary text-white d-flex flex-column flex-md-row justify-content-between align-items-md-center rounded-top-4">
+                    <span class="badge bg-light text-dark shadow-sm rounded-pill px-3 py-2 fw-semibold">
+                        <i class="fas fa-calendar-alt me-1"></i> Tanggal: <?php echo e($date); ?>
 
-                    </small>
+                    </span>
                 </div>
                 
                 <div class="card-body p-4">
-                    <p class="text-muted small border-bottom pb-3 mb-4 fw-semibold">Silakan pilih kelas yang ingin diinput absensinya untuk melanjutkan ke pemilihan kegiatan.</p>
+                    <p class="text-info small border-bottom pb-3 mb-4 fw-semibold">
+                        <i class="fas fa-info-circle me-1"></i> Silakan pilih kelas yang ingin diinput absensinya untuk melanjutkan ke pemilihan kegiatan.
+                    </p>
                     
                     
-                    <div class="row g-4">
+                    <div class="row g-3 g-md-4"> 
                         <?php $__empty_1 = true; $__currentLoopData = $kelasListData; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $kelas): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
                             <?php
-                                $tingkat = (int) $kelas->tingkat; // Ambil nilai tingkat (7, 8, 9, 10, dst.)
+                                $tingkat = (int) $kelas->tingkat; 
                                 
-                                // ✅ PERBAIKAN LOGIKA: Sekarang menggunakan kolom 'tingkat', bukan ID
                                 $color = match (true) {
-                                    $tingkat >= 7 && $tingkat <= 9 => 'success',   // MTs (Tingkat 7, 8, 9)
-                                    $tingkat >= 10 && $tingkat <= 12 => 'info',    // MA (Tingkat 10, 11, 12)
-                                    $tingkat == 13 => 'danger',                   // Mutakhorijin (Tingkat 13)
+                                    $tingkat >= 7 && $tingkat <= 9 => 'success',   // MTs
+                                    $tingkat >= 10 && $tingkat <= 12 => 'info',    // MA
+                                    $tingkat == 13 => 'danger',                   // Mutakhorijin
                                     default => 'secondary',
                                 };
                                 
@@ -67,25 +64,26 @@
                             ?>
                             
                             
-                            <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 mb-2">
-                                
-                                <a href="<?php echo e(route('admin.absensi_baru.select_activity', $kelas->id)); ?>" class="text-decoration-none d-block">
-                                    <div class="card card-hover border-0 border-start border-5 border-<?php echo e($color); ?> shadow-lg h-100 rounded-3">
-                                        <div class="card-body p-4">
-                                            <div class="d-flex align-items-center">
-                                                <div class="flex-grow-1">
-                                                    <div class="font-weight-bold text-uppercase text-<?php echo e($color); ?> mb-1 small">
-                                                        <?php echo e($level); ?>
+                            <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 **col-12**"> 
+                                <a href="<?php echo e(route('admin.absensi_baru.select_activity', $kelas->id)); ?>" class="text-decoration-none d-block card-link-item">
+                                    
+                                    <div class="card card-hover border-0 border-end border-5 border-<?php echo e($color); ?> shadow-sm h-100 rounded-4">
+                                        <div class="card-body p-4 d-flex align-items-center">
+                                            <div class="flex-grow-1">
+                                                
+                                                <div class="font-weight-bold text-uppercase text-<?php echo e($color); ?> **text-xs** mb-1"> 
+                                                    <?php echo e($level); ?>
 
-                                                    </div>
-                                                    
-                                                    <div class="h5 mb-0 font-weight-bold text-dark fs-4"><?php echo e($kelas->nama_kelas); ?></div>
-                                                    <p class="small text-muted mt-2 mb-0 fw-semibold">Lanjutkan ke Pilih Kegiatan</p>
                                                 </div>
-                                                <div class="ms-3 flex-shrink-0">
-                                                    
-                                                    <i class="fas fa-school fa-3x text-<?php echo e($color); ?> opacity-75"></i>
-                                                </div>
+                                                
+                                                <div class="h5 mb-0 font-weight-bold text-dark **fs-4 text-truncate**"><?php echo e($kelas->nama_kelas); ?></div>
+                                                <p class="small text-muted mt-2 mb-0 fw-semibold">
+                                                    <i class="fas fa-hand-point-right me-1"></i> Klik untuk Absensi
+                                                </p>
+                                            </div>
+                                            <div class="ms-3 flex-shrink-0">
+                                                
+                                                <i class="fas fa-arrow-circle-right fa-2x text-<?php echo e($color); ?> opacity-75 card-icon"></i>
                                             </div>
                                         </div>
                                     </div>
@@ -109,15 +107,45 @@
 
 <?php $__env->startPush('css'); ?>
 <style>
+    /* Custom utility class untuk teks ekstra kecil (jika tidak ada di template) */
+    .text-xs {
+        font-size: 0.75rem !important;
+    }
+    
     /* Custom effect for hover */
-    .card-hover:hover {
+    .card-link-item .card-hover:hover {
         transform: translateY(-5px);
         box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15) !important;
         transition: all 0.3s ease-in-out;
     }
+    
+    /* Ikon dan border color effect on hover */
+    .card-link-item:hover .card-icon {
+        transform: translateX(5px);
+        transition: transform 0.3s ease;
+    }
+
     /* Dashed border for empty state */
     .border-dashed {
         border: 2px dashed #ffc107 !important;
+        padding: 2rem;
+    }
+
+    /* Penyesuaian tampilan mobile */
+    @media (max-width: 767px) {
+        /* Kartu di mobile tampil 2 kolom */
+        .col-sm-6 {
+            flex: 0 0 auto;
+            width: 50%;
+        }
+        /* Jika ingin 1 kolom penuh di mobile, ganti col-sm-6 dengan col-12 */
+        
+        .card-body {
+            padding: 1rem !important; /* Kurangi padding di mobile */
+        }
+        .fa-2x {
+            font-size: 1.5em; /* Perkecil ikon di mobile */
+        }
     }
 </style>
 <?php $__env->stopPush(); ?>

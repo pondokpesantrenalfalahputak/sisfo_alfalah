@@ -1,21 +1,11 @@
 <?php $__env->startSection('title', 'Tambah Kelas'); ?>
 <?php $__env->startSection('page_title', 'Tambah Kelas Baru'); ?>
 
-<?php $__env->startSection('header_actions'); ?>
-    
-    <a href="<?php echo e(route('admin.kelas.index')); ?>" class="btn btn-outline-secondary shadow-sm rounded-pill d-flex align-items-center fw-semibold px-3">
-        <i class="fas fa-list me-2"></i>
-        Daftar Kelas
-    </a>
-<?php $__env->stopSection(); ?>
-
 <?php $__env->startSection('content'); ?>
 
 <div class="container-fluid">
     <div class="row">
         <div class="col-12">
-
-            <h2 class="mb-4 text-dark fw-bold">➕ Tambah Kelas Baru</h2>
 
             <div class="card shadow-lg border-0 rounded-4">
                 
@@ -43,7 +33,7 @@
                     <form action="<?php echo e(route('admin.kelas.store')); ?>" method="POST">
                         <?php echo csrf_field(); ?>
                         
-                        <div class="row g-4">
+                        <div class="row g-3">
                             
                             
                             <div class="col-md-6">
@@ -51,7 +41,7 @@
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="fas fa-school"></i></span>
                                     <input type="text" name="nama_kelas" id="nama_kelas" 
-                                           class="form-control form-control-lg <?php $__errorArgs = ['nama_kelas'];
+                                        class="form-control form-control-lg <?php $__errorArgs = ['nama_kelas'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
 if (isset($message)) { $__messageOriginal = $message; }
@@ -59,8 +49,8 @@ $message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>" 
-                                           placeholder="Contoh: 7A, 10B, Mutakhorijin" 
-                                           value="<?php echo e(old('nama_kelas')); ?>" required>
+                                        placeholder="Contoh: 7, 10, Mutakhorijin" 
+                                        value="<?php echo e(old('nama_kelas')); ?>" required>
                                     <?php $__errorArgs = ['nama_kelas'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
@@ -107,7 +97,7 @@ if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>
                                 </div>
-                                <small class="text-muted d-block mt-1">Pilih tingkat/level kelas (7-13).</small>
+                                <small class="text-muted d-block mt-1">Pilih tingkat kelas (7-13).</small>
                             </div>
                             
                         </div>

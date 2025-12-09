@@ -3,8 +3,8 @@
 @section('title', 'Detail Santri')
 @section('page_title', 'Detail Santri: ' . $santri->nama_lengkap)
 
+{{-- Tombol Aksi di Header (Desktop Only) --}}
 @section('header_actions')
-    {{-- Tombol Aksi di Header (Desktop Only) --}}
     <div class="d-none d-md-flex align-items-center gap-2">
         <a href="{{ route('admin.santri.edit', $santri) }}" class="btn btn-warning shadow-sm fw-semibold rounded-pill px-3">
             <i class="fas fa-edit me-2"></i>
@@ -22,8 +22,15 @@
 <div class="container-fluid">
     <div class="row">
         <div class="col-12">
-
-            <h2 class="mb-4 text-dark fw-bold">👁️ Profil Santri: {{ $santri->nama_lengkap }}</h2>
+            
+            {{-- Notifikasi Sukses --}}
+            @if (session('success'))
+                <div class="alert alert-success alert-dismissible fade show rounded-3 shadow-sm" role="alert">
+                    <i class="fas fa-check-circle me-2"></i>
+                    {{ session('success') }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            @endif
 
             {{-- Tombol Navigasi Alternatif di Mobile --}}
             <div class="d-flex d-md-none justify-content-between mb-3 gap-2">
@@ -37,33 +44,35 @@
 
             <div class="card shadow-lg border-0 rounded-4">
                 
-                {{-- HEADER CARD DENGAN WARNA PRIMER --}}
+                {{-- HEADER CARD DENGAN WARNA PRIMARY --}}
                 <div class="card-header bg-primary text-white p-4 rounded-top-4">
-                    <h4 class="mb-0 fw-bold fs-5"><i class="fas fa-user-check me-2"></i> Profil Santri</h4>
-                    <p class="text-white-50 small mb-0">Informasi lengkap mengenai santri {{ $santri->nama_lengkap }}.</p>
+                    <h4 class="mb-0 fw-bold fs-5"><i class="fas fa-user-check me-2"></i> Detail Profil Santri</h4>
+                    <p class="text-white-50 small mb-0">Informasi lengkap dan terperinci mengenai {{ $santri->nama_lengkap }}.</p>
                 </div>
                 
-                <div class="card-body p-4">
+                <div class="card-body p-4 p-md-5"> {{-- Spasi Card Body Ditingkatkan --}}
                     
                     {{-- Bagian 1: Data Utama dan Status --}}
-                    <h5 class="fw-bold text-dark mb-4 border-bottom pb-2 text-primary"><i class="fas fa-id-card me-2"></i> Data Pribadi Utama</h5>
+                    {{-- Menggunakan h5 dan HR yang lembut untuk pemisah --}}
+                    <h5 class="fw-bold text-dark mb-1 text-primary"><i class="fas fa-id-card me-2"></i> Data Identitas Utama</h5>
+                    <hr class="mt-2 mb-4 border-primary opacity-25">
                     
-                    <div class="row g-4">
+                    <div class="row g-4 mb-5">
                         
                         {{-- Nama Lengkap --}}
-                        <div class="col-lg-6">
-                            <div class="p-3 bg-light rounded-3 border-start border-4 border-primary">
-                                <label class="fw-semibold text-muted small mb-0">Nama Lengkap</label>
-                                <p class="mb-0 fs-3 text-dark fw-bolder">{{ $santri->nama_lengkap }}</p>
+                        <div class="col-lg-7">
+                            <div class="card card-body shadow-sm border-0 border-start border-5 border-primary p-3 bg-white h-100 d-flex justify-content-center">
+                                <label class="fw-semibold text-muted small mb-0">NAMA LENGKAP</label>
+                                <p class="mb-0 fs-5 fs-lg-3 text-dark fw-bolder lh-sm">{{ $santri->nama_lengkap }}</p>
                             </div>
                         </div>
 
                         {{-- NISN & Status --}}
-                        <div class="col-lg-6">
-                            <div class="p-3 bg-light rounded-3 border-start border-4 border-info">
-                                <label class="fw-semibold text-muted small mb-0">NISN / Status</label>
+                        <div class="col-lg-5">
+                            <div class="card card-body shadow-sm border-0 border-start border-5 border-info p-3 bg-white h-100 d-flex flex-column justify-content-center">
+                                <label class="fw-semibold text-muted small mb-0">NISN</label>
                                 <div class="d-flex justify-content-between align-items-center">
-                                    <p class="mb-0 fs-4 fw-bold text-primary">{{ $santri->nisn }}</p>
+                                    <p class="mb-0 fs-6 fs-lg-4 fw-bold text-info lh-sm">{{ $santri->nisn }}</p>
                                     <span class="badge bg-{{ $santri->status == 'Aktif' ? 'success' : 'secondary' }} p-2 fw-bold fs-6">
                                         {{ $santri->status }}
                                     </span>
@@ -73,61 +82,71 @@
                     </div>
 
                     {{-- Data Detail Pribadi --}}
-                    <div class="row g-4 mt-3">
-                        {{-- Jenis Kelamin --}}
-                        <div class="col-md-6">
-                            <label class="form-label fw-semibold text-muted mb-1">Jenis Kelamin</label>
-                            <p class="mb-0 text-dark fw-semibold">{{ $santri->jenis_kelamin }}</p>
+                    <h5 class="fw-bold text-dark mb-1 pt-3 text-secondary"><i class="fas fa-info-circle me-2"></i> Detail Pribadi</h5>
+                    <hr class="mt-2 mb-4 border-secondary opacity-25">
+
+                    <div class="row g-4">
+                        
+                        {{-- Tempat Lahir --}}
+                        <div class="col-md-4">
+                            <label class="form-label fw-medium text-muted mb-1 d-block"><i class="fas fa-map-marker-alt me-1 text-secondary opacity-75"></i> Tempat Lahir</label>
+                            {{-- Teks detail diperhalus menjadi fw-semibold dan fs-6 konsisten --}}
+                            <span class="text-dark fw-semibold fs-6">{{ $santri->tempat_lahir ?? '-' }}</span>
                         </div>
                         
                         {{-- Tanggal Lahir --}}
-                        <div class="col-md-6">
-                            <label class="form-label fw-semibold text-muted mb-1">Tanggal Lahir</label>
-                            <p class="mb-0 text-dark fw-semibold">{{ $santri->tanggal_lahir ? $santri->tanggal_lahir->translatedFormat('d F Y') : '-' }}</p>
+                        <div class="col-md-4">
+                            <label class="form-label fw-medium text-muted mb-1 d-block"><i class="far fa-calendar-alt me-1 text-secondary opacity-75"></i> Tanggal Lahir</label>
+                            <span class="text-dark fw-semibold fs-6">{{ $santri->tanggal_lahir ? $santri->tanggal_lahir->translatedFormat('d F Y') : '-' }}</span>
+                        </div>
+
+                        {{-- Jenis Kelamin --}}
+                        <div class="col-md-4">
+                            <label class="form-label fw-medium text-muted mb-1 d-block"><i class="fas fa-venus-mars me-1 text-secondary opacity-75"></i> Jenis Kelamin</label>
+                            <span class="text-dark fw-semibold fs-6">{{ $santri->jenis_kelamin ?? '-' }}</span>
                         </div>
                     </div>
                     
-                    <hr class="mt-5 mb-4 border-primary opacity-25">
+                    <hr class="my-5 border-light opacity-50"> {{-- Pembatas yang lebih lembut --}}
                     
                     {{-- Bagian 2: Data Akademik dan Asosiasi --}}
-                    <h5 class="fw-bold text-dark mb-4 border-bottom pb-2 text-warning"><i class="fas fa-graduation-cap me-2"></i> Data Akademik & Wali</h5>
+                    <h5 class="fw-bold text-dark mb-1 text-warning"><i class="fas fa-link me-2"></i> Data Akademik & Wali</h5>
+                    <hr class="mt-2 mb-4 border-warning opacity-25">
 
-                    <div class="row g-4">
+                    <div class="row g-4 mb-4">
                         {{-- Kelas --}}
                         <div class="col-md-6">
-                            <label class="form-label fw-semibold text-muted mb-1">Kelas</label>
-                            <p class="mb-0">
-                                <span class="badge bg-info text-dark p-2 fw-bold fs-6">{{ $santri->kelas->nama_kelas ?? 'N/A' }}</span>
-                            </p>
+                            <label class="form-label fw-medium text-muted mb-1 d-block"><i class="fas fa-school me-1 text-warning opacity-75"></i> Kelas Aktif</label>
+                            <span class="badge bg-info text-dark p-2 fw-bold fs-6 shadow-sm">{{ $santri->kelas->nama_kelas ?? 'N/A' }}</span>
                         </div>
 
                         {{-- Wali Santri --}}
                         <div class="col-md-6">
-                            <label class="form-label fw-semibold text-muted mb-1">Wali Santri</label>
-                            <p class="mb-0 text-dark fw-bold">{{ $santri->waliSantri->name ?? '-' }}</p>
+                            <label class="form-label fw-medium text-muted mb-1 d-block"><i class="fas fa-user-tie me-1 text-warning opacity-75"></i> Wali Santri</label>
+                            <span class="text-dark fw-semibold fs-6">{{ $santri->waliSantri->name ?? '-' }}</span>
                         </div>
                     </div>
 
-                    <div class="row g-4 mt-3">
-                        {{-- Alamat (Selalu full width) --}}
+                    <div class="row g-4">
+                        {{-- Alamat (Boxed yang lebih lembut) --}}
                         <div class="col-12">
-                            <label class="form-label fw-semibold text-muted mb-1">Alamat Lengkap</label>
-                            <div class="p-3 border rounded bg-light">{{ $santri->alamat ?? '-' }}</div>
+                            <label class="form-label fw-medium text-muted mb-2 d-block"><i class="fas fa-map-marked-alt me-1 text-warning opacity-75"></i> Alamat Lengkap</label>
+                            <div class="p-3 rounded-3 bg-light shadow-sm text-dark fw-medium border border-light fs-6">{{ $santri->alamat ?? 'Belum ada alamat' }}</div>
                         </div>
                     </div>
 
 
-                    <hr class="mt-5 mb-4 border-dark opacity-25">
+                    <hr class="mt-5 mb-4 border-dark opacity-10"> {{-- Pembatas footer yang sangat lembut --}}
 
                     {{-- Bagian 3: Data Waktu Sistem --}}
-                    <h6 class="fw-bold text-secondary mb-3"><i class="fas fa-history me-1"></i> Log Data</h6>
+                    <h6 class="fw-bold text-secondary mb-3"><i class="fas fa-history me-1"></i> Log Data Sistem</h6>
 
                     <div class="row g-3">
                         {{-- Dibuat Pada --}}
                         <div class="col-md-6">
-                            <div class="p-3 border rounded bg-light shadow-sm">
+                            <div class="p-3 rounded-3 bg-light shadow-sm border border-light">
                                 <small class="text-muted d-block fw-semibold mb-1">Dibuat Pada</small>
-                                <i class="far fa-calendar-alt me-2 text-primary"></i>
+                                <i class="far fa-calendar-alt me-2 text-primary opacity-75"></i>
                                 <span class="text-dark fw-semibold">{{ $santri->created_at->translatedFormat('d F Y') }}</span>
                                 <span class="text-muted small">pukul {{ $santri->created_at->format('H:i') }}</span>
                             </div>
@@ -135,9 +154,9 @@
                         
                         {{-- Diupdate Terakhir --}}
                         <div class="col-md-6">
-                             <div class="p-3 border rounded bg-light shadow-sm">
+                             <div class="p-3 rounded-3 bg-light shadow-sm border border-light">
                                 <small class="text-muted d-block fw-semibold mb-1">Terakhir Diperbarui</small>
-                                <i class="far fa-clock me-2 text-warning"></i>
+                                <i class="far fa-clock me-2 text-warning opacity-75"></i>
                                 <span class="text-dark fw-semibold">{{ $santri->updated_at->translatedFormat('d F Y') }}</span>
                                 <span class="text-muted small">pukul {{ $santri->updated_at->format('H:i') }}</span>
                             </div>

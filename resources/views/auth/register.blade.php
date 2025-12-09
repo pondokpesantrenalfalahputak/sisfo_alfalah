@@ -28,7 +28,7 @@
             background-color: var(--background-body);
         }
         .bg-login-image {
-            /* Ganti path image sesuai lokasi file Anda */
+            /* Ganti path image sesuai lokasi */
             background-image: url('{{ asset('Images/1728115006026 copy.png') }}');
             background-size: cover;
             /* 💥 PERBAIKAN: Background position disetel ke tengah-bawah untuk menampilkan subjek utama */
@@ -200,7 +200,7 @@
                         
                         {{-- 7. Field: NISN (nis) --}}
                         <div class="mb-3">
-                            <label for="nis" class="form-label small fw-medium text-gray-700">NISN (Opsional)</label>
+                            <label for="nis" class="form-label small fw-medium text-gray-700">NIS Santri*</label>
                             <input type="text" id="nis" name="nis" placeholder="Nomor Induk Siswa Nasional (jika ada)"
                                 class="form-control @error('nis') is-invalid @enderror"
                                 value="{{ old('nis') }}">

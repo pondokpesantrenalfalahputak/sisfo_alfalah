@@ -8,81 +8,147 @@
     {{-- KARTU RINGKASAN DATA (RINGKASAN UTAMA) --}}
     <div class="row g-4 mb-5">
         
-        {{-- 1. Total Santri --}}
-        <div class="col-sm-6 col-lg-4">
-            <div class="card shadow-lg border-start border-primary border-5 h-100 rounded-3 card-summary">
-                <div class="card-body">
-                    <div class="d-flex align-items-center justify-content-between">
-                        <div>
-                            <p class="text-uppercase text-primary mb-1 small fw-bold">Santri Asuhan</p> 
-                            <h2 class="fw-bolder mb-0 display-6 text-dark">{{ $santriCount }}</h2>
+        {{-- BAGIAN TAMPILAN MOBILE (HORIZONTAL SUMMARY) --}}
+        <div class="col-12 d-block d-md-none">
+            
+            {{-- 1. Santri Asuhan & Tagihan Belum Lunas (2 Kolom Horizontal) --}}
+            <div class="row row-cols-2 g-3 mb-3">
+                
+                {{-- 1a. Total Santri (MOBILE VERSION) --}}
+                <div class="col">
+                    {{-- Menggunakan background subtle dan shadow halus --}}
+                    <div class="card shadow-sm rounded-4 card-modern-summary h-100 bg-primary-subtle">
+                        <div class="card-body p-3 d-flex flex-column justify-content-between text-center">
+                            {{-- KONTEN UTAMA: Rata Tengah (Judul, Angka) --}}
+                            <div class="info-top text-center flex-grow-1">
+                                {{-- Judul di atas angka --}}
+                                <h6 class="mb-1 fw-semibold text-primary mobile-headline">Santri Asuhan</h6>
+                                {{-- Angka lebih menonjol --}}
+                                <p class="mb-2 text-primary fw-bolder fs-3">{{ $santriCount }}</p> 
+                            </div>
+                            {{-- TOMBOL FULL WIDTH DAN ROUNDED PILL --}}
+                            <a href="{{ route('wali.santri.index') }}" class="btn btn-primary w-100 fw-bold rounded-pill action-mobile-btn">
+                                Lihat Detail
+                            </a>
                         </div>
-                        <i class="fas fa-user-friends fa-4x text-primary opacity-25"></i>
                     </div>
-                    <hr class="my-3">
-                    <a href="{{ route('wali.santri.index') }}" class="small fw-semibold text-primary text-decoration-none d-flex align-items-center stretched-link">
-                        Lihat Detail Santri <i class="fas fa-arrow-right ms-auto"></i>
-                    </a>
+                </div>
+                
+                {{-- 1b. Tagihan Belum Lunas (MOBILE VERSION) --}}
+                <div class="col">
+                    <div class="card shadow-sm rounded-4 card-modern-summary h-100 bg-danger-subtle">
+                        <div class="card-body p-3 d-flex flex-column justify-content-between text-center">
+                            {{-- KONTEN UTAMA: Rata Tengah (Judul, Angka) --}}
+                            <div class="info-top text-center flex-grow-1">
+                                <h6 class="mb-1 fw-semibold text-danger mobile-headline">Tagihan Belum Lunas</h6>
+                                <p class="mb-2 text-danger fw-bolder fs-3">{{ $tagihanBelumLunasCount }}</p>
+                            </div>
+                            {{-- TOMBOL FULL WIDTH DAN ROUNDED PILL --}}
+                            <a href="{{ route('wali.tagihan.index') }}" class="btn btn-danger w-100 fw-bold rounded-pill action-mobile-btn">
+                                Cek Tagihan
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            {{-- 2. Kartu Konfirmasi Pembayaran di Mobile (Penuh Lebar) --}}
+            <div class="row"> 
+                <div class="col-12">
+                    <div class="card shadow-lg rounded-4 card-modern-summary bg-warning-subtle">
+                        <div class="card-body p-3 text-center">
+                            <div class="d-flex align-items-center justify-content-center mb-1">
+                                <div>
+                                    <p class="text-uppercase text-warning mb-0 small fw-bold">Menunggu Konfirmasi</p>
+                                    <h2 class="fw-bolder mb-0 fs-3 {{ $pembayaranMenungguCount > 0 ? 'text-warning' : 'text-dark' }}">
+                                        {{ $pembayaranMenungguCount }}
+                                    </h2>
+                                </div>
+                            </div>
+                            <hr class="my-2">
+                            <a href="{{ route('wali.tagihan.index') }}#riwayat-content" class="small fw-semibold text-warning text-decoration-none d-flex align-items-center justify-content-center stretched-link">
+                                Lihat Riwayat Pembayaran <i class="fas fa-arrow-right ms-1"></i>
+                            </a>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
 
-        {{-- 2. Tagihan Belum Lunas --}}
-        <div class="col-sm-6 col-lg-4">
-            <div class="card shadow-lg border-start border-danger border-5 h-100 rounded-3 card-summary">
-                <div class="card-body">
-                    <div class="d-flex align-items-center justify-content-between">
-                        <div>
-                            <p class="text-uppercase text-danger mb-1 small fw-bold">Tagihan Belum Lunas</p>
-                            <h2 class="fw-bolder mb-0 display-6 {{ $tagihanBelumLunasCount > 0 ? 'text-danger' : 'text-dark' }}">
-                                {{ $tagihanBelumLunasCount }}
-                            </h2>
-                            <span class="small text-muted">Tagihan Mendesak</span>
+        {{-- BAGIAN TAMPILAN DESKTOP/TABLET+ (DIUBAH MENJADI RATA TENGAH) --}}
+        <div class="col-12 d-none d-md-block">
+            <div class="row g-4">
+                
+                {{-- 1. Total Santri (DESKTOP/TABLET+ VIEW) --}}
+                <div class="col-sm-6 col-lg-4">
+                    <div class="card shadow-lg rounded-4 card-modern-summary bg-primary-subtle">
+                        <div class="card-body d-flex flex-column justify-content-between text-center"> 
+                            <div class="desktop-content-top flex-grow-1">
+                                <p class="text-uppercase text-primary mb-1 small fw-bold">Santri Asuhan</p> 
+                                <h2 class="fw-bolder mb-0 fs-1 text-primary">{{ $santriCount }}</h2> 
+                                <span class="small text-muted d-block mt-2">Santri yang Anda asuh</span>
+                            </div>
+                            <hr class="my-3">
+                            <a href="{{ route('wali.santri.index') }}" class="small fw-semibold text-primary text-decoration-none d-flex align-items-center justify-content-center stretched-link">
+                                Lihat Detail Santri <i class="fas fa-arrow-right ms-1"></i>
+                            </a>
                         </div>
-                        <i class="fas fa-file-invoice-dollar fa-4x text-danger opacity-25"></i>
                     </div>
-                    <hr class="my-3">
-                    <a href="{{ route('wali.tagihan.index') }}" class="small fw-semibold text-danger text-decoration-none d-flex align-items-center stretched-link">
-                        Cek Tagihan Sekarang <i class="fas fa-arrow-right ms-auto"></i>
-                    </a>
                 </div>
-            </div>
-        </div>
 
-        {{-- 3. Menunggu Konfirmasi --}}
-        <div class="col-sm-6 col-lg-4">
-            <div class="card shadow-lg border-start border-warning border-5 h-100 rounded-3 card-summary">
-                <div class="card-body">
-                    <div class="d-flex align-items-center justify-content-between">
-                        <div>
-                            <p class="text-uppercase text-warning mb-1 small fw-bold">Konfirmasi Pembayaran</p>
-                            <h2 class="fw-bolder mb-0 display-6 {{ $pembayaranMenungguCount > 0 ? 'text-warning' : 'text-dark' }}">
-                                {{ $pembayaranMenungguCount }}
-                            </h2>
-                            <span class="small text-muted">Bukti Menunggu Verifikasi</span>
+                {{-- 2. Tagihan Belum Lunas (DESKTOP/TABLET+ VIEW) --}}
+                <div class="col-sm-6 col-lg-4">
+                    <div class="card shadow-lg rounded-4 card-modern-summary bg-danger-subtle">
+                        <div class="card-body d-flex flex-column justify-content-between text-center">
+                             <div class="desktop-content-top flex-grow-1">
+                                <p class="text-uppercase text-danger mb-1 small fw-bold">Tagihan Belum Lunas</p>
+                                <h2 class="fw-bolder mb-0 fs-1 {{ $tagihanBelumLunasCount > 0 ? 'text-danger' : 'text-dark' }}">{{ $tagihanBelumLunasCount }}</h2>
+                                <span class="small text-muted d-block mt-2">Tagihan Mendesak</span>
+                            </div>
+                            <hr class="my-3">
+                            <a href="{{ route('wali.tagihan.index') }}" class="small fw-semibold text-danger text-decoration-none d-flex align-items-center justify-content-center stretched-link">
+                                Cek Tagihan Sekarang <i class="fas fa-arrow-right ms-1"></i>
+                            </a>
                         </div>
-                        <i class="fas fa-clock fa-4x text-warning opacity-25"></i>
                     </div>
-                    <hr class="my-3">
-                    <a href="{{ route('wali.tagihan.index') }}#riwayat-content" class="small fw-semibold text-warning text-decoration-none d-flex align-items-center stretched-link">
-                        Lihat Riwayat Pembayaran <i class="fas fa-arrow-right ms-auto"></i>
-                    </a>
+                </div>
+
+                {{-- 3. Menunggu Konfirmasi (DESKTOP/TABLET+ VIEW) --}}
+                <div class="col-sm-6 col-lg-4">
+                    <div class="card shadow-lg rounded-4 card-modern-summary bg-warning-subtle">
+                        <div class="card-body d-flex flex-column justify-content-between text-center">
+                             <div class="desktop-content-top flex-grow-1">
+                                <p class="text-uppercase text-warning mb-1 small fw-bold">Konfirmasi Pembayaran</p>
+                                <h2 class="fw-bolder mb-0 fs-1 {{ $pembayaranMenungguCount > 0 ? 'text-warning' : 'text-dark' }}">{{ $pembayaranMenungguCount }}</h2>
+                                <span class="small text-muted d-block mt-2">Bukti Menunggu Verifikasi</span>
+                            </div>
+                            <hr class="my-3">
+                            <a href="{{ route('wali.tagihan.index') }}#riwayat-content" class="small fw-semibold text-warning text-decoration-none d-flex align-items-center justify-content-center stretched-link">
+                                Lihat Riwayat Pembayaran <i class="fas fa-arrow-right ms-1"></i>
+                            </a>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
     
-    {{-- RINGKASAN DATA SANTRI (TIDAK BERUBAH) --}}
+    {{-- BARIS PEMISAH --}}
+    <hr class="d-none d-md-block divider-line">
+    <div class="d-block d-md-none mobile-divider" style="margin-bottom: 2rem;"></div>
+
+    
+    {{-- RINGKASAN DATA SANTRI (TABLE/STACKED CARDS) --}}
     @if ($santris->count() > 0)
         <div class="card shadow-lg border-0 mt-4 mb-5 rounded-4">
-            <div class="card-header bg-primary text-white fw-bold d-flex align-items-center p-3 rounded-top-4">
+            <div class="card-header bg-primary text-white fw-bold d-flex align-items-center rounded-top-4">
                 <i class="fas fa-user-graduate me-2 fa-lg"></i> Ringkasan Santri yang Anda Asuh
             </div>
             <div class="card-body p-0 p-md-4">
                 
-                {{-- DESKTOP VIEW: TABLE --}}
+                {{-- DESKTOP VIEW: TABLE (Menggunakan table-hover) --}}
                 <div class="table-responsive d-none d-md-block">
-                    <table class="table table-striped table-hover mb-0 align-middle small">
+                    <table class="table table-hover mb-0 align-middle small"> 
                         <thead class="table-light">
                             <tr>
                                 <th scope="col" style="width: 5%;">#</th>
@@ -117,7 +183,7 @@
                 {{-- MOBILE VIEW: STACKED CARDS --}}
                 <div class="list-group d-block d-md-none p-3">
                     @foreach ($santris as $index => $santri)
-                        <div class="list-group-item list-group-item-action mb-3 shadow-sm border-start border-5 border-primary rounded-3 card-mobile-santri">
+                        <div class="list-group-item list-group-item-action mb-3 shadow-sm border-left-primary rounded-3 card-mobile-santri">
                             <div class="d-flex w-100 justify-content-between align-items-center mb-2">
                                 <h6 class="mb-0 fw-bold text-dark">{{ $index + 1 }}. {{ $santri->nama }}</h6>
                                 <span class="badge bg-success-subtle text-success-emphasis fw-semibold">{{ $santri->status ?? 'Aktif' }}</span>
@@ -126,13 +192,13 @@
                             <hr class="my-2">
                             
                             <p class="mb-1 small text-muted d-flex justify-content-between">
-                                <span><i class="fas fa-school me-1"></i> Kelas:</span> 
-                                <span class="fw-bold text-primary">{{ $santri->kelas->nama_kelas ?? 'N/A' }}</span>
+                                <span><i class="fas fa-school me-2 text-primary"></i> Kelas:</span> 
+                                <span class="fw-bold text-dark">{{ $santri->kelas->nama_kelas ?? 'N/A' }}</span>
                             </p>
                             
                             <div class="mt-3 text-end">
                                 <a href="{{ route('wali.santri.show', $santri) }}" class="btn btn-sm btn-primary w-100 rounded-pill">
-                                    <i class="fas fa-eye me-1"></i> Lihat Profil & Detail Absensi
+                                    <i class="fas fa-eye me-1"></i> Lihat Profil
                                 </a>
                             </div>
                         </div>
@@ -144,164 +210,98 @@
     @endif
 
 
-    {{-- START: RINGKASAN ABSENSI HARIAN PER SANTRI (VERSI LEBIH RAPI) --}}
+    {{-- RINGKASAN KEHADIRAN HARIAN (STACKED CARDS / LIST GROUP) --}}
     @if ($santris->count() > 0)
-        @php
-            $daftarKegiatan = ['Shubuh', 'Sekolah', 'Maghrib']; 
-            
-            // Penentuan Kelas Warna dan Ikon untuk Status Absensi
-            $absensiStatus = [
-                'Hadir' => ['class' => 'bg-success', 'icon' => 'fas fa-check-circle', 'text' => 'Hadir'],
-                'Izin' => ['class' => 'bg-warning text-dark', 'icon' => 'fas fa-walking', 'text' => 'Izin'],
-                'Sakit' => ['class' => 'bg-info', 'icon' => 'fas fa-procedures', 'text' => 'Sakit'],
-                'Alpha' => ['class' => 'bg-danger', 'icon' => 'fas fa-times-circle', 'text' => 'Alpha'],
-                'Belum Tercatat' => ['class' => 'bg-secondary', 'icon' => 'fas fa-question-circle', 'text' => 'Belum Tercatat']
-            ];
-        @endphp
-
+        
         <div class="card shadow-lg border-0 mt-4 mb-5 rounded-4">
-            <div class="card-header bg-warning text-dark fw-bold d-flex align-items-center p-3 rounded-top-4">
-                <i class="fas fa-calendar-day me-2 fa-lg"></i> Status Kehadiran Hari Ini ({{ \Carbon\Carbon::now()->translatedFormat('l, d M Y') }})
+            <div class="card-header bg-warning text-dark fw-bold d-flex align-items-center rounded-top-4 header-absensi-wrapper">
+                <i class="fas fa-calendar-day me-2 fa-lg flex-shrink-0"></i> 
+                <span class="header-absensi-text">
+                    Ringkasan Ketidakhadiran Harian
+                    <span class="text-secondary d-block fw-normal small">({{ \Carbon\Carbon::now()->translatedFormat('l, d M Y') . '' }})</span>
+                </span>
             </div>
             
             <div class="card-body p-0">
-                
-                {{-- DESKTOP VIEW: Header Tabel --}}
-                <div class="d-none d-md-block border-bottom bg-light-subtle">
-                    <div class="row small fw-bold text-muted py-2 px-4 mx-0 align-items-center">
-                        <div class="col-4">NAMA SANTRI / KELAS</div>
-                        
-                        @foreach ($daftarKegiatan as $kegiatan)
-                            <div class="col-2 text-center">{{ strtoupper($kegiatan) }}</div>
-                        @endforeach
-                        
-                        <div class="col-2 text-center">TINDAKAN</div>
-                    </div>
-                </div>
+                <div class="list-group list-group-flush">
+                    @php
+                        $totalKetidakhadiranGlobal = 0;
+                    @endphp
 
-                <div class="list-group list-group-flush small">
-                    @foreach ($santris as $santri)
-                        
+                    @foreach ($santris as $index => $santri)
                         @php
-                            $absensiHariIni = $santri->absensiHariIni; // Koleksi grouped
-                            $keteranganUmum = '';
-                            $needsAttention = false;
-                            
-                            // Logika Cek Status dan Keterangan
-                            foreach ($daftarKegiatan as $kegiatan) {
-                                if (isset($absensiHariIni[$kegiatan])) {
-                                    $status = $absensiHariIni[$kegiatan]->status;
-                                    
-                                    if ($status != 'Hadir' && $status != 'Belum Tercatat') {
-                                        $needsAttention = true;
-                                        if ($absensiHariIni[$kegiatan]->keterangan) {
-                                            $keteranganUmum = $absensiHariIni[$kegiatan]->keterangan;
-                                        }
-                                    }
-                                }
-                            }
+                            $totalKetidakhadiran = $santri->totalKetidakhadiranHariIni ?? 0; 
+                            $badgeClass = ($totalKetidakhadiran > 0) ? 'bg-danger text-white' : 'bg-success text-white';
+                            $icon = ($totalKetidakhadiran > 0) ? 'fas fa-exclamation-triangle' : 'fas fa-check-circle';
+                            $label = ($totalKetidakhadiran > 0) ? 'Total Tidak Hadir' : 'Hadir Penuh';
+                            $totalKetidakhadiranGlobal += $totalKetidakhadiran;
                         @endphp
 
-                        {{-- Item Absensi Santri --}}
-                        <div class="list-group-item py-3 px-4 border-start border-5 {{ $needsAttention ? 'border-danger' : 'border-primary' }}">
+                        {{-- Menggunakan border-left kustom pada list item --}}
+                        <div class="list-group-item list-group-item-action py-3 border-left-{{ $totalKetidakhadiran > 0 ? 'danger' : 'success' }} d-flex align-items-center justify-content-between absensi-item">
                             
-                            {{-- Row Utama Desktop --}}
-                            <div class="row align-items-center g-2 d-none d-md-flex">
-                                <div class="col-4">
-                                    <h6 class="mb-0 fw-bold text-dark">{{ $santri->nama }}</h6>
-                                    <span class="small text-muted">{{ $santri->kelas->nama_kelas ?? 'N/A' }}</span>
-                                </div>
-                                
-                                @foreach ($daftarKegiatan as $kegiatan)
-                                    @php
-                                        $statusKegiatan = $absensiHariIni[$kegiatan]->status ?? 'Belum Tercatat';
-                                        $statusData = $absensiStatus[$statusKegiatan];
-                                    @endphp
-                                    <div class="col-2 text-center">
-                                        <span class="badge {{ $statusData['class'] }} text-white px-2 py-2 fw-semibold w-100">
-                                            <i class="{{ $statusData['icon'] }} me-1"></i> {{ $statusData['text'] }}
-                                        </span>
-                                    </div>
-                                @endforeach
-                                
-                                <div class="col-2 text-center">
-                                    <a href="{{ route('wali.absensi.show', $santri) }}" class="btn btn-sm btn-outline-primary w-100 rounded-pill" title="Lihat Detail Absensi">
-                                        Detail
-                                    </a>
-                                </div>
-                            </div>
-
-                            {{-- Row Utama Mobile --}}
-                            <div class="d-block d-md-none">
-                                <h6 class="mb-2 fw-bold text-dark">
-                                    <i class="fas fa-user-graduate me-2 text-primary"></i> {{ $santri->nama }}
-                                    <span class="badge bg-secondary-subtle text-secondary-emphasis fw-normal ms-2">{{ $santri->kelas->nama_kelas ?? 'N/A' }}</span>
+                            {{-- 1. Informasi Santri --}}
+                            <div class="info-santri flex-grow-1 me-2 me-md-4">
+                                <h6 class="mb-0 fw-bold text-dark">
+                                    {{ $index + 1 }}. {{ $santri->nama }}
                                 </h6>
+                                <p class="mb-1 small text-muted d-none d-sm-block">
+                                    <i class="fas fa-school me-1"></i> Kelas: {{ $santri->kelas->nama_kelas ?? 'N/A' }}
+                                </p>
+                            </div>
+
+                            {{-- 2. Status dan Tombol --}}
+                            <div class="d-flex align-items-center flex-shrink-0">
                                 
-                                <hr class="my-2">
-
-                                <div class="row g-2">
-                                    @foreach ($daftarKegiatan as $kegiatan)
-                                        @php
-                                            $statusKegiatan = $absensiHariIni[$kegiatan]->status ?? 'Belum Tercatat';
-                                            $statusData = $absensiStatus[$statusKegiatan];
-                                        @endphp
-                                        <div class="col-4">
-                                            <p class="mb-1 small text-muted fw-semibold text-truncate">{{ $kegiatan }}</p>
-                                            <span class="badge {{ $statusData['class'] }} text-white px-2 py-2 fw-semibold w-100">
-                                                <i class="{{ $statusData['icon'] }} me-1"></i> 
-                                                {{ substr($statusData['text'], 0, 1) }} {{-- Singkatan (H, I, S, A, B) --}}
-                                            </span>
-                                        </div>
-                                    @endforeach
-                                    <div class="col-12 mt-3">
-                                         <a href="{{ route('wali.absensi.show', $santri) }}" class="btn btn-sm btn-outline-primary w-100 rounded-pill">
-                                            <i class="fas fa-eye me-1"></i> Lihat Detail
-                                        </a>
-                                    </div>
+                                {{-- Total Absensi (Badge) --}}
+                                <div class="status-badge text-center me-3 flex-shrink-0">
+                                    <span class="badge {{ $badgeClass }} fw-bold px-3 py-2 fs-6 shadow-sm d-block mb-1">
+                                        <i class="{{ $icon }} me-1"></i> {{ $totalKetidakhadiran }}
+                                    </span>
+                                    <span class="small text-muted d-none d-sm-block">{{ $label }}</span>
                                 </div>
-                            </div>
-                        </div>
-                        
-                        {{-- Keterangan di bawah item jika ada --}}
-                        @if ($keteranganUmum)
-                            <div class="list-group-item bg-danger-subtle border-0 py-2 px-4 small text-danger fw-semibold">
-                                <i class="fas fa-exclamation-triangle me-1"></i> **Keterangan:** {{ $keteranganUmum }}
-                            </div>
-                        @endif
 
+                                {{-- Tombol Detail (rounded-pill) --}}
+                                <a href="{{ route('wali.absensi.show', $santri) }}" class="btn btn-sm btn-outline-primary rounded-pill py-1 px-3 flex-shrink-0" title="Lihat Detail Absensi">
+                                    <i class="fas fa-eye d-sm-none"></i> <span class="d-none d-sm-inline">Detail</span>
+                                </a>
+                            </div>
+
+                        </div>
                     @endforeach
                 </div>
+
             </div>
             
-            <div class="card-footer text-center bg-light p-3 rounded-bottom-4">
-                <a href="{{ route('wali.absensi.index') }}" class="btn btn-sm btn-link text-primary fw-bold text-decoration-none">
-                    Lihat Semua Riwayat Kehadiran <i class="fas fa-external-link-alt ms-1"></i>
-                </a>
+            {{-- Ringkasan Total (Footer) --}}
+            <div class="card-footer bg-light p-3 rounded-bottom-4">
+                <div class="text-center">
+                    <a href="{{ route('wali.absensi.index') }}" class="btn btn-sm btn-link text-primary fw-bold text-decoration-none">
+                        Lihat Semua Riwayat Kehadiran <i class="fas fa-external-link-alt ms-1"></i>
+                    </a>
+                </div>
             </div>
         </div>
     @endif
-    {{-- END: RINGKASAN ABSENSI HARIAN PER SANTRI --}}
-
 
     {{-- PENGUMUMAN TERBARU --}}
     <div class="row mt-4">
         <div class="col-md-12">
             <div class="card shadow-lg border-0 rounded-4">
-                <div class="card-header bg-info text-white fw-bold d-flex align-items-center p-3 rounded-top-4">
+                <div class="card-header bg-info text-white fw-bold d-flex align-items-center rounded-top-4">
                     <i class="fas fa-bullhorn me-2 fa-lg"></i> Pengumuman Terbaru
                 </div>
                 <div class="card-body p-0">
                     
                     @forelse ($pengumumanTerbaru as $p)
-                    <div class="list-group-item list-group-item-action border-top-0 border-end-0 border-start-0 py-3 px-4 pengumuman-item">
+                    <div class="list-group-item list-group-item-action border-top-0 border-end-0 border-start-0 py-4 px-4 pengumuman-item">
                         <div class="d-flex justify-content-between align-items-start mb-2">
-                            <h6 class="fw-bold text-dark me-3 mb-0">
-                                <span class="badge bg-primary me-2 small">{{ $p->kategori ?? 'Umum' }}</span>
+                            <h6 class="fw-bold text-dark me-3 mb-0 flex-grow-1">
+                                <span class="badge bg-primary me-2 small">{{ $p->kategori ?? 'Umum' }}</span> 
                                 {{ $p->judul }}
                             </h6>
-                            <span class="badge bg-secondary-subtle text-secondary-emphasis py-1 px-2 flex-shrink-0 text-nowrap small fw-normal">
-                                <i class="fas fa-calendar-alt me-1"></i> {{ \Carbon\Carbon::parse($p->tanggal_publikasi)->translatedFormat('d M Y') }}
+                            <span class="text-muted py-1 px-2 flex-shrink-0 text-nowrap small fw-normal ms-auto"> 
+                                <i class="fas fa-calendar-alt me-1 d-none d-sm-inline"></i> {{ \Carbon\Carbon::parse($p->tanggal_publikasi)->translatedFormat('d M Y') }}
                             </span>
                         </div>
                         
@@ -309,7 +309,7 @@
                             {{ Str::limit(strip_tags($p->isi), 150, '...') }} 
                         </p>
                         
-                        <a href="{{ route('wali.pengumuman.show', $p) }}" class="btn btn-sm btn-primary rounded-pill">
+                        <a href="{{ route('wali.pengumuman.show', $p) }}" class="btn btn-sm btn-outline-primary rounded-pill">
                             Baca Selengkapnya <i class="fas fa-arrow-right ms-1"></i>
                         </a>
                     </div>
@@ -329,47 +329,185 @@
         </div>
     </div>
 
-    {{-- CSS Kustom Tambahan --}}
+    {{-- CSS Kustom Modern (untuk kejelasan teks dan tampilan mobile) --}}
     @push('css')
     <style>
-        /* Efek hover pada kartu ringkasan */
-        .card-summary:hover {
+        /* Tipografi & Warna */
+        body { font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"; color: #34495e; background-color: #f4f6f9; }
+        :root {
+            --bs-primary: #1e88e5; /* Biru */
+            --bs-danger: #e53935;  /* Merah */
+            --bs-warning: #ffb300; /* Kuning/Amber */
+            --bs-success: #43a047; /* Hijau */
+            --bs-info: #00acc1;    /* Cyan */
+            --bs-border-radius: 0.75rem; 
+        }
+        
+        /* WARNA SUBTLE BARU (untuk Kartu Ringkasan) */
+        .bg-primary-subtle { background-color: #e3f2fd !important; } 
+        .bg-danger-subtle { background-color: #ffebee !important; } 
+        .bg-warning-subtle { background-color: #fff8e1 !important; } 
+
+        /* Global Card Style */
+        .card { 
+            border: none; 
+            border-radius: var(--bs-border-radius); 
+            /* Soft Shadow */
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.05); 
+            transition: box-shadow 0.3s ease-in-out, transform 0.3s; 
+        }
+        .card:hover { 
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1); 
             transform: translateY(-2px);
-            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1) !important;
-            transition: all 0.3s ease-in-out;
         }
-
-        /* Memastikan link action card full width */
-        .card-summary a.stretched-link {
-            position: relative;
-            z-index: 10;
-        }
-
-        /* Efek hover pada item pengumuman */
-        .pengumuman-item:hover {
-            background-color: #f8f9fa; /* Warna terang saat hover */
+        .card-header { 
+            border-bottom: none; 
+            padding: 1rem 1.5rem; 
+            font-size: 1.1rem; 
+            font-weight: 700;
         }
         
-        /* Penyesuaian Mobile: Nilai lebih besar di summary card */
-        @media (max-width: 576px) {
-            .display-6 {
-                font-size: 2rem; /* Menyesuaikan ukuran display-6 agar tidak terlalu besar di mobile */
-            }
-            .card-summary .fa-4x {
-                font-size: 3rem !important;
-            }
+        /* Hilangkan Border Kiri yang Kaku pada Summary Card */
+        .card-modern-summary {
+            border-left: none !important; 
         }
         
-        /* Optimalisasi tampilan absensi di mobile */
-        @media (max-width: 767px) {
-            /* Mengubah warna latar belakang jika ada status bermasalah agar kontras */
-            .list-group-item.border-danger {
-                 background-color: #fff9f9 !important; /* Latar belakang sangat terang saat ada Alpha/Sakit/Izin */
+        /* Border Kiri Tebal Kustom (Tersisa untuk List/Absensi) */
+        .border-left-primary { border-left: 6px solid var(--bs-primary) !important; }
+        .border-left-danger { border-left: 6px solid var(--bs-danger) !important; }
+        .border-left-warning { border-left: 6px solid var(--bs-warning) !important; }
+        .border-left-success { border-left: 6px solid var(--bs-success) !important; } 
+        
+        /* Badge Status Kustom */
+        .badge { font-weight: 600 !important; padding: 0.5em 0.75em; border-radius: 0.5rem; white-space: nowrap; }
+
+        /* Warna Subtle untuk Tabel/List */
+        .bg-info-subtle { background-color: #e0f7fa !important; } 
+        .text-info-emphasis { color: #00acc1 !important; } 
+        .bg-success-subtle { background-color: #e8f5e9 !important; } 
+        .text-success-emphasis { color: #43a047 !important; }
+        
+        /* List Group/Cards Clean Look */
+        .list-group-flush > .list-group-item {
+            border-right: 0;
+            border-left: 0;
+            transition: background-color 0.2s;
+        }
+        .list-group-item:hover {
+            background-color: #f9f9f9;
+        }
+
+        /* Desktop Summary Card (Fix Centering and Typography) */
+        .card-summary-desktop .desktop-content-top {
+            flex-grow: 1;
+            text-align: center; 
+            padding-top: 1rem; 
+            padding-bottom: 0.5rem;
+        }
+        .card-summary-desktop h2.fs-1 {
+            font-size: 2.2rem !important; 
+            letter-spacing: -0.5px;
+        }
+        .card-summary-desktop .card-body > a {
+            justify-content: center !important; 
+            font-size: 0.85rem !important;
+        }
+        .table-hover tbody tr:hover {
+            background-color: #f5f5f5;
+        }
+
+        /* Divider */
+        .divider-line {
+            border-top: 1px solid #e0e0e0;
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+        }
+        .mobile-divider {
+             border-top: 1px solid #e0e0e0;
+        }
+
+
+        /* MEDIA QUERIES (Perhalusan Mobile) */
+        @media (max-width: 767.98px) {
+
+            /* == KARTU RINGKASAN MOBILE HORIZONTAL == */
+            .card-modern-summary {
+                height: 100%;
             }
-            .list-group-item .col-4 {
-                /* Untuk Status Kegiatan di mobile */
-                padding-left: 5px !important;
-                padding-right: 5px !important;
+            .card-summary-mobile .card-body {
+                padding: 1rem !important; 
+            }
+            
+            .card-summary-mobile .info-top {
+                margin-bottom: 0.8rem; 
+            }
+
+            .card-summary-mobile p.fs-3 {
+                font-size: 1.8rem !important; 
+                margin-bottom: 0.4rem !important; 
+            }
+            .card-summary-mobile .mobile-headline {
+                font-size: 0.85rem; 
+                font-weight: 600 !important;
+            }
+            
+            /* Tombol Aksi Mobile Full Width (Rounded Pill) */
+            .card-summary-mobile .action-mobile-btn {
+                font-size: 0.85rem !important; 
+                padding: 0.35rem 0.5rem !important; 
+                font-weight: 600;
+            }
+
+            /* Header Absensi Mobile */
+            .header-absensi-wrapper {
+                padding: 0.75rem 1rem !important;
+                font-size: 0.95rem !important; 
+            }
+            .header-absensi-text > span.small {
+                font-size: 0.8rem; 
+            }
+            
+            /* Absensi List Item Mobile (Kerapian Horizontal) */
+            .absensi-item {
+                flex-direction: column; 
+                align-items: stretch !important; 
+                padding: 1rem !important; 
+            }
+            .absensi-item .info-santri {
+                margin-bottom: 0.75rem; 
+            }
+            .absensi-item > .d-flex.align-items-center.flex-shrink-0 {
+                justify-content: space-between; 
+            }
+            .absensi-item .status-badge {
+                text-align: left !important;
+                flex-grow: 1;
+                display: flex; 
+                align-items: center;
+            }
+            .absensi-item .status-badge .badge {
+                flex-shrink: 0; 
+            }
+            .absensi-item .status-badge .small.text-muted {
+                display: inline !important; 
+                font-size: 0.8rem;
+                flex-grow: 1; 
+            }
+            
+            /* Pengumuman Mobile */
+            .pengumuman-item {
+                 padding: 1rem 1.5rem !important;
+            }
+            .pengumuman-item .d-flex.justify-content-between {
+                flex-direction: column;
+                align-items: flex-start !important;
+            }
+            .pengumuman-item .text-nowrap {
+                margin-top: 0.5rem;
+                margin-left: 0 !important; 
+            }
+            .pengumuman-item .text-nowrap .fa-calendar-alt {
+                display: none !important;
             }
         }
     </style>

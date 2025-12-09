@@ -3,37 +3,27 @@
 @section('title', 'Edit Data Kelas')
 @section('page_title', 'Edit Kelas: ' . $kela->nama_kelas)
 
-@section('header_actions')
-    {{-- Tombol untuk kembali ke Daftar Kelas --}}
-    <a href="{{ route('admin.kelas.index') }}" class="btn btn-outline-secondary shadow-sm rounded-pill d-flex align-items-center fw-semibold px-3">
-        <i class="fas fa-list me-2"></i>
-        Daftar Kelas
-    </a>
-@endsection
-
 @section('content')
 
 <div class="container-fluid">
     <div class="row">
         <div class="col-12">
 
-            <h2 class="mb-4 text-dark fw-bold">✏️ Edit Kelas: {{ $kela->nama_kelas }}</h2>
-
             <div class="card shadow-lg border-0 rounded-4">
                 
-                {{-- HEADER CARD DENGAN WARNA PRIMER --}}
-                <div class="card-header bg-primary text-white p-4 rounded-top-4">
-                    <h4 class="mb-0 fw-bold fs-5"><i class="fas fa-edit me-2"></i> Formulir Edit Data Kelas</h4>
-                    <p class="text-white-50 small mb-0">Ubah detail nama dan tingkat untuk kelas {{ $kela->nama_kelas }}.</p>
+                {{-- HEADER CARD --}}
+                <div class="card-header bg-warning text-dark p-4 rounded-top-4 border-bottom border-light">
+                    <h5 class="mb-0 fw-bold fs-6"><i class="fas fa-edit me-2"></i> Formulir Perubahan Data Kelas</h5>
+                    <p class="text-dark-50 small mb-0">Sesuaikan Nama Kelas dan Tingkat Pendidikan.</p>
                 </div>
                 
                 <div class="card-body p-4">
                     
                     {{-- Tampilkan error validasi jika ada --}}
                     @if ($errors->any())
-                        <div class="alert alert-danger alert-dismissible fade show rounded-3 shadow-sm" role="alert">
-                            <h6 class="alert-heading fw-bold"><i class="fas fa-exclamation-triangle me-2"></i> Mohon koreksi kesalahan berikut:</h6>
-                            <ul class="mb-0 ps-3">
+                        <div class="alert alert-danger alert-dismissible fade show rounded-3 shadow-sm border-danger" role="alert">
+                            <h6 class="alert-heading fw-bold"><i class="fas fa-exclamation-circle me-2"></i> Kesalahan Input Terdeteksi:</h6>
+                            <ul class="mb-0 ps-3 small">
                                 @foreach ($errors->all() as $error)
                                     <li>{{ $error }}</li>
                                 @endforeach
@@ -50,27 +40,33 @@
 
                             {{-- Nama Kelas --}}
                             <div class="col-md-6">
-                                <label for="nama_kelas" class="form-label fw-semibold">Nama Kelas <span class="text-danger">*</span></label>
+                                {{-- LABEL DIPERBAIKI: Menggunakan atribut for yang sesuai dengan id input --}}
+                                <label for="nama_kelas" class="form-label fw-semibold small text-muted mb-1">Nama Kelas <span class="text-danger">*</span></label>
                                 <div class="input-group">
-                                    <span class="input-group-text"><i class="fas fa-school"></i></span>
+                                    <span class="input-group-text bg-light text-primary border-end-0"><i class="fas fa-school"></i></span>
                                     <input type="text" name="nama_kelas" id="nama_kelas"
-                                           class="form-control form-control-lg @error('nama_kelas') is-invalid @enderror"
+                                           class="form-control @error('nama_kelas') is-invalid @enderror"
                                            placeholder="Contoh: VII A, X IPA 1"
                                            value="{{ old('nama_kelas', $kela->nama_kelas) }}" required>
-                                    @error('nama_kelas')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                 </div>
+                                @error('nama_kelas')
+                                    <div class="invalid-feedback d-block">{{ $message }}</div>
+                                @else
+                                    <small class="text-muted d-block mt-1">Masukkan nama kelas secara lengkap.</small>
+                                @enderror
                             </div>
 
                             {{-- Tingkat (Select Box) --}}
                             <div class="col-md-6">
-                                <label for="tingkat" class="form-label fw-semibold">Tingkat Kelas <span class="text-danger">*</span></label>
+                                {{-- LABEL DIPERBAIKI: Menggunakan atribut for yang sesuai dengan id input --}}
+                                <label for="tingkat" class="form-label fw-semibold small text-muted mb-1">Tingkat Kelas <span class="text-danger">*</span></label>
                                 <div class="input-group">
-                                    <span class="input-group-text"><i class="fas fa-layer-group"></i></span>
-                                    <select name="tingkat" id="tingkat" 
-                                            class="form-select form-select-lg @error('tingkat') is-invalid @enderror" required>
+                                    <span class="input-group-text bg-light text-info border-end-0"><i class="fas fa-layer-group"></i></span>
+                                    <select name="tingkat" id="tingkat"
+                                            class="form-select @error('tingkat') is-invalid @enderror" required>
                                         <option value="">-- Pilih Tingkat --</option>
 
-                                        {{-- Daftar tingkat kelas yang spesifik (menggunakan 7-13 untuk konsistensi dengan form Tambah) --}}
+                                        {{-- Daftar tingkat kelas --}}
                                         @php
                                             $tingkatKelas = [7, 8, 9, 10, 11, 12, 13];
                                         @endphp
@@ -80,9 +76,12 @@
                                         @endforeach
 
                                     </select>
-                                    @error('tingkat')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                 </div>
-                                <small class="text-muted d-block mt-1">Pilih tingkat/level kelas (7-13).</small>
+                                @error('tingkat')
+                                    <div class="invalid-feedback d-block">{{ $message }}</div>
+                                @else
+                                    <small class="text-muted d-block mt-1">Pilih tingkat/level kelas yang relevan (7-13).</small>
+                                @enderror
                             </div>
 
                         </div>
@@ -97,7 +96,6 @@
                             <button type="submit" class="btn btn-warning px-4 shadow-lg fw-bold text-dark rounded-pill">
                                 <i class="fas fa-redo me-2"></i> Update Kelas
                             </button>
-                        </div>
                     </form>
                 </div>
             </div>

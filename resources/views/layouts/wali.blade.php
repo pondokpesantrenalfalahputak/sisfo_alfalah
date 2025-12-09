@@ -40,18 +40,20 @@
             background-color: var(--primary-color) !important;
             height: 60px;
         }
-
+        
+        /* 💡 PERBAIKAN 1: Menghilangkan border dan radius pada logo offcanvas */
         .offcanvas-logo {
             height: 80px;
             width: auto;
-            border: 2px solid rgba(255, 255, 255, 0.5); 
-            border-radius: 50%;
+            /* border: 2px solid rgba(255, 255, 255, 0.5);  <-- DIHILANGKAN */
+            /* border-radius: 50%; <-- DIHILANGKAN */
         }
 
         /* Penyesuaian Offcanvas Header (Logo) */
         .offcanvas-header {
+            /* Sedikit diperhalus */
             padding-top: 3rem !important; 
-            padding-bottom: 10rem !important;
+            padding-bottom: 8rem !important; /* Disesuaikan agar tidak terlalu jauh */
         }
 
         /* Navigasi Utama (Desktop) */
@@ -85,27 +87,27 @@
             }
         }
         
-        /* Styling Offcanvas Navigation (Mobile) - KERAPIAN TINGGI */
+        /* Styling Offcanvas Navigation (Mobile) */
         .offcanvas-body {
-            padding: 0.5rem; /* Padding konsisten di body */
+            padding: 0.5rem; 
         }
 
         .offcanvas-body .nav-link {
-            padding: 0.75rem 1rem; /* Padding yang lebih baik */
+            padding: 0.75rem 1rem; 
             color: #495057;
             font-weight: 500;
             transition: background-color 0.2s, color 0.2s;
             display: flex;
             align-items: center; 
-            margin-bottom: 0.2rem; /* Spasi antar link */
+            margin-bottom: 0.2rem; 
             border-radius: 0.5rem;
         }
 
         .offcanvas-body .nav-link i {
             font-size: 1.1rem; 
-            width: 20px; /* Jaminan lebar tetap untuk semua ikon */
+            width: 20px; 
             text-align: center;
-            margin-right: 1rem; /* Jarak konsisten ikon ke teks */
+            margin-right: 1rem; 
         }
 
         .offcanvas-body .nav-link.active {
@@ -125,16 +127,16 @@
             position: relative; 
             display: inline-block;
             text-decoration: none;
-            padding: 10px 0; /* Memberi ruang di sekitar ikon */
+            padding: 10px 0; 
         }
 
         .notification-badge {
             position: absolute;
-            top: 5px; /* Atur posisi vertikal relatif terhadap tombol */
-            right: -5px; /* Atur posisi horizontal relatif terhadap tombol */
+            top: 5px; 
+            right: -5px; 
             padding: 2px 6px;
             border-radius: 50%;
-            background: #e74c3c; /* Merah */
+            background: #e74c3c; 
             color: white;
             font-size: 0.65rem;
             font-weight: bold;
@@ -143,7 +145,6 @@
             z-index: 10;
         }
 
-        /* --- END STYLES KHUSUS NOTIFIKASI LONCENG --- */
         /* --- STYLES UMUM --- */
         .breadcrumb { margin-bottom: 0; }
         .breadcrumb-item a { color: #6c757d; text-decoration: none; }
@@ -161,7 +162,7 @@
         $currentRoute = Route::currentRouteName();
         // Memastikan isActive mendukung pola wildcard
         $isActive = fn($routePattern) => \Illuminate\Support\Str::is($routePattern, $currentRoute) ? 'active' : '';
-        // Variabel $pendingPayments dihapus/diganti karena kita menggunakan $unreadCount dari View Composer
+        
         // Logic untuk menentukan Page Title dari Route (Disederhanakan)
         $pageTitle = trim(str_replace(['wali.', 'index', 'show', 'tagihan', 'pembayaran', 'profil'], '', ucwords(str_replace('.', ' ', $currentRoute))));
         $pageTitle = empty($pageTitle) || $pageTitle == 'Dashboard' ? 'Dashboard' : $pageTitle;
@@ -182,7 +183,6 @@
                 </button>
                 
                 <div class="flex-shrink-0 d-flex align-items-center">
-                    {{-- HEADER UTAMA: Tetap 60px --}}
                     <h1 class="h5 fw-bolder text-white mb-0">
                         <span class="text-warning">AL-FALAH PUTAK</span>
                     </h1>
@@ -196,7 +196,7 @@
                         Selamat Datang, {{ Auth::user()->name ?? 'Wali Santri' }}
                     </span>
 
-                    {{-- 🛑 NOTIFIKASI LONCENG BARU (Menggunakan $unreadCount) 🛑 --}}
+                    {{-- NOTIFIKASI LONCENG --}}
                     <a href="{{ route('wali.notifikasi.index') }}" class="notification-icon text-warning" aria-label="Notifikasi">
                         <i class="fas fa-bell fa-lg"></i>
                         @if(isset($unreadCount) && $unreadCount > 0)
@@ -216,7 +216,6 @@
                             <h6 class="dropdown-header fw-bold text-truncate">{{ Auth::user()->name ?? 'Wali Santri' }}</h6>
                             <li><hr class="dropdown-divider"></li>
                             
-                            {{-- BARIS DIPERBAIKI: Menggunakan dropdown-item dan ikon --}}
                             <li>
                                 <a class="dropdown-item" href="{{ route('wali.profile.show') }}">
                                     <i class="fas fa-user-circle fa-fw me-2"></i> Profil Saya
@@ -245,7 +244,10 @@
         <div class="offcanvas-header header-custom text-white shadow-lg-custom d-flex flex-column pt-4 pb-3 position-relative">
             {{-- Tombol Close di pojok kanan atas Offcanvas Header --}}
             <button type="button" class="btn-close text-reset btn-close-white position-absolute top-0 end-0 mt-3 me-3" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            
+            {{-- 💡 PERBAIKAN 2: Menghapus border/radius styling inline untuk logo Offcanvas --}}
             <img src="{{ asset('Images/kop pondok.png') }}" alt="Logo Al-Falah" class="offcanvas-logo mb-2">
+            
             <h5 class="offcanvas-title fw-bold text-center" id="offcanvasWaliNavLabel">PORTAL WALI SANTRI</h5>
         </div>
 
@@ -266,13 +268,12 @@
                 <i class="fas fa-user-graduate fa-fw"></i> Data Santri
             </a>
 
-            {{-- START: MENU ABSENSI BARU (MOBILE) --}}
             <a href="{{ route('wali.absensi.index') }}" 
             class="nav-link {{ $isActive('wali.absensi.*') }}">
                 <i class="fas fa-clipboard-check fa-fw"></i> Absensi Santri
             </a>
-            {{-- END: MENU ABSENSI BARU (MOBILE) --}}
-            {{-- 🛑 MENU NOTIFIKASI DI OFFCANVAS (MOBILE) 🛑 --}}
+            
+            {{-- MENU NOTIFIKASI DI OFFCANVAS (MOBILE) --}}
             <a href="{{ route('wali.notifikasi.index') }}" 
             class="nav-link {{ $isActive('wali.notifikasi.*') }} position-relative">
                 <i class="fas fa-bell fa-fw"></i> Notifikasi
@@ -304,9 +305,7 @@
 
                 <a href="{{ route('wali.santri.index') }}" class="nav-link px-3 py-3 me-3 {{ $isActive('wali.santri.*') }}"><i class="fas fa-user-graduate me-1"></i> Data Santri</a>
 
-                {{-- START: MENU ABSENSI BARU (DESKTOP) --}}
                 <a href="{{ route('wali.absensi.index') }}" class="nav-link px-3 py-3 me-3 {{ $isActive('wali.absensi.*') }}"><i class="fas fa-clipboard-check me-1"></i> Absensi Santri</a>
-                {{-- END: MENU ABSENSI BARU (DESKTOP) --}}
 
                 <a href="{{ route('wali.pengumuman.index') }}" class="nav-link px-3 py-3 me-3 {{ $isActive('wali.pengumuman*') }}"><i class="fas fa-bullhorn me-1"></i> Pengumuman</a>
             </div>
@@ -329,16 +328,9 @@
             @yield('header_actions')
         </div>
 
-        {{-- Pesan Sukses/Error --}}
-        @if (session('success'))
-            <div class="alert alert-success alert-dismissible fade show shadow-lg-custom" role="alert">
-                <i class="fas fa-check-circle me-2"></i> {{ session('success') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        @endif
         @if (session('error'))
             <div class="alert alert-danger alert-dismissible fade show shadow-lg-custom" role="alert">
-                <i class="fas fa-exclamation-triangle me-2"></i> {{ session('error') }}
+                <i class="fas fa-exclamation-triangle me-2"></i> Terjadi Kesalahan! {{ session('error') }}
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
         @endif
@@ -350,6 +342,8 @@
         <p class="mb-0">Dukungan Jakastra Official | Kebijakan Privasi</p>
         <p class="mb-0">&copy; {{ date('Y') }} SISFO Al-Falah Putak. Hak Cipta Dilindungi.</p>
     </footer>
+
+    @stack('js')
 
 </body>
 </html>

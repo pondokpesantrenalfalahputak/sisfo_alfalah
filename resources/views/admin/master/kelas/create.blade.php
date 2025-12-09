@@ -3,21 +3,11 @@
 @section('title', 'Tambah Kelas')
 @section('page_title', 'Tambah Kelas Baru')
 
-@section('header_actions')
-    {{-- Tombol untuk kembali ke Daftar Kelas --}}
-    <a href="{{ route('admin.kelas.index') }}" class="btn btn-outline-secondary shadow-sm rounded-pill d-flex align-items-center fw-semibold px-3">
-        <i class="fas fa-list me-2"></i>
-        Daftar Kelas
-    </a>
-@endsection
-
 @section('content')
 
 <div class="container-fluid">
     <div class="row">
         <div class="col-12">
-
-            <h2 class="mb-4 text-dark fw-bold">➕ Tambah Kelas Baru</h2>
 
             <div class="card shadow-lg border-0 rounded-4">
                 
@@ -45,7 +35,7 @@
                     <form action="{{ route('admin.kelas.store') }}" method="POST">
                         @csrf
                         
-                        <div class="row g-4">
+                        <div class="row g-3">
                             
                             {{-- Nama Kelas --}}
                             <div class="col-md-6">
@@ -53,9 +43,9 @@
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="fas fa-school"></i></span>
                                     <input type="text" name="nama_kelas" id="nama_kelas" 
-                                           class="form-control form-control-lg @error('nama_kelas') is-invalid @enderror" 
-                                           placeholder="Contoh: 7A, 10B, Mutakhorijin" 
-                                           value="{{ old('nama_kelas') }}" required>
+                                        class="form-control form-control-lg @error('nama_kelas') is-invalid @enderror" 
+                                        placeholder="Contoh: 7, 10, Mutakhorijin" 
+                                        value="{{ old('nama_kelas') }}" required>
                                     @error('nama_kelas')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                 </div>
                             </div>
@@ -81,7 +71,7 @@
                                     </select>
                                     @error('tingkat')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                 </div>
-                                <small class="text-muted d-block mt-1">Pilih tingkat/level kelas (7-13).</small>
+                                <small class="text-muted d-block mt-1">Pilih tingkat kelas (7-13).</small>
                             </div>
                             
                         </div>

@@ -3,20 +3,11 @@
 @section('title', 'Edit Rekening')
 @section('page_title', 'Edit Data Rekening Bank')
 
-@section('header_actions')
-    {{-- Tombol untuk kembali ke Daftar Rekening --}}
-    <a href="{{ route('admin.rekening.index') }}" class="btn btn-outline-secondary shadow-sm rounded-pill d-flex align-items-center fw-semibold px-3">
-        <i class="fas fa-list-alt me-2"></i>
-        Daftar Rekening
-    </a>
-@endsection
-
 @section('content')
 
 <div class="container-fluid">
     <div class="row">
         <div class="col-12">
-            <h2 class="mb-4 text-dark fw-bold">✍️ Edit Rekening Bank</h2>
 
             <div class="card shadow-lg border-0 rounded-4 border-start border-5 border-warning">
                 
@@ -50,7 +41,8 @@
                             {{-- Nama Bank --}}
                             <div class="col-md-6">
                                 <label for="nama_bank" class="form-label fw-semibold">Nama Bank <span class="text-danger">*</span></label>
-                                <div class="input-group input-group-lg">
+                                {{-- Dihapus input-group-lg --}}
+                                <div class="input-group"> 
                                     <span class="input-group-text"><i class="fas fa-university"></i></span>
                                     <input type="text" name="nama_bank" id="nama_bank" 
                                            class="form-control @error('nama_bank') is-invalid @enderror" 
@@ -62,7 +54,8 @@
                             {{-- Nomor Rekening --}}
                             <div class="col-md-6">
                                 <label for="nomor_rekening" class="form-label fw-semibold">Nomor Rekening <span class="text-danger">*</span></label>
-                                <div class="input-group input-group-lg">
+                                {{-- Dihapus input-group-lg --}}
+                                <div class="input-group"> 
                                     <span class="input-group-text"><i class="fas fa-credit-card"></i></span>
                                     <input type="text" name="nomor_rekening" id="nomor_rekening" 
                                            class="form-control @error('nomor_rekening') is-invalid @enderror" 
@@ -78,7 +71,8 @@
                             {{-- Atas Nama --}}
                             <div class="col-md-6">
                                 <label for="atas_nama" class="form-label fw-semibold">Atas Nama Pemilik Rekening <span class="text-danger">*</span></label>
-                                <div class="input-group input-group-lg">
+                                {{-- Dihapus input-group-lg --}}
+                                <div class="input-group"> 
                                     <span class="input-group-text"><i class="fas fa-user-circle"></i></span>
                                     <input type="text" name="atas_nama" id="atas_nama" 
                                            class="form-control @error('atas_nama') is-invalid @enderror" 
@@ -90,7 +84,8 @@
                             {{-- Keterangan --}}
                             <div class="col-md-6">
                                 <label for="keterangan" class="form-label fw-semibold">Keterangan (Opsional)</label>
-                                <div class="input-group input-group-lg">
+                                {{-- Dihapus input-group-lg --}}
+                                <div class="input-group"> 
                                     <span class="input-group-text"><i class="fas fa-info-circle"></i></span>
                                     <textarea name="keterangan" id="keterangan" 
                                               class="form-control @error('keterangan') is-invalid @enderror" 
@@ -105,13 +100,15 @@
                         <hr class="mt-5 mb-4 border-dark opacity-25">
                         
                         {{-- Tombol Aksi --}}
-                        <div class="d-flex justify-content-end gap-2">
-                            <a href="{{ route('admin.rekening.index') }}" class="btn btn-outline-secondary px-4 shadow-sm fw-semibold rounded-pill">
-                                <i class="fas fa-times me-2"></i> Batal
-                            </a>
-                            <button type="submit" class="btn btn-warning px-4 shadow-lg fw-bold text-dark rounded-pill">
+                        {{-- Ditambahkan d-block d-md-flex untuk penataan di mobile --}}
+                        <div class="d-block d-md-flex justify-content-end gap-2">
+                            <button type="submit" class="btn btn-success px-4 shadow-sm fw-semibold rounded-pill mb-2 mb-md-0">
                                 <i class="fas fa-save me-2"></i> Simpan Perubahan
                             </button>
+                            <a href="{{ route('admin.rekening.index') }}" class="btn btn-outline-secondary px-4 shadow-sm fw-semibold rounded-pill mb-2 mb-md-0">
+                                <i class="fas fa-times me-2"></i> Batal
+                            </a>
+                            
                         </div>
                     </form>
                 </div>

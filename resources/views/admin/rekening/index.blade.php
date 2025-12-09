@@ -4,8 +4,8 @@
 @section('page_title', 'Daftar Rekening Pembayaran')
 
 @section('header_actions')
-    {{-- Tombol Tambah Rekening (Ganti warna menjadi Success karena ini aset keuangan) --}}
-    <a href="{{ route('admin.rekening.create') }}" class="btn btn-success shadow-sm d-flex align-items-center fw-semibold">
+    {{-- Tambahkan d-none d-md-flex untuk menyembunyikan di mobile --}}
+    <a href="{{ route('admin.rekening.create') }}" class="btn btn-success shadow-sm d-none d-md-flex align-items-center fw-semibold">
         <i class="fas fa-plus me-2"></i> Tambah Rekening Baru
     </a>
 @endsection
@@ -20,6 +20,14 @@
     </div>
 @endif
 
+{{-- 2. Tombol Aksi untuk MOBILE (Tampil di atas Card) --}}
+{{-- Gunakan d-block d-md-none: Selalu tampil kecuali di breakpoint md (desktop) ke atas --}}
+<div class="d-block d-md-none mb-3 px-3">
+    <a href="{{ route('admin.rekening.create') }}" class="btn btn-success shadow-sm d-flex align-items-center fw-semibold w-100">
+        <i class="fas fa-plus me-2"></i> Tambah Rekening Baru
+    </a>
+</div>
+<hr class="d-block d-md-none border-secondary-subtle">
 <div class="card shadow border-left-success">
     {{-- CARD HEADER --}}
     <div class="card-header bg-primary text-white p-4">
@@ -95,13 +103,13 @@
         {{-- ========================================================= --}}
         <div class="d-md-none p-3">
             @forelse ($rekenings as $rekening)
-                <div class="card mb-3 shadow border-start border-4 border-success">
+                <div class="card mb-3 shadow border-start border-2 border-success">
                     <div class="card-body">
                         
                         {{-- Baris 1: Bank dan Atas Nama --}}
                         <div class="d-flex justify-content-between align-items-center mb-2">
                             <div>
-                                <h6 class="text-muted mb-0 small"><i class="fas fa-university me-1"></i> REKENING #{{ $loop->iteration }}</h6>
+                                <h6 class="text-muted mb-0 small"><i class="fas fa-university me-1"></i> REKENING {{ $loop->iteration }}</h6>
                                 <h4 class="card-title fw-bold text-primary mb-0">{{ $rekening->nama_bank }}</h4>
                             </div>
                             <span class="badge bg-secondary p-2">{{ $rekening->atas_nama }}</span>

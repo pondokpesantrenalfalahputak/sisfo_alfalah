@@ -3,20 +3,62 @@
 @section('title', 'Riwayat Pembayaran')
 @section('page_title', 'Semua Riwayat Pembayaran')
 
-@section('header_actions')
-    {{-- Tombol Reset Filter ditempatkan di sini agar konsisten dengan layout lain --}}
-    <a href="{{ route('admin.pembayaran.riwayat') }}" class="btn btn-outline-secondary shadow-sm rounded-pill d-flex align-items-center fw-semibold px-3">
-        <i class="fas fa-sync-alt me-2"></i>Reset Filter
-    </a>
-@endsection
+@push('styles')
+<style>
+    /* CSS KUSTOM KHUSUS UNTUK TAMPILAN RINGKAS */
+    
+    /* Penyesuaian Tabel Desktop (dibiarkan kecil seperti sebelumnya) */
+    .table-hover td, .table-hover th {
+        font-size: 0.85rem !important; 
+    }
+    .table-hover small {
+        font-size: 0.75rem !important;
+    }
+
+    /* Penyesuaian Mobile (D-MD-NONE) - FOKUS UTAMA */
+    @media (max-width: 767.98px) {
+        /* Card umum */
+        .mobile-riwayat-card {
+            border: 1px solid #e5e7eb !important; 
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        
+        /* Judul/Nama Santri */
+        .mobile-riwayat-header {
+            font-size: 0.85rem !important; /* Dikecilkan lagi */
+        }
+        
+        /* Teks Detail (Kelas, Tanggal, Label Santri/Status) */
+        .mobile-riwayat-detail {
+            font-size: 0.6rem !important; /* Sangat kecil */
+        }
+        
+        /* Nominal Bayar (Masih perlu menonjol sedikit) */
+        .mobile-riwayat-amount {
+             font-size: 0.95rem !important; /* Dikecilkan */
+        }
+        
+        /* Badge Status & Tagihan */
+        .mobile-riwayat-status-badge {
+            font-size: 0.65rem !important; /* Sangat kecil */
+            padding: 0.2em 0.4em !important;
+        }
+        
+        /* Tombol Aksi Mobile */
+        .mobile-riwayat-action-btn {
+            padding: 0.25rem 0.35rem !important; 
+            font-size: 0.7rem !important; /* Sangat kecil */
+        }
+    }
+</style>
+@endpush
+
 
 @section('content')
 
 <div class="container-fluid">
     <div class="row">
         <div class="col-12">
-
-            <h2 class="mb-4 text-dark fw-bold">🧾 Riwayat Pembayaran</h2>
 
             {{-- Notifikasi Sukses/Gagal (Jika ada) --}}
             @if (session('success'))
@@ -41,11 +83,11 @@
                         {{-- Search Bar --}}
                         <div class="col-12 col-md-6">
                             <form method="GET" class="d-flex" id="search-form">
-                                {{-- Hidden input untuk membawa parameter 'status' --}}
                                 <input type="hidden" name="status" value="{{ request('status') }}"> 
                                 
-                                <div class="input-group input-group-lg shadow-sm">
-                                    <input type="text" name="search" class="form-control" placeholder="Cari berdasarkan nama santri..." value="{{ request('search') }}">
+                                {{-- Input grup di mobile mungkin terlihat besar, gunakan input-group standar --}}
+                                <div class="input-group shadow-sm">
+                                    <input type="text" name="search" class="form-control form-control-md" placeholder="Cari berdasarkan nama santri..." value="{{ request('search') }}">
                                     <button type="submit" class="btn btn-primary">
                                         <i class="fas fa-search me-1"></i>
                                         <span class="d-none d-sm-inline">Cari</span>
@@ -60,10 +102,10 @@
                         {{-- Filter Status --}}
                         <div class="col-12 col-md-4 offset-md-2">
                             <form method="GET" id="status-filter-form">
-                                {{-- Hidden input membawa parameter 'search' --}}
                                 <input type="hidden" name="search" value="{{ request('search') }}"> 
                                 
-                                <select name="status" class="form-select form-select-lg shadow-sm" onchange="document.getElementById('status-filter-form').submit()">
+                                {{-- Select di mobile gunakan form-select standar --}}
+                                <select name="status" class="form-select form-select-md shadow-sm" onchange="document.getElementById('status-filter-form').submit()">
                                     <option value="">-- Filter Berdasarkan Status --</option>
                                     <option value="Menunggu" {{ request('status') == 'Menunggu' ? 'selected' : '' }}>Menunggu Konfirmasi</option>
                                     <option value="Dikonfirmasi" {{ request('status') == 'Dikonfirmasi' ? 'selected' : '' }}>Dikonfirmasi</option>
@@ -79,6 +121,7 @@
                     
                     {{-- ========================================================= --}}
                     {{-- 1. Tampilan Desktop (Tabel) --}}
+                    {{-- (Tidak berubah, menggunakan font 0.85rem) --}}
                     {{-- ========================================================= --}}
                     <div class="table-responsive d-none d-md-block">
                         <table class="table table-hover align-middle mb-0">
@@ -96,7 +139,7 @@
                             <tbody>
                                 @forelse($pembayarans as $pembayaran)
                                 <tr> 
-                                    <td>{{ $pembayarans->firstItem() + $loop->index }}</td>
+                                    <td><small>{{ $pembayarans->firstItem() + $loop->index }}</small></td>
                                     <td>
                                         <span class="fw-semibold">{{ $pembayaran->created_at->translatedFormat('d M Y') }}</span><br>
                                         <small class="text-muted">{{ $pembayaran->created_at->format('H:i') }} WIB</small>
@@ -106,7 +149,7 @@
                                         <small class="text-secondary">Kelas: {{ $pembayaran->tagihan->santri->kelas->nama_kelas ?? 'N/A' }}</small>
                                     </td>
                                     <td>
-                                         <span class="badge bg-primary p-2 fw-semibold">{{ $pembayaran->tagihan->jenis_tagihan ?? 'N/A' }}</span>
+                                         <span class="badge bg-primary p-2 fw-semibold"><small>{{ $pembayaran->tagihan->jenis_tagihan ?? 'N/A' }}</small></span>
                                     </td>
                                     <td class="text-end">
                                         <span class="fw-bolder fs-6 text-success">Rp {{ number_format($pembayaran->jumlah_bayar, 0, ',', '.') }}</span>
@@ -120,15 +163,15 @@
                                                 default => 'warning text-dark',
                                             };
                                         @endphp
-                                        <span class="badge bg-{{ $badgeClass }} p-2 fw-semibold">{{ $status }}</span>
+                                        <span class="badge bg-{{ $badgeClass }} p-2 fw-semibold"><small>{{ $status }}</small></span>
                                     </td>
                                     <td class="text-center text-nowrap">
                                         <div class="btn-group" role="group">
-                                            <a href="{{ route('admin.tagihan.show', $pembayaran->tagihan_id) }}" class="btn btn-sm btn-primary" title="Lihat Detail & Konfirmasi">
+                                            <a href="{{ route('admin.tagihan.show', $pembayaran->tagihan_id) }}" class="btn btn-sm btn-primary small" title="Lihat Detail & Konfirmasi">
                                                 <i class="fas fa-clipboard-check"></i> Detail
                                             </a>
                                             @if($pembayaran->bukti_pembayaran)
-                                                <a href="{{ Storage::url($pembayaran->bukti_pembayaran) }}" target="_blank" class="btn btn-sm btn-info text-white" title="Lihat Bukti Bayar">
+                                                <a href="{{ Storage::url($pembayaran->bukti_pembayaran) }}" target="_blank" class="btn btn-sm btn-info text-white small" title="Lihat Bukti Bayar">
                                                     <i class="fas fa-file-image"></i>
                                                 </a>
                                             @endif
@@ -150,6 +193,7 @@
 
                     {{-- ========================================================= --}}
                     {{-- 2. Tampilan Mobile (Card List) --}}
+                    {{-- (Menggunakan kelas font yang sangat kecil) --}}
                     {{-- ========================================================= --}}
                     <div class="d-md-none p-4 pt-0">
                         @forelse($pembayarans as $pembayaran)
@@ -162,45 +206,45 @@
                                 };
                             @endphp
                             {{-- Border kiri berdasarkan status --}}
-                            <div class="card mb-3 shadow-sm rounded-3 border-start border-5 border-{{ $badgeClass }}">
+                            <div class="card mb-3 mobile-riwayat-card rounded-3 border-start border-2 border-{{ $badgeClass }}">
                                 <div class="card-body p-3">
                                     
                                     {{-- Baris 1: Santri & Kelas --}}
                                     <div class="d-flex justify-content-between align-items-start mb-2 border-bottom pb-2">
                                         <div>
-                                            <h6 class="text-muted mb-0 small">SANTRI (#{{ $pembayarans->firstItem() + $loop->index }})</h6>
-                                            <h5 class="card-title fw-bold text-dark mb-1">{{ $pembayaran->tagihan->santri->nama_lengkap ?? 'N/A' }}</h5>
-                                            <small class="text-secondary">Kelas: {{ $pembayaran->tagihan->santri->kelas->nama_kelas ?? 'N/A' }}</small>
+                                            <h6 class="text-muted mb-0 mobile-riwayat-detail fw-normal">SANTRI ({{ $pembayarans->firstItem() + $loop->index }})</h6>
+                                            <h5 class="card-title fw-bold text-dark mb-1 mobile-riwayat-header">{{ $pembayaran->tagihan->santri->nama_lengkap ?? 'N/A' }}</h5>
+                                            <small class="text-secondary mobile-riwayat-detail fw-normal">Kelas: {{ $pembayaran->tagihan->santri->kelas->nama_kelas ?? 'N/A' }}</small>
                                         </div>
                                         {{-- Jenis Tagihan --}}
-                                        <span class="badge bg-primary fw-semibold p-2">{{ $pembayaran->tagihan->jenis_tagihan ?? 'N/A' }}</span>
+                                        <span class="badge bg-primary fw-semibold mobile-riwayat-status-badge">{{ $pembayaran->tagihan->jenis_tagihan ?? 'N/A' }}</span>
                                     </div>
 
                                     
                                     {{-- Baris 2: Status, Nominal dan Tanggal --}}
                                     <div class="d-flex justify-content-between align-items-center mb-3">
                                         <div>
-                                            <span class="text-muted small d-block">STATUS</span>
-                                            <span class="badge bg-{{ $badgeClass }} p-2 fw-bold fs-6">{{ $status }}</span>
+                                            <span class="text-muted mobile-riwayat-detail d-block fw-normal">STATUS</span>
+                                            <span class="badge bg-{{ $badgeClass }} fw-bold mobile-riwayat-status-badge">{{ $status }}</span>
                                         </div>
                                         <div class="text-end">
-                                            <span class="text-muted small d-block">NOMINAL BAYAR</span>
-                                            <span class="fw-bolder fs-5 text-success">Rp {{ number_format($pembayaran->jumlah_bayar, 0, ',', '.') }}</span>
+                                            <span class="text-muted mobile-riwayat-detail d-block fw-normal">NOMINAL BAYAR</span>
+                                            <span class="fw-bolder text-success mobile-riwayat-amount">Rp {{ number_format($pembayaran->jumlah_bayar, 0, ',', '.') }}</span>
                                         </div>
                                     </div>
                                     
-                                    <div class="text-end small text-muted border-top pt-2">
+                                    <div class="text-end mobile-riwayat-detail text-muted border-top pt-2 fw-normal">
                                         <i class="fas fa-clock me-1"></i> 
                                         Transaksi: {{ $pembayaran->created_at->translatedFormat('d M Y, H:i') }}
                                     </div>
                                     
                                     {{-- Baris 3: Aksi --}}
                                     <div class="d-grid gap-2 d-sm-flex justify-content-sm-end pt-3">
-                                        <a href="{{ route('admin.tagihan.show', $pembayaran->tagihan_id) }}" class="btn btn-sm btn-primary fw-semibold flex-fill" title="Detail & Konfirmasi">
+                                        <a href="{{ route('admin.tagihan.show', $pembayaran->tagihan_id) }}" class="btn btn-sm btn-primary fw-semibold flex-fill mobile-riwayat-action-btn" title="Detail & Konfirmasi">
                                             <i class="fas fa-clipboard-check me-1"></i> Detail & Konfirmasi
                                         </a>
                                         @if($pembayaran->bukti_pembayaran)
-                                            <a href="{{ Storage::url($pembayaran->bukti_pembayaran) }}" target="_blank" class="btn btn-sm btn-info text-white fw-semibold" title="Lihat Bukti Bayar">
+                                            <a href="{{ Storage::url($pembayaran->bukti_pembayaran) }}" target="_blank" class="btn btn-sm btn-info text-white fw-semibold mobile-riwayat-action-btn" title="Lihat Bukti Bayar">
                                                 <i class="fas fa-file-image me-1"></i> Bukti
                                             </a>
                                         @endif

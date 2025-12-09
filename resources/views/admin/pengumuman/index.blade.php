@@ -5,7 +5,8 @@
 
 @section('header_actions')
     {{-- Tombol Tambah Pengumuman --}}
-    <a href="{{ route('admin.pengumuman.create') }}" class="btn btn-primary shadow-sm rounded-pill d-flex align-items-center fw-semibold px-3">
+    {{-- CATATAN: Ditambahkan kelas d-none d-md-flex agar TIDAK muncul di mobile (hanya di desktop) --}}
+    <a href="{{ route('admin.pengumuman.create') }}" class="btn btn-primary shadow-sm rounded-pill d-none d-md-flex align-items-center fw-semibold px-3">
         <i class="fas fa-plus me-2"></i> Tambah Pengumuman Baru
     </a>
 @endsection
@@ -16,8 +17,6 @@
     <div class="row">
         <div class="col-12">
 
-            <h2 class="mb-4 text-dark fw-bold">📢 Kelola Pengumuman</h2>
-
             {{-- Slot untuk Notifikasi Sukses/Gagal --}}
             @if (session('success'))
                 <div class="alert alert-success alert-dismissible fade show rounded-3 shadow-sm" role="alert">
@@ -25,6 +24,12 @@
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
             @endif
+
+                <div class="d-block d-md-none mb-3 px-3">
+                    <a href="{{ route('admin.rekening.create') }}" class="btn btn-primary shadow-sm d-flex align-items-center fw-semibold w-100">
+                    <i class="fas fa-plus me-2"></i> Tambah Rekening Baru
+                    </a>
+                </div>
 
             <div class="card shadow-lg border-0 rounded-4">
                 
@@ -107,6 +112,12 @@
                                             <i class="fas fa-exclamation-circle me-2 fa-3x mb-3 text-secondary"></i>
                                             <h5 class="mb-0 fw-bold">Belum ada data pengumuman yang tersedia.</h5>
                                             <p class="mb-0 mt-2">Silakan klik tombol Tambah Pengumuman Baru di atas untuk membuat pengumuman.</p>
+                                            {{-- Tombol Tambah di Desktop (jika kosong) --}}
+                                            <div class="mt-3">
+                                                <a href="{{ route('admin.pengumuman.create') }}" class="btn btn-sm btn-primary shadow-sm fw-semibold">
+                                                    <i class="fas fa-plus me-2"></i> Tambah Pengumuman Baru
+                                                </a>
+                                            </div>
                                         </td>
                                     </tr>
                                 @endforelse
@@ -120,13 +131,13 @@
                     <div class="d-md-none p-4 pt-4">
                         @forelse($pengumumans as $pengumuman)
                             {{-- Mengubah border color berdasarkan status --}}
-                            <div class="card mb-3 shadow-sm rounded-3 border-start border-5 {{ $pengumuman->status === 'published' ? 'border-success' : 'border-secondary' }}">
+                            <div class="card mb-3 shadow-sm rounded-3 border-start border-2 {{ $pengumuman->status === 'published' ? 'border-success' : 'border-secondary' }}">
                                 <div class="card-body p-3">
                                     
                                     {{-- Baris 1: Judul dan Status --}}
                                     <div class="d-flex justify-content-between align-items-start mb-2 border-bottom pb-2">
                                         <div>
-                                            <h6 class="text-muted mb-0 small">{{ $pengumuman->kategori ?? 'UMUM' }} | #{{ $loop->iteration }}</h6>
+                                            <h6 class="text-muted mb-0 small">{{ $pengumuman->kategori ?? 'UMUM' }} | {{ $loop->iteration }}</h6>
                                             <h5 class="card-title fw-bold text-dark mb-1">{{ $pengumuman->judul }}</h5>
                                         </div>
                                         {{-- Badge Status Mobile --}}
@@ -169,7 +180,14 @@
                             <div class="text-center py-5 text-muted bg-light rounded-3 shadow-sm">
                                 <i class="fas fa-exclamation-circle me-2 fa-3x mb-3 text-secondary"></i>
                                 <h5 class="mb-0 fw-bold">Belum ada data pengumuman yang tersedia.</h5>
-                                <p class="mb-0 mt-2">Silakan klik tombol Tambah Pengumuman Baru di atas untuk membuat pengumuman.</p>
+                                <p class="mb-0 mt-2">Silakan buat pengumuman baru untuk ditampilkan.</p>
+                                
+                                {{-- TOMBOL TAMBAH PENGUMUMAN BARU DITAMPILKAN KHUSUS DI SINI UNTUK MOBILE (jika kosong) --}}
+                                <div class="mt-3">
+                                    <a href="{{ route('admin.pengumuman.create') }}" class="btn btn-primary shadow-sm fw-semibold">
+                                        <i class="fas fa-plus me-2"></i> Tambah Pengumuman Baru
+                                    </a>
+                                </div>
                             </div>
                         @endforelse
                     </div>

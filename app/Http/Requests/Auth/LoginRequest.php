@@ -85,7 +85,7 @@ class LoginRequest extends FormRequest
 
             throw ValidationException::withMessages([
                 // Pesan error diarahkan ke field input utama 'login_id'
-                'login_id' => trans('auth.failed'),
+                'login_id' => trans('Email/NIS dan Password salah.'),
             ]);
         }
 

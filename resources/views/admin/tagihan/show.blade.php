@@ -4,39 +4,12 @@
 @section('page_title', 'Rincian Tagihan Pembayaran')
 
 @section('header_actions')
-    {{-- Container Flex untuk tombol header --}}
-    {{-- Di mobile (default): Tumpuk Vertikal (flex-column) --}}
-    {{-- Di desktop (sm ke atas): Berdampingan Horizontal (flex-sm-row) --}}
-    {{-- Gap 2 antar tombol --}}
     <div class="d-flex flex-column flex-sm-row gap-2 w-100 w-sm-auto"> 
-        
-        {{-- Tombol Edit --}}
-        <a href="{{ route('admin.tagihan.edit', $tagihan) }}" 
-           class="btn btn-warning shadow-sm rounded-pill d-flex align-items-center justify-content-center fw-semibold px-3 w-100 w-sm-auto"> 
-           {{-- w-100 di mobile, w-sm-auto di desktop --}}
-            <i class="fas fa-edit me-2"></i>
-            Edit Tagihan
-        </a>
-        
-        {{-- Tombol Kembali --}}
-        <a href="{{ route('admin.tagihan.index') }}" 
-           class="btn btn-outline-secondary shadow-sm rounded-pill d-flex align-items-center justify-content-center fw-semibold px-3 w-100 w-sm-auto">
-            <i class="fas fa-arrow-left me-2"></i>
-            Kembali ke Daftar
-        </a>
         
     </div>
 @endsection
 
 @section('content')
-
-<div class="container-fluid">
-    <div class="row">
-        <div class="col-12">
-            <h2 class="mb-4 text-dark fw-bold">🔍 Rincian Tagihan #{{ $tagihan->id }}</h2>
-        </div>
-    </div>
-
     <div class="row g-4">
         
         {{-- KOLOM KIRI: Detail Tagihan Utama --}}

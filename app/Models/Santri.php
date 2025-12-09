@@ -34,7 +34,9 @@ class Santri extends Model
         'kelas_id',
         'alamat',
         'tempat_lahir',
-        // Tambahkan field lain yang mungkin ada di tabel 'santris'
+        'jenis_kelamin', // <<< TAMBAHKAN INI
+        'status',
+
     ];
     
     /**
