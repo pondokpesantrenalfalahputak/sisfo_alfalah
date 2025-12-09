@@ -96,8 +96,7 @@
                                 <div class="list-group-item d-flex justify-content-between px-0 py-3 item-detail">
                                     <span class="text-muted fw-semibold"><i class="fas fa-user-tie me-2 text-info-emphasis"></i> Wali Santri</span>
                                     <span class="fw-bold text-dark text-end">
-                                        <?php echo e($santri->user->name ?? 'Tidak Terdaftar'); ?>
-
+                                        <?php echo e($santri->waliSantri->name ?? 'Tidak Terdaftar'); ?> 
                                     </span>
                                 </div>
                                 
@@ -131,19 +130,19 @@
                         
                         
                         <a href="<?php echo e(route('wali.absensi.index')); ?>?santri_id=<?php echo e($santri->id); ?>" 
-                           class="btn btn-danger **btn-md** **w-100 d-md-block** **btn-lg** rounded-3 px-4 btn-hover-scale">
+                           class="btn btn-danger btn-md w-100 d-md-block btn-lg rounded-3 px-4 btn-hover-scale">
                             <i class="fas fa-calendar-times me-1"></i> Lihat Rekap Absensi
                         </a>
                         
                         
                         <a href="<?php echo e(route('wali.tagihan.index')); ?>" 
-                           class="btn btn-warning text-dark **btn-md** **w-100 d-md-block** **btn-lg** rounded-3 px-4 btn-hover-scale">
+                           class="btn btn-warning text-dark btn-md w-100 d-md-block btn-lg rounded-3 px-4 btn-hover-scale">
                             <i class="fas fa-receipt me-1"></i> Cek Tagihan
                         </a>
                         
                         
                         <a href="#" 
-                           class="btn btn-outline-success **btn-md** **w-100 d-md-block** **btn-lg** rounded-3 px-4 btn-hover-scale disabled" title="Fitur Segera Hadir">
+                           class="btn btn-outline-success btn-md w-100 d-md-block btn-lg rounded-3 px-4 btn-hover-scale disabled" title="Fitur Segera Hadir">
                             <i class="fas fa-calculator me-1"></i> Cek Nilai Akademik
                         </a>
                     </div>
@@ -154,7 +153,7 @@
 
         
         <div class="card-footer bg-light p-3 rounded-bottom-4 text-end">
-            <a href="<?php echo e(route('wali.santri.index')); ?>" class="btn btn-secondary **btn-md** rounded-3 px-4">
+            <a href="<?php echo e(route('wali.santri.index')); ?>" class="btn btn-secondary btn-md rounded-3 px-4">
                 <i class="fas fa-arrow-left me-1"></i> Kembali ke Daftar Santri
             </a>
         </div>

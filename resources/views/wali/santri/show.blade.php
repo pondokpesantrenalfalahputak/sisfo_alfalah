@@ -86,17 +86,17 @@
                                     </span>
                                 </div>
                                 
-                                {{-- Nomor Telepon --}}
+                                {{-- Nomor Telepon Santri (jika ada field no_hp di Santri) --}}
                                 <div class="list-group-item d-flex justify-content-between px-0 py-3 item-detail">
                                     <span class="text-muted fw-semibold"><i class="fas fa-phone me-2 text-info-emphasis"></i> Nomor Telepon</span>
                                     <span class="text-end text-secondary">{{ $santri->no_hp ?? '-' }}</span>
                                 </div>
                                 
-                                {{-- Wali Santri --}}
+                                {{-- Wali Santri (PERBAIKAN DI SINI) --}}
                                 <div class="list-group-item d-flex justify-content-between px-0 py-3 item-detail">
                                     <span class="text-muted fw-semibold"><i class="fas fa-user-tie me-2 text-info-emphasis"></i> Wali Santri</span>
                                     <span class="fw-bold text-dark text-end">
-                                        {{ $santri->user->name ?? 'Tidak Terdaftar' }}
+                                        {{ $santri->waliSantri->name ?? 'Tidak Terdaftar' }} 
                                     </span>
                                 </div>
                                 
@@ -117,8 +117,6 @@
                     </div>
                 </div>
             </div>
-
-            ---
 
             {{-- Bagian Tautan Aksi Cepat (UKURAN TOMBOL DIESUAIKAN) --}}
             <div class="row mt-5 pt-4">

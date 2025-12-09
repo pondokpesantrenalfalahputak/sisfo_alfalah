@@ -7,6 +7,12 @@
     <meta name="description" content="Sistem Informasi Akademik Pesantren (SIAP) Al-Falah Putak: Akses data santri, pengumuman, tagihan, dan absensi harian secara real-time. Informasi terpusat untuk Wali Santri dan Staf." />
     <meta name="google-site-verification" content="YZijbyw0-7ALwnUh_RzgJxEJRToGG2qpLcvh6P5Oqls" />
 
+    <link rel="icon" href="{{ asset('Images/kop pondok.png') }}" sizes="32x32" />
+    <link rel="icon" href="{{ asset('Images/kop pondok.png') }}" sizes="192x192" />
+    <link rel="apple-touch-icon" href="{{ asset('Images/kop pondok.png') }}" />
+    <meta name="msapplication-TileImage" content="{{ asset('Images/kop pondok.png') }}" />
+    <link rel="icon" type="image/png" href="{{ asset('Images/kop pondok.png') }}" />
+
     <link rel="icon" type="image/png" href="{{ asset('Images/kop pondok.png') }}" />
     {{-- ✅ Link Bootstrap CDN --}}
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
@@ -220,7 +226,7 @@
             <div class="hero-content container py-5">
                 {{-- ⬇️ KONTEN DENGAN PERBAIKAN KONTRAST --}}
                 <h2 class="hero-title fw-bolder mb-3 lh-sm">
-                    SELAMAT DATANG DI<br>PONDOK PESANTREN MODERN AL-FALAH PUTAK
+                    SELAMAT DATANG DI<br>PONDOK PESANTREN SALAFY AL-FALAH PUTAK
                 </h2>
                 <p class="hero-subtitle fw-bold mb-4 text-light">
                     Mencetak Generasi Terbaik yang Qur'ani, Cerdas, Mandiri, dan Berakhlak Mulia
@@ -431,7 +437,7 @@
                             <i class="fas fa-quote-left fs-4 text-teal-primary mb-3"></i>
                             <p class="text-secondary-emphasis mb-3 fst-italic small">"Pondok Pesantren Al-Falah Putak telah mengubah hidup saya. Saya belajar banyak tentang agama dan teknologi di sini."</p>
                             <div class="mt-auto">
-                                <p class="fw-bold mb-0 text-dark small">MUHAMMAD MAJID</p>
+                                <p class="fw-bold mb-0 text-dark small">NANDA BAGUS SETIAWAN</p>
                                 <span class="text-muted small">Santri Kelas Mahasiswa</span>
                             </div>
                         </div>

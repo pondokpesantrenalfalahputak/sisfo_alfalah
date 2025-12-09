@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Models\Santri; 
-use App\Models\KelasSantri; // HARUS DIIMPOR!
+use App\Models\KelasSantri; 
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -44,10 +44,10 @@ class RegisteredUserController extends Controller
             
             // --- Validasi Data Santri ---
             'nama_santri' => ['required', 'string', 'max:255'],
-            'nis' => ['nullable', 'string', 'max:20', 'unique:'.Santri::class.',nisn'], // NISN diubah ke 'nullable' karena opsional di form
+            'nis' => ['required', 'string', 'max:20', 'unique:'.Santri::class.',nisn'], 
             'tanggal_lahir_santri' => ['required', 'date', 'before:today'],
-            'kelas_id' => ['required', 'exists:kelas_santris,id'], // <-- FIELD BARU
-            'alamat_santri' => ['required', 'string', 'max:500'], // <-- FIELD BARU
+            'kelas_id' => ['required', 'exists:kelas_santris,id'], 
+            'alamat_santri' => ['required', 'string', 'max:500'], 
         ]);
 
         // Gunakan Transaksi untuk memastikan kedua data tersimpan atau tidak sama sekali
@@ -68,8 +68,8 @@ class RegisteredUserController extends Controller
                 'nisn' => $request->nis, 
                 'tanggal_lahir' => $request->tanggal_lahir_santri, 
                 
-                'kelas_id' => $request->kelas_id,      // <-- DIISI DARI FORM
-                'alamat' => $request->alamat_santri,   // <-- DIISI DARI FORM
+                'kelas_id' => $request->kelas_id,     
+                'alamat' => $request->alamat_santri,  
                 
                 // Kolom opsional lain:
                 'tempat_lahir' => null, 

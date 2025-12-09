@@ -105,7 +105,7 @@
                     {{-- Menampilkan Error Validasi --}}
                     @if ($errors->any())
                         <div class="alert alert-danger py-2" role="alert">
-                            <h4 class="alert-heading small fw-bold mb-1"><i class="fas fa-exclamation-triangle me-1"></i> Pendaftaran Gagal!</h4>
+                            <h4 class="alert-heading small fw-bold mb-1"><i class="fas fa-exclamation-triangle me-1"></i> Pendaftaran Gagal! Pastikan Semua Terisi</h4>
                             <ul class="mb-0 small ps-3">
                                 @foreach ($errors->all() as $error)
                                     <li>{{ $error }}</li>

@@ -72,7 +72,7 @@
                 <div class="list-group d-block d-md-none">
                     <?php $__currentLoopData = $santris; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $santri): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                         
-                        <div class="list-group-item list-group-item-action **my-4** shadow-sm border border-2 border-primary rounded-3 card-mobile-santri-detail">
+                        <div class="list-group-item list-group-item-action my-4 shadow-sm border border-2 border-primary rounded-3 card-mobile-santri-detail">
                             <div class="d-flex w-100 justify-content-between align-items-start">
                                 <h6 class="mb-1 fw-bolder text-dark text-truncate">
                                     <?php echo e($index + 1); ?>. <?php echo e(strtoupper($santri->nama)); ?>

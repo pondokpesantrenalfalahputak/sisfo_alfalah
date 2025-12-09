@@ -6,6 +6,12 @@
     <title>@yield('title', 'Admin Panel') - Al-Falah Putak</title>
     <meta name="description" content="Sistem Informasi Akademik Pesantren (SIAP) Al-Falah Putak: Akses data santri, pengumuman, tagihan, dan absensi harian secara real-time. Informasi terpusat untuk Wali Santri dan Staf." />
     <meta name="google-site-verification" content="YZijbyw0-7ALwnUh_RzgJxEJRToGG2qpLcvh6P5Oqls" />
+
+    <link rel="icon" href="{{ asset('Images/kop pondok.png') }}" sizes="32x32" />
+    <link rel="icon" href="{{ asset('Images/kop pondok.png') }}" sizes="192x192" />
+    <link rel="apple-touch-icon" href="{{ asset('Images/kop pondok.png') }}" />
+    <meta name="msapplication-TileImage" content="{{ asset('Images/kop pondok.png') }}" />
+    <link rel="icon" type="image/png" href="{{ asset('Images/kop pondok.png') }}" />
     
     <link rel="icon" type="image/png" href="{{ asset('Images/kop pondok.png') }}" />
     

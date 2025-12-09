@@ -28,7 +28,7 @@
             background-color: var(--background-body);
         }
         .bg-login-image {
-            /* Ganti path image sesuai lokasi file Anda */
+            /* Ganti path image sesuai lokasi */
             background-image: url('<?php echo e(asset('Images/1728115006026 copy.png')); ?>');
             background-size: cover;
             /* 💥 PERBAIKAN: Background position disetel ke tengah-bawah untuk menampilkan subjek utama */
@@ -105,7 +105,7 @@
                     
                     <?php if($errors->any()): ?>
                         <div class="alert alert-danger py-2" role="alert">
-                            <h4 class="alert-heading small fw-bold mb-1"><i class="fas fa-exclamation-triangle me-1"></i> Pendaftaran Gagal!</h4>
+                            <h4 class="alert-heading small fw-bold mb-1"><i class="fas fa-exclamation-triangle me-1"></i> Pendaftaran Gagal! Pastikan Semua Terisi</h4>
                             <ul class="mb-0 small ps-3">
                                 <?php $__currentLoopData = $errors->all(); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $error): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                     <li><?php echo e($error); ?></li>
