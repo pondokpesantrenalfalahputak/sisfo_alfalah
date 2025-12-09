@@ -8,21 +8,27 @@ return new class extends Migration
 {
     /**
      * Jalankan migrasi.
-     * Metode ini membuat tabel 'wali_notifications'.
+     * Metode ini membuat tabel 'wali_notifications' HANYA jika tabel tersebut belum ada.
      */
     public function up(): void
     {
-        Schema::create('wali_notifications', function (Blueprint $table) {
-            $table->id();
-            // Menghubungkan notifikasi ini ke Wali Santri di tabel 'users'.
-            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+        // 🚨 Pengecekan ditambahkan di sini untuk memastikan tabel belum ada.
+        if (!Schema::hasTable('wali_notifications')) {
             
-            $table->string('title'); // Judul notifikasi (misalnya: Pembayaran Dikonfirmasi)
-            $table->text('body');    // Isi notifikasi (deskripsi detail)
-            $table->string('link')->nullable(); // URL tautan ke halaman detail (misalnya: detail tagihan)
-            $table->boolean('is_read')->default(false); // Status sudah dibaca atau belum
-            $table->timestamps();    // Kolom created_at dan updated_at
-        });
+            Schema::create('wali_notifications', function (Blueprint $table) {
+                $table->id();
+                // Menghubungkan notifikasi ini ke Wali Santri di tabel 'users'.
+                // Menggunakan 'users' secara eksplisit meskipun 'constrained()' biasanya sudah tahu.
+                $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+                
+                $table->string('title'); // Judul notifikasi (misalnya: Pembayaran Dikonfirmasi)
+                $table->text('body');    // Isi notifikasi (deskripsi detail)
+                $table->string('link')->nullable(); // URL tautan ke halaman detail (misalnya: detail tagihan)
+                $table->boolean('is_read')->default(false); // Status sudah dibaca atau belum
+                $table->timestamps();    // Kolom created_at dan updated_at
+            });
+            
+        }
     }
 
     /**
