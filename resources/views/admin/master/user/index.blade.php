@@ -17,14 +17,7 @@
     <div class="row">
         <div class="col-12">
 
-            {{-- Slot untuk Notifikasi Sukses/Gagal --}}
-            @if (session('success'))
-                <div class="alert alert-success alert-dismissible fade show rounded-3 shadow-sm border-0" role="alert">
-                    <i class="fas fa-check-circle me-2"></i> {{ session('success') }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            @endif
-
+            
             <div class="card shadow-lg border-0 rounded-4 overflow-hidden">
                 
                 {{-- CARD HEADER DENGAN SEARCH BAR DAN TOMBOL MOBILE --}}

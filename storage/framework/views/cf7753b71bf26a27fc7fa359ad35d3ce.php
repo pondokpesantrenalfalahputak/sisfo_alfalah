@@ -22,7 +22,7 @@
                 
                 <div class="card-header bg-warning text-dark p-4 rounded-top-4">
                     <h4 class="mb-0 fw-bold fs-5"><i class="fas fa-user-edit me-2"></i> Formulir Edit Data User</h4>
-                    <p class="text-secondary small mb-0">Lakukan perubahan pada detail akun dan peran untuk user **<?php echo e($user->name); ?>**.</p>
+                    <p class="text-secondary small mb-0">Lakukan perubahan pada detail akun dan peran untuk user <?php echo e($user->name); ?>.</p>
                 </div>
                 
                 <div class="card-body p-4">

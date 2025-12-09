@@ -54,8 +54,13 @@ class SantriController extends Controller
     public function create()
     {
         $kelas = KelasSantri::all();
-        $walis = User::where('role', 'wali_santri')->get();
-        return view('admin.master.santri.create', compact('kelas', 'walis'));
+        
+        // Perbaikan: Mengubah nama variabel menjadi $waliSantri (tunggal)
+        // untuk mengatasi 'Undefined variable $waliSantri' pada create.blade.php baris 132.
+        $waliSantri = User::where('role', 'wali_santri')->get(); 
+        
+        // Catatan: Variabel 'walis' diubah menjadi 'waliSantri' di compact
+        return view('admin.master.santri.create', compact('kelas', 'waliSantri')); 
     }
 
     // CREATE (Simpan data)

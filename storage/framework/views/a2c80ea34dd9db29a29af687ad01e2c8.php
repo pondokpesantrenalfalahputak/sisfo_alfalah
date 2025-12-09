@@ -12,16 +12,16 @@
             <div class="card shadow-lg border-0 rounded-4 border-start border-5 border-primary">
                 
                 
-                <div class="card-header bg-primary text-white p-3 p-md-4 rounded-top-4"> 
+                <div class="card-header bg-primary text-white p-3 p-md-4 rounded-top-4">
                     <h4 class="mb-0 fw-bold fs-6 fs-md-5"><i class="fas fa-user-plus me-2"></i> Formulir Pendaftaran Santri</h4>
-                    <p class="text-white-50 small mb-0 d-none d-sm-block">Lengkapi data pribadi, akademik, dan status santri baru di bawah ini.</p> 
+                    <p class="text-white-50 small mb-0 d-none d-sm-block">Lengkapi data pribadi, akademik, dan status santri baru di bawah ini.</p>
                 </div>
                 
-                <div class="card-body p-3 p-md-5"> 
+                <div class="card-body p-3 p-md-5">
                     
                     
                     <?php if($errors->any()): ?>
-                        <div class="alert alert-danger alert-dismissible fade show rounded-3 shadow-sm border-0 small" role="alert"> 
+                        <div class="alert alert-danger alert-dismissible fade show rounded-3 shadow-sm border-0 small" role="alert">
                             <h6 class="alert-heading fw-bold text-danger fs-6"><i class="fas fa-exclamation-circle me-2"></i> Ada Kesalahan Validasi!</h6>
                             <p class="small mb-2">Mohon periksa dan koreksi input Anda:</p>
                             <ul class="mb-0 ps-4 list-unstyled">
@@ -40,7 +40,7 @@
                         <h6 class="fw-bold text-dark mb-1 mt-2 text-primary fs-6"><i class="fas fa-id-card me-2"></i> Data Pribadi</h6>
                         <hr class="mt-2 mb-4 border-primary opacity-25"> 
                         
-                        <div class="row g-3 g-md-4"> 
+                        <div class="row g-3 g-md-4">
                             
                             
                             <div class="col-md-6">
@@ -70,7 +70,7 @@ unset($__errorArgs, $__bag); ?>
                             
                             
                             <div class="col-md-6">
-                                <label for="nisn" class="form-label fw-medium text-muted small">NIS <span class="text-danger">*</span></label>
+                                <label for="nisn" class="form-label fw-medium text-muted small">NISN (Nomor Induk Santri Nasional) <span class="text-danger">*</span></label>
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="fas fa-fingerprint"></i></span>
                                     <input type="text" name="nisn" id="nisn" 
@@ -155,7 +155,7 @@ unset($__errorArgs, $__bag); ?>
                         
                         <h6 class="fw-bold text-dark mb-1 mt-2 text-warning fs-6"><i class="fas fa-graduation-cap me-2"></i> Data Akademik & Wali</h6>
                         <hr class="mt-2 mb-4 border-warning opacity-25">
-                        <div class="row g-3 g-md-4"> 
+                        <div class="row g-3 g-md-4">
                             
                             
                             <div class="col-md-6">
@@ -171,6 +171,7 @@ if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>" required>
                                         <option value="" disabled selected>-- Pilih Kelas --</option>
+                                        
                                         <?php $__currentLoopData = $kelas; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $k): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                             <option value="<?php echo e($k->id); ?>" <?php echo e(old('kelas_id') == $k->id ? 'selected' : ''); ?>>
                                                 <?php echo e($k->nama_kelas); ?> (Tingkat <?php echo e($k->tingkat); ?>)
@@ -202,7 +203,8 @@ if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>" required>
                                         <option value="" disabled selected>-- Pilih Wali Santri --</option>
-                                        <?php $__currentLoopData = $walis; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $wali): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                        
+                                        <?php $__currentLoopData = $waliSantri; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $wali): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?> 
                                             <option value="<?php echo e($wali->id); ?>" <?php echo e(old('wali_santri_id') == $wali->id ? 'selected' : ''); ?>>
                                                 <?php echo e($wali->name); ?>
 
@@ -227,7 +229,7 @@ unset($__errorArgs, $__bag); ?>
                         
                         <h6 class="fw-bold text-dark mb-1 mt-2 text-success fs-6"><i class="fas fa-map-marker-alt me-2"></i> Alamat & Status</h6>
                         <hr class="mt-2 mb-4 border-success opacity-25">
-                        <div class="row g-3 g-md-4"> 
+                        <div class="row g-3 g-md-4">
                             
                             
                             <div class="col-md-8">
@@ -268,7 +270,8 @@ if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>" required>
                                         <option value="Aktif" <?php echo e(old('status', 'Aktif') == 'Aktif' ? 'selected' : ''); ?>>Aktif</option>
-                                        <option value="Tidak Aktif" <?php echo e(old('status') == 'Tidak Aktif' ? 'selected' : ''); ?>>Tidak Aktif</option>
+                                        <option value="Non-aktif" <?php echo e(old('status') == 'Non-aktif' ? 'selected' : ''); ?>>Non-aktif</option>
+                                        <option value="Lulus" <?php echo e(old('status') == 'Lulus' ? 'selected' : ''); ?>>Lulus</option>
                                     </select>
                                     <?php $__errorArgs = ['status'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
@@ -287,10 +290,10 @@ unset($__errorArgs, $__bag); ?>
                         
                         
                         <div class="d-flex justify-content-end gap-2 pt-3">
-                            <a href="<?php echo e(route('admin.santri.index')); ?>" class="btn btn-outline-secondary px-3 py-2 shadow-sm fw-semibold rounded-pill small"> 
+                            <a href="<?php echo e(route('admin.santri.index')); ?>" class="btn btn-outline-secondary px-3 py-2 shadow-sm fw-semibold rounded-pill small">
                                 <i class="fas fa-times me-2"></i> Batal
                             </a>
-                            <button type="submit" class="btn btn-primary px-3 py-2 shadow-lg fw-bold rounded-pill small"> 
+                            <button type="submit" class="btn btn-primary px-3 py-2 shadow-lg fw-bold rounded-pill small">
                                 <i class="fas fa-user-plus me-2"></i> Simpan Santri
                             </button>
                         </div>

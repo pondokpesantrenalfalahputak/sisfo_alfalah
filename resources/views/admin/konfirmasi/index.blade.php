@@ -42,12 +42,6 @@
 <div class="container-fluid">
     <div class="row">
         <div class="col-12">
-
-            {{-- Slot untuk Notifikasi Sukses/Gagal --}}
-            {{-- ⚠️ Blok ini DIHAPUS karena sudah ditangani oleh @extends('layouts.admin') --}}
-            {{-- @if (session('success')) ... @endif --}}
-            {{-- @if (session('error')) ... @endif --}}
-
             <div class="card shadow-lg border-0 rounded-4">
                 
                 {{-- HEADER CARD --}}

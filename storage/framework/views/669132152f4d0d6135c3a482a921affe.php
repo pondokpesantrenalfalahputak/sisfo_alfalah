@@ -16,14 +16,7 @@
         <div class="col-12">
 
             
-            <?php if(session('success')): ?>
-                <div class="alert alert-success alert-dismissible fade show rounded-3 shadow-sm border-0" role="alert">
-                    <i class="fas fa-check-circle me-2"></i> <?php echo e(session('success')); ?>
-
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            <?php endif; ?>
-
+            
             <div class="card shadow-lg border-0 rounded-4 overflow-hidden">
                 
                 
@@ -111,7 +104,7 @@
                                         <td colspan="5" class="text-center py-5 text-muted bg-light">
                                             <i class="fas fa-user-times me-2 fa-3x mb-3 text-secondary"></i>
                                             <h5 class="mb-0 fw-bold">Tidak ada data pengguna yang ditemukan.</h5>
-                                            <p class="mb-0 mt-2">Silakan klik tombol **Tambah User Baru** di atas.</p>
+                                            <p class="mb-0 mt-2">Silakan klik tombol Tambah User Baru di atas.</p>
                                         </td>
                                     </tr>
                                 <?php endif; ?>
@@ -191,7 +184,7 @@
                             <div class="text-center py-5 text-muted bg-light rounded-4 shadow-sm">
                                 <i class="fas fa-user-times me-2 fa-3x mb-3 text-secondary"></i>
                                 <h5 class="mb-0 fw-bold">Tidak ada data pengguna yang ditemukan.</h5>
-                                <p class="mb-0 mt-2 small">Silakan gunakan tombol **Tambah User Baru** di atas.</p>
+                                <p class="mb-0 mt-2 small">Silakan gunakan tombol Tambah User Baru di atas.</p>
                             </div>
                         <?php endif; ?>
                     </div>

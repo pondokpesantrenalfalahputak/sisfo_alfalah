@@ -16,15 +16,6 @@
 <div class="container-fluid">
     <div class="row">
         <div class="col-12">
-
-            {{-- Slot untuk Notifikasi Sukses/Gagal --}}
-            @if (session('success'))
-                <div class="alert alert-success alert-dismissible fade show rounded-3 shadow-sm" role="alert">
-                    <i class="fas fa-check-circle me-2"></i> {{ session('success') }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            @endif
-
                 <div class="d-block d-md-none mb-3 px-3">
                     <a href="{{ route('admin.rekening.create') }}" class="btn btn-primary shadow-sm d-flex align-items-center fw-semibold w-100">
                     <i class="fas fa-plus me-2"></i> Tambah Rekening Baru

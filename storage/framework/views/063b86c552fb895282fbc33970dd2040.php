@@ -52,15 +52,6 @@
         <div class="col-12">
 
             
-            <?php if(session('success')): ?>
-                <div class="alert alert-success alert-dismissible fade show rounded-3 shadow-sm border-0" role="alert">
-                    <i class="fas fa-check-circle me-2"></i> <?php echo e(session('success')); ?>
-
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            <?php endif; ?>
-            
-            
             <div class="d-flex justify-content-end mb-3 d-md-none">
                 <a href="<?php echo e(route('admin.santri.create')); ?>" class="btn btn-primary btn-header-mobile d-flex align-items-center fw-semibold border-0 shadow-sm rounded-3 smooth-transition">
                     <i class="fas fa-plus me-1"></i> Tambah Baru
@@ -131,11 +122,11 @@
                                     </td>
                                     <td class="text-center text-nowrap">
                                         
-                                        <div class="btn-group btn-group-sm smooth-transition" role="group">
-                                            <a href="<?php echo e(route('admin.santri.show', $santri)); ?>" class="btn btn-outline-primary" title="Lihat Detail">
+                                        <div class="d-flex justify-content-center smooth-transition gap-1"> 
+                                            <a href="<?php echo e(route('admin.santri.show', $santri)); ?>" class="btn btn-sm btn-outline-primary" title="Lihat Detail">
                                                 <i class="fas fa-eye"></i>
                                             </a>
-                                            <a href="<?php echo e(route('admin.santri.edit', $santri)); ?>" class="btn btn-outline-warning" title="Edit Data">
+                                            <a href="<?php echo e(route('admin.santri.edit', $santri)); ?>" class="btn btn-sm btn-outline-warning" title="Edit Data">
                                                 <i class="fas fa-edit"></i>
                                             </a>
                                             
@@ -143,7 +134,7 @@
                                             <form action="<?php echo e(route('admin.santri.destroy', $santri)); ?>" method="POST" class="d-inline">
                                                 <?php echo csrf_field(); ?>
                                                 <?php echo method_field('DELETE'); ?>
-                                                <button type="submit" class="btn btn-outline-danger delete-confirm" title="Hapus Data" data-santri="<?php echo e($santri->nama_lengkap); ?>">
+                                                <button type="submit" class="btn btn-sm btn-outline-danger delete-confirm" title="Hapus Data" data-santri="<?php echo e($santri->nama_lengkap); ?>">
                                                     <i class="fas fa-trash"></i>
                                                 </button>
                                             </form>
@@ -241,7 +232,7 @@
                         <div class="card-footer bg-light border-0 pt-3 rounded-bottom-4">
                             <div class="d-flex flex-column flex-md-row justify-content-between align-items-center small text-muted">
                                 <div class="mb-2 mb-md-0">
-                                    Menampilkan { $santris->firstItem() ?? 0 }} hingga <?php echo e($santris->lastItem() ?? 0); ?> dari <?php echo e($santris->total()); ?> data
+                                    Menampilkan <?php echo e($santris->firstItem() ?? 0); ?> hingga <?php echo e($santris->lastItem() ?? 0); ?> dari <?php echo e($santris->total()); ?> data
                                 </div>
                                 <div>
                                     <?php echo e($santris->appends(request()->query())->links('pagination::bootstrap-5')); ?>

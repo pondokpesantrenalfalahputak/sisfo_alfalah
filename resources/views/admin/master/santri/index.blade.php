@@ -53,14 +53,6 @@
     <div class="row">
         <div class="col-12">
 
-            {{-- Slot untuk Notifikasi Sukses/Gagal --}}
-            @if (session('success'))
-                <div class="alert alert-success alert-dismissible fade show rounded-3 shadow-sm border-0" role="alert">
-                    <i class="fas fa-check-circle me-2"></i> {{ session('success') }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            @endif
-            
             {{-- Tombol Tambah Santri di mobile (Diposisikan di atas card) --}}
             <div class="d-flex justify-content-end mb-3 d-md-none">
                 <a href="{{ route('admin.santri.create') }}" class="btn btn-primary btn-header-mobile d-flex align-items-center fw-semibold border-0 shadow-sm rounded-3 smooth-transition">
@@ -97,7 +89,7 @@
                 <div class="card-body p-0">
                     
                     {{-- ========================================================= --}}
-                    {{-- 1. Tampilan Desktop (Tabel Minimalis & Halus) --}}
+                    {{-- 1. Tampilan Desktop (Tabel Minimalis & Halus) - DIPERBAIKI --}}
                     {{-- ========================================================= --}}
                     <div class="table-responsive d-none d-md-block">
                         <table class="table table-hover align-middle mb-0">
@@ -130,12 +122,12 @@
                                         </span>
                                     </td>
                                     <td class="text-center text-nowrap">
-                                        {{-- Tombol Aksi Minimalis --}}
-                                        <div class="btn-group btn-group-sm smooth-transition" role="group">
-                                            <a href="{{ route('admin.santri.show', $santri) }}" class="btn btn-outline-primary" title="Lihat Detail">
+                                        {{-- Tombol Aksi Minimalis - Menggunakan d-flex dan gap-1 untuk jarak --}}
+                                        <div class="d-flex justify-content-center smooth-transition gap-1"> 
+                                            <a href="{{ route('admin.santri.show', $santri) }}" class="btn btn-sm btn-outline-primary" title="Lihat Detail">
                                                 <i class="fas fa-eye"></i>
                                             </a>
-                                            <a href="{{ route('admin.santri.edit', $santri) }}" class="btn btn-outline-warning" title="Edit Data">
+                                            <a href="{{ route('admin.santri.edit', $santri) }}" class="btn btn-sm btn-outline-warning" title="Edit Data">
                                                 <i class="fas fa-edit"></i>
                                             </a>
                                             
@@ -143,7 +135,7 @@
                                             <form action="{{ route('admin.santri.destroy', $santri) }}" method="POST" class="d-inline">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button type="submit" class="btn btn-outline-danger delete-confirm" title="Hapus Data" data-santri="{{ $santri->nama_lengkap }}">
+                                                <button type="submit" class="btn btn-sm btn-outline-danger delete-confirm" title="Hapus Data" data-santri="{{ $santri->nama_lengkap }}">
                                                     <i class="fas fa-trash"></i>
                                                 </button>
                                             </form>
@@ -164,7 +156,7 @@
                     </div>
                     
                     {{-- ========================================================= --}}
-                    {{-- 2. Tampilan Mobile (Card List Halus) - SUDAH DIPERBAIKI --}}
+                    {{-- 2. Tampilan Mobile (Card List Halus) --}}
                     {{-- ========================================================= --}}
                     <div class="d-md-none p-3">
                         @forelse($santris as $index => $santri)
@@ -192,7 +184,7 @@
                                             <span class="badge rounded-pill bg-info-subtle text-info fw-bold">{{ $santri->kelas?->nama_kelas ?? 'Tanpa Kelas' }}</span>
                                         </div>
                                         
-                                        {{-- Jenis Kelamin: col-12 (Perbaikan) --}}
+                                        {{-- Jenis Kelamin: col-12 --}}
                                         <div class="col-12">
                                             <span class="text-muted d-block fw-normal small">Jenis Kelamin</span>
                                             <span class="fw-semibold text-dark">{{ $santri->jenis_kelamin }}</span>
@@ -205,7 +197,7 @@
                                         </div>
                                     </div>
 
-                                    {{-- Aksi --}}
+                                    {{-- Aksi - Sudah menggunakan d-flex gap-2 --}}
                                     <div class="d-flex gap-2 pt-2 border-top">
                                         
                                         <a href="{{ route('admin.santri.show', $santri) }}" class="btn btn-sm btn-outline-primary fw-semibold w-100 smooth-transition" title="Lihat Detail">
@@ -240,7 +232,7 @@
                         <div class="card-footer bg-light border-0 pt-3 rounded-bottom-4">
                             <div class="d-flex flex-column flex-md-row justify-content-between align-items-center small text-muted">
                                 <div class="mb-2 mb-md-0">
-                                    Menampilkan { $santris->firstItem() ?? 0 }} hingga {{ $santris->lastItem() ?? 0 }} dari {{ $santris->total() }} data
+                                    Menampilkan {{ $santris->firstItem() ?? 0 }} hingga {{ $santris->lastItem() ?? 0 }} dari {{ $santris->total() }} data
                                 </div>
                                 <div>
                                     {{ $santris->appends(request()->query())->links('pagination::bootstrap-5') }}

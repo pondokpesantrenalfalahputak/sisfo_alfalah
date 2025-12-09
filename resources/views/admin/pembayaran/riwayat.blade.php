@@ -59,15 +59,6 @@
 <div class="container-fluid">
     <div class="row">
         <div class="col-12">
-
-            {{-- Notifikasi Sukses/Gagal (Jika ada) --}}
-            @if (session('success'))
-                <div class="alert alert-success alert-dismissible fade show rounded-3 shadow-sm" role="alert">
-                    <i class="fas fa-check-circle me-2"></i> {{ session('success') }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            @endif
-
             <div class="card shadow-lg border-0 rounded-4">
                 
                 {{-- CARD HEADER DENGAN WARNA PRIMER --}}
