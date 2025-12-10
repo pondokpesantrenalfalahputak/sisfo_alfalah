@@ -42,7 +42,7 @@
                                 <label for="nama_kelas" class="form-label fw-semibold small text-muted mb-1">Nama Kelas <span class="text-danger">*</span></label>
                                 <div class="input-group">
                                     <span class="input-group-text bg-light text-primary border-end-0"><i class="fas fa-school"></i></span>
-                                    <input type="text" name="nama_kelas" **id="nama_kelas"**
+                                    <input type="text" name="nama_kelas" id="nama_kelas"
                                            class="form-control <?php $__errorArgs = ['nama_kelas'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
@@ -74,7 +74,7 @@ unset($__errorArgs, $__bag); ?>
                                 <label for="tingkat" class="form-label fw-semibold small text-muted mb-1">Tingkat Kelas <span class="text-danger">*</span></label>
                                 <div class="input-group">
                                     <span class="input-group-text bg-light text-info border-end-0"><i class="fas fa-layer-group"></i></span>
-                                    <select name="tingkat" **id="tingkat"** 
+                                    <select name="tingkat" id="tingkat"
                                             class="form-select <?php $__errorArgs = ['tingkat'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :

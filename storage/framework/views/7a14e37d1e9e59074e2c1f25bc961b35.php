@@ -14,7 +14,7 @@
 <div class="container-fluid">
     <div class="row">
         <div class="col-12">
-            <h2 class="mb-4 text-dark fw-bold">✏️ Edit Tagihan Santri</h2>
+
 
             <div class="card shadow-lg border-0 rounded-4 border-start border-5 border-warning">
                 

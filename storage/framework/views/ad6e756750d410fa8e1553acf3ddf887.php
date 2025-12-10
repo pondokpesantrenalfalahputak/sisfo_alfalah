@@ -2,27 +2,111 @@
 
 <?php $__env->startPush('styles'); ?>
 <style>
-    /* Styling Card Modern */
+    /* Styling Card Modern (General) */
     .card-modern {
         border: none;
         border-radius: 1rem !important;
         box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.08);
     }
     
-    /* Warna Aksen */
+    /* Warna Aksen Desktop */
     .bg-dark-blue { background-color: #0d47a1 !important; } 
-    /* Mengubah nama kelas ini agar lebih generik untuk latar merah */
     .bg-danger-alpha-header { background-color: #dc3545 !important; } 
     
-    /* Mobile Styling (Sudah Baik) */
+    /* --- CUSTOM STYLING UNTUK DESKTOP (Minimalis) --- */
+    @media (min-width: 992px) {
+        /* Memastikan tombol aksi massal memiliki lebar yang cukup, tidak memanjang */
+        .btn-input-massal-desktop {
+            min-width: 180px; 
+            width: auto !important; 
+        }
+        
+        /* Set lebar spesifik untuk filter */
+        .filter-bulan-desktop { width: 150px !important; }
+        .filter-tahun-desktop { width: 90px !important; }
+    }
+    
+    /* --- MOBILE STYLING (RESPONSIVE - TABLE TO CARD) --- */
     @media (max-width: 767.98px) {
+        /* Menyembunyikan tampilan tabel di bawah 768px */
         .table-responsive table { border: 0; }
         .table-responsive table thead { display: none; }
-        .table-responsive table tr { display: block; margin-bottom: 0.8rem; border: 1px solid #dee2e6; border-radius: 0.5rem; }
-        .table-responsive table td { display: block; text-align: right !important; padding-left: 50% !important; position: relative; }
-        .table-responsive table td:before { content: attr(data-label); position: absolute; left: 0; width: 50%; padding-left: 1rem; font-weight: 600; text-align: left; color: #495057; }
-        .mobile-label-alpha { background-color: #f8d7da; font-weight: bold !important; }
-        .mobile-label-total { background-color: #ffc107; color: #212529; font-weight: bold !important; }
+        
+        /* Setiap baris (TR) menjadi blok data terpisah */
+        .table-responsive table tr { 
+            display: block; 
+            margin-bottom: 1rem; 
+            border: 1px solid #dee2e6; 
+            border-radius: 0.5rem; 
+            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.03);
+            overflow: hidden;
+        }
+        
+        /* Setiap sel (TD) diatur untuk responsif */
+        .table-responsive table td { 
+            display: block; 
+            text-align: right !important; 
+            padding-left: 50% !important; 
+            position: relative;
+            border: none;
+            border-bottom: 1px solid #f0f0f0; 
+            padding-top: 0.6rem !important;
+            padding-bottom: 0.6rem !important;
+        }
+        
+        /* Label Kolom */
+        .table-responsive table td:before { 
+            content: attr(data-label); 
+            position: absolute; 
+            left: 0; 
+            width: 50%; 
+            padding-left: 1rem; 
+            font-weight: 600; 
+            text-align: left; 
+            color: #495057; 
+            white-space: nowrap;
+            font-size: 0.85rem;
+        }
+        
+        /* Styling Khusus Baris NAMA */
+        .td-name {
+            background-color: #f8f9fa;
+            border-top-left-radius: 0.5rem;
+            border-top-right-radius: 0.5rem;
+            font-weight: 700;
+        }
+        
+        /* Styling Khusus Baris TOTAL ALPHA */
+        .td-total-alpha {
+            background-color: #fffae0; 
+            font-weight: bold;
+            color: #212529;
+            border-top: 1px solid #ffeeba !important;
+            border-bottom: none; 
+            font-size: 1.1rem;
+        }
+        
+        /* Styling Khusus Baris Aksi */
+        .td-action {
+            text-align: center !important;
+            border-top: 1px solid #f0f0f0 !important;
+            padding: 0.75rem 1rem !important;
+            padding-left: 1rem !important;
+        }
+        .td-action:before {
+            content: "";
+        }
+        .td-keterangan {
+            font-style: italic;
+            font-size: 0.8rem;
+            color: #6c757d;
+        }
+        
+        /* Memastikan tombol aksi massal mengambil lebar penuh di mobile */
+        .btn-input-massal-desktop {
+             width: 100% !important;
+             min-width: auto !important;
+        }
     }
 </style>
 <?php $__env->stopPush(); ?>
@@ -33,7 +117,7 @@
     use Carbon\Carbon;
     $alphaWarningLimit = 3; 
 
-    // Mendefinisikan fungsi helper untuk Action Buttons (Refactored untuk penataan)
+    // Mendefinisikan fungsi helper untuk Action Buttons
     function renderActionButtons($absensi) {
         $santriName = optional($absensi->santri)->nama_lengkap ?? 'Santri Tidak Dikenal'; 
         
@@ -49,15 +133,17 @@
         $deleteUrl = route('admin.absensi_rekap.destroy', $absensi->id);
 
         echo "
-        <a href=\"{$editUrl}\" class=\"btn btn-sm btn-warning rounded-pill px-3 shadow-sm\" title=\"Edit Data Satuan\">
-            <i class=\"fas fa-pencil-alt\"></i>
-        </a>
-        <form action=\"{$deleteUrl}\" method=\"POST\" class=\"d-inline\" onsubmit=\"return confirm('Yakin ingin menghapus REKAPITULASI ALPHA SANTRI {$santriName} bulan ini? Tindakan ini tidak dapat dibatalkan.');\">
-            " . csrf_field() . method_field('DELETE') . "
-            <button type=\"submit\" class=\"btn btn-sm btn-danger rounded-pill px-3 shadow-sm\" title=\"Hapus Data Satuan\">
-                <i class=\"fas fa-trash-alt\"></i>
-            </button>
-        </form>
+        <div class=\"d-flex justify-content-end justify-content-md-center gap-1\">
+            <a href=\"{$editUrl}\" class=\"btn btn-sm btn-warning rounded-pill px-3 shadow-sm\" title=\"Edit Data Satuan\">
+                <i class=\"fas fa-pencil-alt\"></i>
+            </a>
+            <form action=\"{$deleteUrl}\" method=\"POST\" class=\"d-inline\" onsubmit=\"return confirm('Yakin ingin menghapus REKAPITULASI ALPHA SANTRI {$santriName} bulan ini? Tindakan ini tidak dapat dibatalkan.');\">
+                " . csrf_field() . method_field('DELETE') . "
+                <button type=\"submit\" class=\"btn btn-sm btn-danger rounded-pill px-3 shadow-sm\" title=\"Hapus Data Satuan\">
+                    <i class=\"fas fa-trash-alt\"></i>
+                </button>
+            </form>
+        </div>
         ";
     }
 ?>
@@ -80,28 +166,34 @@
                     <div class="d-flex justify-content-between align-items-center flex-column flex-lg-row pt-3 gap-3">
                         
                         
-                        <form method="GET" action="<?php echo e(route('admin.absensi_rekap.index')); ?>" class="d-flex flex-wrap justify-content-center align-items-center gap-2 p-0 w-100 w-lg-auto">
+                        <form method="GET" action="<?php echo e(route('admin.absensi_rekap.index')); ?>" class="w-100 w-lg-auto order-lg-1">
                             
-                            <strong class="me-lg-1 text-dark small text-nowrap d-none d-lg-block">Filter Bulan:</strong>
-                            
-                            <select name="bulan" class="form-select form-select-sm fw-semibold flex-grow-1">
-                                <?php for($m = 1; $m <= 12; $m++): ?>
-                                    <option value="<?php echo e($m); ?>" <?php echo e($m == $bulan ? 'selected' : ''); ?>>
-                                        <?php echo e(Carbon::create()->month($m)->translatedFormat('F')); ?>
+                            <div class="d-flex align-items-center">
+                                
+                                
+                                <select name="bulan" class="form-select form-select-sm fw-semibold me-3 filter-bulan-desktop">
+                                    <?php for($m = 1; $m <= 12; $m++): ?>
+                                        <option value="<?php echo e($m); ?>" <?php echo e($m == $bulan ? 'selected' : ''); ?>>
+                                            <?php echo e(Carbon::create()->month($m)->translatedFormat('F')); ?>
 
-                                    </option>
-                                <?php endfor; ?>
-                            </select>
-                            <select name="tahun" class="form-select form-select-sm fw-semibold" style="width: 100px;">
-                                <?php for($y = Carbon::now()->year; $y >= 2020; $y--): ?>
-                                    <option value="<?php echo e($y); ?>" <?php echo e($y == $tahun ? 'selected' : ''); ?>><?php echo e($y); ?></option>
-                                <?php endfor; ?>
-                            </select>
-                            <button type="submit" class="btn btn-primary btn-sm px-3 flex-shrink-0"><i class="fas fa-search"></i> Cari</button>
+                                        </option>
+                                    <?php endfor; ?>
+                                </select>
+                                
+                                
+                                <select name="tahun" class="form-select form-select-sm fw-semibold me-3 filter-tahun-desktop">
+                                    <?php for($y = Carbon::now()->year; $y >= 2020; $y--): ?>
+                                        <option value="<?php echo e($y); ?>" <?php echo e($y == $tahun ? 'selected' : ''); ?>><?php echo e($y); ?></option>
+                                    <?php endfor; ?>
+                                </select>
+                                
+                                
+                                <button type="submit" class="btn btn-primary btn-sm px-3 flex-shrink-0"><i class="fas fa-search"></i> Cari</button>
+                            </div>
                         </form>
 
                         
-                        <a href="<?php echo e(route('admin.absensi_rekap.create_multi', ['bulan' => $bulan, 'tahun' => $tahun])); ?>" class="btn btn-success btn-icon-split shadow rounded-pill px-4 flex-shrink-0 w-100 w-lg-auto">
+                        <a href="<?php echo e(route('admin.absensi_rekap.create_multi', ['bulan' => $bulan, 'tahun' => $tahun])); ?>" class="btn btn-success btn-icon-split shadow rounded-pill px-4 flex-shrink-0 w-lg-auto btn-input-massal-desktop order-lg-2">
                             <span class="text fw-bold">
                                 <i class="fas fa-edit me-1"></i> Input/Edit Massal
                             </span>
@@ -121,7 +213,7 @@
                     <div class="table-responsive">
                         
                         
-                        <table class="table table-striped table-bordered align-middle d-none d-md-table" width="100%" cellspacing="0">
+                        <table class="table table-striped table-bordered align-middle" width="100%" cellspacing="0">
                             <thead class="bg-dark-blue text-white text-center shadow-sm">
                                 <tr>
                                     <th rowspan="2" class="align-middle text-nowrap" style="width: 5%;">No</th>
@@ -142,40 +234,47 @@
                                 <?php $__empty_1 = true; $__currentLoopData = $absensis; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $absensi): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
                                 <?php
                                     $totalAlpha = $absensi->ngaji_alpha + $absensi->sholat_alpha + $absensi->roan_alpha;
-                                    // Highlight hanya total alpha cell, bukan seluruh baris (table-striped yang bekerja)
                                     $totalCellClass = ($totalAlpha >= $alphaWarningLimit) ? 'bg-danger-subtle fw-bolder text-danger' : 'bg-warning-subtle fw-bolder text-dark'; 
                                     $nameCellClass = ($totalAlpha >= $alphaWarningLimit) ? 'fw-bold text-danger' : 'fw-semibold text-dark'; 
                                 ?>
                                 <tr>
-                                    <td class="text-center align-middle"><?php echo e($absensis->firstItem() + $index); ?></td>
-                                    <td class="align-middle <?php echo e($nameCellClass); ?>">
+                                    
+                                    <td data-label="No" class="text-center align-middle"><?php echo e($absensis->firstItem() + $index); ?></td>
+                                    
+                                    
+                                    <td data-label="Nama Santri" class="align-middle td-name <?php echo e($nameCellClass); ?>">
                                         <?php echo e(optional($absensi->santri)->nama_lengkap ?? 'N/A'); ?>
 
                                         <?php if($totalAlpha >= $alphaWarningLimit): ?>
-                                            
                                             <span class="badge bg-danger rounded-pill ms-1 p-1" title="Perlu Peringatan Keras (Alpha >= <?php echo e($alphaWarningLimit); ?>)">
                                                 <i class="fas fa-bell"></i> Peringatan
                                             </span>
                                         <?php endif; ?>
                                     </td>
-                                    <td class="text-center align-middle"><?php echo e(optional($absensi->kelas)->nama_kelas ?? '-'); ?></td>
                                     
                                     
-                                    <td class="text-center align-middle">
+                                    <td data-label="Kelas" class="text-center align-middle"><?php echo e(optional($absensi->kelas)->nama_kelas ?? '-'); ?></td>
+                                    
+                                    
+                                    <td data-label="Alpha Ngaji" class="text-center align-middle">
                                         <?php if($absensi->ngaji_alpha > 0): ?>
                                             <span class="badge rounded-pill bg-danger p-2"><?php echo e($absensi->ngaji_alpha); ?></span>
                                         <?php else: ?>
                                             <span class="badge rounded-pill text-success border border-success px-2 py-1 small fw-normal">0</span>
                                         <?php endif; ?>
                                     </td>
-                                    <td class="text-center align-middle">
+                                    
+                                    
+                                    <td data-label="Alpha Sholat" class="text-center align-middle">
                                         <?php if($absensi->sholat_alpha > 0): ?>
                                             <span class="badge rounded-pill bg-danger p-2"><?php echo e($absensi->sholat_alpha); ?></span>
                                         <?php else: ?>
                                             <span class="badge rounded-pill text-success border border-success px-2 py-1 small fw-normal">0</span>
                                         <?php endif; ?>
                                     </td>
-                                    <td class="text-center align-middle">
+                                    
+                                    
+                                    <td data-label="Alpha Roan" class="text-center align-middle">
                                         <?php if($absensi->roan_alpha > 0): ?>
                                             <span class="badge rounded-pill bg-danger p-2"><?php echo e($absensi->roan_alpha); ?></span>
                                         <?php else: ?>
@@ -184,18 +283,16 @@
                                     </td>
                                     
                                     
-                                    <td class="text-center align-middle <?php echo e($totalCellClass); ?>">
+                                    <td data-label="TOTAL ALPHA" class="text-center align-middle td-total-alpha <?php echo e($totalCellClass); ?>">
                                         <span class="fs-6"><?php echo e($totalAlpha); ?></span>
                                     </td>
 
                                     
-                                    <td class="small align-middle text-muted"><?php echo e($absensi->keterangan ?? '-'); ?></td>
+                                    <td data-label="Keterangan" class="small align-middle text-muted td-keterangan"><?php echo e($absensi->keterangan ?? '-'); ?></td>
 
                                     
-                                    <td class="text-center align-middle text-nowrap">
-                                        <div class="d-flex justify-content-center gap-1">
-                                            <?php renderActionButtons($absensi) ?> 
-                                        </div>
+                                    <td data-label="Aksi" class="align-middle text-nowrap td-action">
+                                        <?php renderActionButtons($absensi) ?> 
                                     </td>
                                 </tr>
                                 <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
@@ -210,74 +307,6 @@
                             </tbody>
                         </table>
                         
-                        
-                        <div class="d-md-none">
-                            <?php $__empty_1 = true; $__currentLoopData = $absensis; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $absensi): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
-                            <?php
-                                $totalAlpha = $absensi->ngaji_alpha + $absensi->sholat_alpha + $absensi->roan_alpha;
-                                $cardClass = ($totalAlpha >= $alphaWarningLimit) ? 'border-danger shadow-lg' : 'border-light shadow-sm';
-                                $alphaBg = ($totalAlpha >= $alphaWarningLimit) ? 'bg-danger text-white' : 'bg-warning text-dark';
-                            ?>
-                            <div class="card <?php echo e($cardClass); ?> mb-3 rounded-3 border-start border-5 p-2">
-                                <div class="card-body p-3">
-                                    <div class="d-flex justify-content-between align-items-start mb-2 border-bottom pb-2">
-                                        <h6 class="mb-0 fw-bold text-dark">
-                                            <?php echo e($absensis->firstItem() + $index); ?>. <?php echo e(optional($absensi->santri)->nama_lengkap ?? 'N/A'); ?>
-
-                                            <?php if($totalAlpha >= $alphaWarningLimit): ?>
-                                                <i class="fas fa-exclamation-circle text-danger ms-1" title="Perlu Peringatan"></i>
-                                            <?php endif; ?>
-                                        </h6>
-                                        <span class="badge bg-primary rounded-pill fw-bold"><?php echo e(optional($absensi->kelas)->nama_kelas ?? 'Non-Kelas'); ?></span>
-                                    </div>
-
-                                    <div class="row g-2">
-                                        
-                                        <div class="col-4">
-                                            <div class="p-2 text-center rounded <?php echo e($alphaBg); ?>">
-                                                <small class="d-block text-uppercase fw-semibold opacity-75">Total</small>
-                                                <span class="fw-bolder fs-5"><?php echo e($totalAlpha); ?></span>
-                                            </div>
-                                        </div>
-                                        
-                                        <div class="col-8">
-                                            <div class="d-flex justify-content-around text-center h-100 align-items-center">
-                                                <div class="flex-fill border-end pe-2">
-                                                    <small class="d-block fw-semibold text-muted small"><i class="fas fa-book-open"></i></small>
-                                                    <span class="badge bg-danger"><?php echo e($absensi->ngaji_alpha); ?></span>
-                                                </div>
-                                                <div class="flex-fill border-end px-2">
-                                                    <small class="d-block fw-semibold text-muted small"><i class="fas fa-mosque"></i></small>
-                                                    <span class="badge bg-danger"><?php echo e($absensi->sholat_alpha); ?></span>
-                                                </div>
-                                                <div class="flex-fill ps-2">
-                                                    <small class="d-block fw-semibold text-muted small"><i class="fas fa-broom"></i></small>
-                                                    <span class="badge bg-danger"><?php echo e($absensi->roan_alpha); ?></span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    
-                                    
-                                    <p class="small text-muted mt-3 mb-2 border-top pt-2">
-                                        <span class="fw-semibold"><i class="fas fa-comment-dots me-1"></i> Ket:</span> <?php echo e($absensi->keterangan ?? '-'); ?>
-
-                                    </p>
-                                    
-                                    
-                                    <div class="d-flex justify-content-end gap-2 mt-2">
-                                        <?php renderActionButtons($absensi) ?>
-                                    </div>
-                                </div>
-                            </div>
-                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
-                            <div class="p-4 text-center text-muted bg-light rounded-4 border border-dashed border-secondary">
-                                <i class="fas fa-info-circle me-1 fa-3x text-info mb-2"></i><br>
-                                <h6 class="fw-bold">Tidak ada data rekapitulasi Alpha.</h6>
-                                <p class="small mb-0">Silakan pilih bulan/tahun lain atau klik tombol Input/Edit Rekap Massal di atas.</p>
-                            </div>
-                            <?php endif; ?>
-                        </div>
                     </div>
                     
                     <div class="d-flex justify-content-end mt-3">

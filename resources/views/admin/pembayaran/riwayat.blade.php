@@ -53,7 +53,6 @@
 </style>
 @endpush
 
-
 @section('content')
 
 <div class="container-fluid">

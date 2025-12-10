@@ -9,12 +9,15 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str; 
 
+// ✅ IMPORT KOMPONEN QUEUE/EVENT
+use App\Models\User; // Digunakan untuk find Wali Santri
+use App\Events\AttendanceUpdated; 
+
 // ✅ IMPORT MODEL YANG DIPERLUKAN
 use App\Models\Santri;
 use App\Models\AbsensiHarian;
-use App\Models\WaliNotification; 
 use App\Models\KelasSantri; 
-
+// App\Models\WaliNotification TIDAK diimpor karena diganti Event/Queue
 
 class AbsensiHarianBaruController extends Controller
 {
@@ -44,30 +47,23 @@ class AbsensiHarianBaruController extends Controller
         ]
     ];
 
-    // 🛑 CATATAN: Fungsi getMockKelasData telah dihilangkan.
-    
     // ----------------------------------------------------
-    // --- Langkah 1: INDEX ---
+    // --- Langkah 1: INDEX (PILIH KELAS) ---
     // ----------------------------------------------------
     public function index()
     {
-        // ✅ PERBAIKAN: Mengambil SEMUA data kelas (termasuk 'tingkat') menggunakan ->get()
-        // Variabel diubah menjadi $kelasListData
         $kelasListData = KelasSantri::orderBy('tingkat', 'asc')->get();
         $date = Carbon::now()->translatedFormat('d F Y');
-
-        // Mengirim $kelasListData ke view (sesuai perubahan di index.blade.php)
         return view('admin.absensi.harian.index', compact('kelasListData', 'date'));
     }
 
     // ----------------------------------------------------
-    // --- Langkah 2: SELECT ACTIVITY ---
+    // --- Langkah 2: SELECT ACTIVITY (PILIH KEGIATAN) ---
     // ----------------------------------------------------
     public function selectActivity($kelas_id)
     {
         $kelas_id = (int) $kelas_id;
         
-        // ✅ PERBAIKAN: Mengambil data kelas dari database (menggunakan pluck tetap oke di sini)
         $kelasData = KelasSantri::all()->pluck('nama_kelas', 'id');
         
         if (!isset($kelasData[$kelas_id])) {
@@ -78,24 +74,26 @@ class AbsensiHarianBaruController extends Controller
         $activities = self::$allActivities;
         
         // Logika Filtering Kegiatan
-        // Pastikan pengecekan ID MTs/MA menggunakan ID database yang benar (1, 2, 3, dst)
         $isMTs = in_array($kelas_id, [1, 2, 3]); 
         $isMA = in_array($kelas_id, [4, 5, 6]);
         
         $mengajiKey = 'Mengaji & Formal';
         $lainnyaKey = 'Lainnya';
         
+        // PERHATIAN: Logika Filtering disinkronkan agar konsisten
         if ($isMTs) {
-            unset($activities[$mengajiKey]['Ngaji Pagi']);
+            unset($activities[$mengajiKey]['Ngaji sore']);
             unset($activities[$mengajiKey]['Ngaji Siang']);
-            unset($activities[$lainnyaKey]['Roan Kebersihan Pagi']);
+            unset($activities[$lainnyaKey]['Roan Kebersihan sore']);
         } elseif ($isMA) {
-            unset($activities[$mengajiKey]['Ngaji Siang']);
-            unset($activities[$mengajiKey]['Ngaji Sore']);
-            unset($activities[$lainnyaKey]['Roan Kebersihan Sore']);
+            unset($activities[$mengajiKey]['Ngaji pagi']);
+            unset($activities[$mengajiKey]['Ngaji siang']);
+            unset($activities[$lainnyaKey]['Roan Kebersihan pagi']);
         } else {
-            unset($activities[$mengajiKey]['Ngaji Sore']);
-            unset($activities[$lainnyaKey]['Roan Kebersihan Sore']);
+            // Logika default jika kelas_id tidak tergolong MTs/MA tertentu
+            unset($activities[$mengajiKey]['Ngaji pagi']);
+            unset($activities[$mengajiKey]['Ngaji siang']);
+            unset($activities[$lainnyaKey]['Roan Kebersihan pagi']);
         }
 
         $date = Carbon::now()->translatedFormat('d F Y');
@@ -104,27 +102,12 @@ class AbsensiHarianBaruController extends Controller
     }
 
     // ----------------------------------------------------
-    // --- Langkah 3: CREATE ---
+    // --- Langkah 3: CREATE (TAMPILKAN FORM) ---
     // ----------------------------------------------------
     public function create(Request $request)
     {
         $kelas_id = $request->input('kelas');
         $kegiatan_spesifik = $request->input('kegiatan_spesifik');
-
-        // --- DEBUGGING DIMULAI DI SINI ---
-        // 🚨 HAPUS BLOK dd() INI SETELAH PENGUJIAN SELESAI
-        $kelas_id_int = (int) $kelas_id;
-
-        // dd([
-        //     'Step_Name' => 'Debugging Absensi Create Method',
-        //     'kelas_id_received' => $kelas_id,
-        //     'kegiatan_spesifik_received' => $kegiatan_spesifik,
-        //     'Catatan_Penting' => 'ID Kelas yang diterima harus sinkron dengan database (Kelas 13 = ID 9)',
-        //     'Santri_Count_Check' => Santri::where('kelas_id', $kelas_id_int)->count()
-        // ]);
-        
-        // --- DEBUGGING SELESAI DI SINI ---
-
 
         if (!$kelas_id || !$kegiatan_spesifik) {
              return redirect()->route('admin.absensi_baru.index')->with('error', 'Parameter tidak lengkap.');
@@ -132,10 +115,8 @@ class AbsensiHarianBaruController extends Controller
 
         $kelas_id = (int) $kelas_id;
 
-        // ✅ PERBAIKAN: Mengambil nama kelas dari database
         $kelas_nama = KelasSantri::where('id', $kelas_id)->value('nama_kelas') ?? 'Kelas Tidak Dikenal';
 
-        // Mengambil daftar santri berdasarkan kelas_id
         $santri = Santri::where('kelas_id', $kelas_id)
                          ->orderBy('nama_lengkap', 'asc')
                          ->get();
@@ -146,7 +127,7 @@ class AbsensiHarianBaruController extends Controller
     }
 
     // ----------------------------------------------------
-    // --- Langkah 4: STORE ---
+    // --- Langkah 4: STORE (PROSES SIMPAN + QUEUE NOTIFIKASI) ---
     // ----------------------------------------------------
     public function store(Request $request)
     {
@@ -164,6 +145,7 @@ class AbsensiHarianBaruController extends Controller
         $kegiatan_spesifik = $request->kegiatan_spesifik;
         $tanggal_absensi = $request->tanggal_absensi;
         $status_kehadiran = $request->kehadiran;
+        
         $keterangan_santri = $request->keterangan ?? [];
         
         $savedCount = 0;
@@ -174,16 +156,13 @@ class AbsensiHarianBaruController extends Controller
                                           ->exists();
         
         if ($existingInput) {
-            // ✅ PERBAIKAN: Mengambil nama kelas dari database
             $kelas_nama = KelasSantri::where('id', (int) $kelas_id)->value('nama_kelas') ?? 'Kelas';
             
             $errorMessage = "⚠️ MAAF! Absensi kegiatan '{$kegiatan_spesifik}' untuk tanggal " .
                             Carbon::parse($tanggal_absensi)->translatedFormat('d F Y') .
                             " sudah terisi.";
                             
-            return redirect()->back()
-                ->withInput()
-                ->with('error', $errorMessage);
+            return redirect()->back()->withInput()->with('error', $errorMessage);
         }
         
         // 2. LOOPING DAN PENYIMPANAN DATA (Dilakukan dalam Transaction)
@@ -193,19 +172,11 @@ class AbsensiHarianBaruController extends Controller
 
             foreach ($status_kehadiran as $santri_id => $status) {
                 
-                if (!in_array($status, $validStatuses)) {
-                    continue;
-                }
+                if (!in_array($status, $validStatuses)) { continue; }
 
-                // Ambil data Santri
                 $santri = Santri::find($santri_id); 
+                if (!$santri) { continue; }
                 
-                // Jika Santri tidak ditemukan, lewati.
-                if (!$santri) { 
-                    continue; 
-                }
-                
-                // Ambil Wali ID dari kolom yang BENAR
                 $waliId = $santri->wali_santri_id; 
                 
                 
@@ -225,29 +196,19 @@ class AbsensiHarianBaruController extends Controller
                     'keterangan' => $keterangan_santri[$santri_id] ?? null,
                 ]);
                 
-                // 🔔 LOGIKA NOTIFIKASI: Hanya jika status non-Hadir DAN waliId terisi 🔔
+                // 🔔 LOGIKA NOTIFIKASI: Memicu Event (ASINKRON) 🔔
                 if ($status != 'Hadir' && $waliId) { 
                     
-                    $keteranganDetail = $keterangan_santri[$santri_id] ?? null;
-
-                    $notifTitle = "Absensi Santri: " . $santri->nama_lengkap;
-                    $notifBody = "Status {$santri->nama_lengkap} pada kegiatan '{$kegiatan_spesifik}' tanggal " . 
-                                 Carbon::parse($tanggal_absensi)->translatedFormat('d F Y') . 
-                                 " adalah {$status}." .
-                                 ($keteranganDetail ? " Keterangan: " . Str::limit($keteranganDetail, 50) : "");
-
-                    WaliNotification::create([
-                        'user_id' => $waliId, // ID Wali Santri (Penerima)
-                        'title' => $notifTitle,
-                        'body' => $notifBody,
-                        
-                        // Menggunakan 'wali.absensi.show' dan parameter Santri ID
-                        'link' => route('wali.absensi.show', [ 
-                            'santri' => $santri->id, 
-                            'tanggal' => $tanggal_absensi
-                        ]), 
-                        'is_read' => false,
-                    ]);
+                    $waliSantri = User::find($waliId);
+                    
+                    if($waliSantri){
+                        // PICU EVENT - Listener akan menangani pembuatan WaliNotification
+                        event(new AttendanceUpdated(
+                            $waliSantri, 
+                            'Harian',
+                            $kegiatan_spesifik 
+                        ));
+                    }
                 }
                 
                 $savedCount++;
@@ -255,11 +216,10 @@ class AbsensiHarianBaruController extends Controller
         });
         
         // 3. RESPON PENGEMBALIAN SUKSES
-        // ✅ PERBAIKAN: Mengambil nama kelas dari database
         $kelas_nama = KelasSantri::where('id', (int) $kelas_id)->value('nama_kelas') ?? 'Kelas';
         
         if ($savedCount > 0) {
-            $message = "Absensi untuk {$kelas_nama} kegiatan '{$kegiatan_spesifik}' (untuk {$savedCount} santri) berhasil disimpan! ✅";
+            $message = "Absensi untuk {$kelas_nama} kegiatan '{$kegiatan_spesifik}' (untuk {$savedCount} santri) berhasil disimpan! Notifikasi non-hadir telah dikirim ke Queue. ✅";
             return redirect()->route('admin.absensi_baru.index')->with('success', $message);
         } else {
             return redirect()->back()

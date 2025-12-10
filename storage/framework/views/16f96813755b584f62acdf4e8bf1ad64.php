@@ -1,321 +1,256 @@
-<?php $__env->startSection('title', 'Dashboard Utama'); ?>
+ 
+
+<?php $__env->startSection('title', 'Dashboard Admin'); ?>
 <?php $__env->startSection('page_title', 'Dashboard Utama'); ?>
 
 <?php $__env->startSection('content'); ?>
 
+<?php $__env->startPush('css'); ?>
+<style>
+    /* Efek halus pada kartu */
+    .dashboard-card {
+        transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        border: none !important;
+        border-radius: var(--border-radius-lg); /* Mengambil dari layout utama */
+    }
+    .hover-shadow:hover {
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important;
+        transform: translateY(-3px);
+    }
+    .metric-card-text {
+        font-weight: 700 !important; /* Membuat angka lebih tebal */
+        font-size: 1.75rem !important;
+    }
+    .hover-bg-light:hover {
+        background-color: #f8f9fa; /* Warna light dari Bootstrap */
+    }
+</style>
+<?php $__env->stopPush(); ?>
+
+<div class="container-fluid p-0">
+    
+    
+    <div class="alert alert-white border-start border-0 border-primary shadow-soft py-2 px-4 mb-4 d-flex align-items-center">
+        
+        <i class="fas fa-hand-wave fa-2x text-primary me-2 d-none d-sm-block"></i>
+        <div>
+            <h5 class="fw-bold mb-0 text-dark" style="font-size: 1.1rem !important;">Halo, <?php echo e(Auth::user()->name ?? 'Administrator'); ?>!</h5>
+            <p class="mb-0 small-text text-muted d-none d-sm-block">Seluruh ringkasan data dan aktivitas harian sistem Al-Falah Putak dapat diakses di sini.</p>
+            <p class="mb-0 small-text text-muted d-sm-none">Ringkasan data utama sistem Al-Falah Putak.</p>
+        </div>
+    </div>
+
+    
+    
+    
+    <div class="row g-4 mb-5">
+
+        
+        <div class="col-12 col-md-6 col-lg-3">
+            <?php echo $__env->make('admin.components.metric-card-refined', [
+                'title' => 'Total Santri',
+                'value' => number_format($totalSantri),
+                'icon' => 'fas fa-users',
+                'bg_class' => 'bg-primary text-white',
+            ], array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
+        </div>
+
+        
+        <div class="col-12 col-md-6 col-lg-3">
+            <?php echo $__env->make('admin.components.metric-card-refined', [
+                'title' => 'Total Tenaga Pengajar',
+                'value' => number_format($totalGuru),
+                'icon' => 'fas fa-chalkboard-teacher',
+                'bg_class' => 'bg-success text-white',
+            ], array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
+        </div>
+
+        
+        <div class="col-12 col-md-6 col-lg-3">
+            <?php echo $__env->make('admin.components.metric-card-refined', [
+                'title' => 'Pengumuman Aktif',
+                'value' => number_format($totalPengumuman),
+                'icon' => 'fas fa-bullhorn',
+                'bg_class' => 'bg-info text-white',
+            ], array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
+        </div>
+
+        
+        <div class="col-12 col-md-6 col-lg-3">
+            <?php echo $__env->make('admin.components.metric-card-refined', [
+                'title' => 'Nilai Tunggakan',
+                'value' => 'Rp ' . number_format($totalTagihanBelumLunas, 0, ',', '.'),
+                'icon' => 'fas fa-sack-xmark',
+                'bg_class' => 'bg-danger text-white',
+            ], array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
+        </div>
+    </div>
+
+    
+    
     
     <div class="row g-4 mb-5">
         
         
-        <div class="col-xl-3 col-md-6 col-12">
-            <div class="card bg-primary text-white shadow-sm h-100 border-0 overflow-hidden" style="border-radius: 1.5rem;">
-                <div class="card-body p-4">
-                    <div class="row align-items-center">
-                        <div class="col me-2">
-                            <div class="text-xs fw-medium text-uppercase mb-1 text-white-75 opacity-75">
-                                Jumlah Santri Aktif
-                            </div>
-                            <h2 class="h2 fw-bolder mb-0 text-white"><?php echo e($totalSantri ?? 0); ?></h2>
-                        </div>
-                        <div class="col-auto">
-                            <i class="fas fa-user-graduate fa-3x text-white-50 opacity-75"></i>
-                        </div>
-                    </div>
+        <div class="col-12 col-lg-8">
+            <div class="card shadow-soft h-100 dashboard-card">
+                <div class="card-header bg-white border-bottom py-3">
+                    <h5 class="card-title fw-bold text-primary mb-0"><i class="fas fa-chart-line me-2"></i> Grafik Pendaftaran Santri Baru Tahun <?php echo e(\Carbon\Carbon::now()->year); ?></h5>
                 </div>
-                <div class="card-footer bg-primary border-0 pt-2 pb-2" style="background-color: rgba(0,0,0,0.1) !important;">
-                     <a href="<?php echo e(route('admin.santri.index')); ?>" class="text-white small fw-bold text-decoration-none d-flex align-items-center justify-content-between p-1">
-                        <span>Lihat Detail</span> 
-                        <i class="fas fa-arrow-circle-right ms-1"></i>
-                    </a>
+                <div class="card-body">
+                    <div style="height: 350px;">
+                        <canvas id="registrationChart"></canvas>
+                    </div>
                 </div>
             </div>
         </div>
 
         
-        <div class="col-xl-3 col-md-6 col-12">
-            <div class="card bg-danger text-white shadow-sm h-100 border-0 overflow-hidden" style="border-radius: 1.5rem;">
-                 <div class="card-body p-4">
-                    <div class="row align-items-center">
-                        <div class="col me-2">
-                            <div class="text-xs fw-medium text-uppercase mb-1 text-white-75 opacity-75">
-                                Total Tunggakan
-                            </div>
-                            
-                            <h2 class="fw-bolder mb-0 text-white fs-5 fs-md-4" style="font-size: 1.4rem;">
-                                Rp <?php echo e(number_format($totalTagihanBelumLunas ?? 0, 0, ',', '.')); ?>
+        <div class="col-12 col-lg-4">
+            <div class="card shadow-soft h-100 dashboard-card">
+                <div class="card-header bg-white border-bottom py-3">
+                    <h5 class="card-title fw-bold text-primary mb-0"><i class="fas fa-wallet me-2"></i> Ringkasan Status Keuangan</h5>
+                </div>
+                <div class="card-body d-flex flex-column justify-content-between">
 
-                            </h2>
+                    
+                    <div class="p-3 mb-3 border rounded-lg bg-light d-flex justify-content-between align-items-center">
+                        <div>
+                            <p class="mb-1 small-text text-muted fw-semibold text-uppercase">Persentase Lunas (Tahun Ini)</p>
+                            <h4 class="fw-bolder text-primary mb-0"><?php echo e($persentaseLunas); ?>%</h4>
                         </div>
-                        <div class="col-auto">
-                            <i class="fas fa-money-bill-wave fa-3x text-white-50 opacity-75"></i>
-                        </div>
+                        <i class="fas fa-check-circle fs-3 text-primary opacity-50"></i>
                     </div>
-                </div>
-                <div class="card-footer bg-danger border-0 pt-2 pb-2" style="background-color: rgba(0,0,0,0.1) !important;">
-                     <a href="<?php echo e(route('admin.tagihan.index')); ?>" class="text-white small fw-bold text-decoration-none d-flex align-items-center justify-content-between p-1">
-                        <span>Kelola Pembayaran</span>
-                        <i class="fas fa-arrow-circle-right ms-1"></i>
-                    </a>
-                </div>
-            </div>
-        </div>
 
-        
-        <div class="col-xl-3 col-md-6 col-12">
-            <div class="card bg-success text-white shadow-sm h-100 border-0 overflow-hidden" style="border-radius: 1.5rem;">
-                <div class="card-body p-4">
-                    <div class="row align-items-center">
-                        <div class="col me-2">
-                            <div class="text-xs fw-medium text-uppercase mb-1 text-white-75 opacity-75">
-                                Total Pengumuman
-                            </div>
-                            <h2 class="h2 fw-bolder mb-0 text-white"><?php echo e($totalPengumuman ?? 0); ?></h2>
+                    
+                    <div class="p-3 mb-3 border rounded-lg bg-light d-flex justify-content-between align-items-center">
+                        <div>
+                            <p class="mb-1 small-text text-muted fw-semibold text-uppercase">Tagihan Bulan Aktif</p>
+                            <h4 class="fw-bolder text-info mb-0"><?php echo e(number_format($tagihanBulanIni)); ?></h4>
                         </div>
-                        <div class="col-auto">
-                            <i class="fas fa-bullhorn fa-3x text-white-50 opacity-75"></i>
-                        </div>
+                        <i class="fas fa-file-invoice fs-3 text-info opacity-50"></i>
                     </div>
-                </div>
-                <div class="card-footer bg-success border-0 pt-2 pb-2" style="background-color: rgba(0,0,0,0.1) !important;">
-                     <a href="<?php echo e(route('admin.pengumuman.index')); ?>" class="text-white small fw-bold text-decoration-none d-flex align-items-center justify-content-between p-1">
-                        <span>Buat Pengumuman</span> 
-                        <i class="fas fa-arrow-circle-right ms-1"></i>
-                    </a>
-                </div>
-            </div>
-        </div>
 
-         
-        <div class="col-xl-3 col-md-6 col-12">
-            <div class="card bg-info text-white shadow-sm h-100 border-0 overflow-hidden" style="border-radius: 1.5rem;">
-                <div class="card-body p-4">
-                    <div class="row align-items-center">
-                        <div class="col me-2">
-                            <div class="text-xs fw-medium text-uppercase mb-1 text-white-75 opacity-75">
-                                Total Guru
-                            </div>
-                            <h2 class="h2 fw-bolder mb-0 text-white"><?php echo e($totalGuru ?? 0); ?></h2>
+                    
+                    <div class="p-3 mb-3 border rounded-lg bg-light d-flex justify-content-between align-items-center">
+                        <div>
+                            <p class="mb-1 small-text text-muted fw-semibold text-uppercase">Santri Terlambat Bayar</p>
+                            <h4 class="fw-bolder text-danger mb-0"><?php echo e(number_format($santriTerlambatBayar)); ?> Orang</h4>
                         </div>
-                        <div class="col-auto">
-                            <i class="fas fa-chalkboard-teacher fa-3x text-white-50 opacity-75"></i>
-                        </div>
+                        <i class="fas fa-user-times fs-3 text-danger opacity-50"></i>
                     </div>
-                </div>
-                <div class="card-footer bg-info border-0 pt-2 pb-2" style="background-color: rgba(0,0,0,0.1) !important;">
-                     <a href="<?php echo e(route('admin.guru.index')); ?>" class="text-white small fw-bold text-decoration-none d-flex align-items-center justify-content-between p-1">
-                        <span>Kelola Akun</span> 
-                        <i class="fas fa-arrow-circle-right ms-1"></i>
+                    
+                    <a href="<?php echo e(route('admin.tagihan.index')); ?>" class="btn btn-primary mt-3 w-100 fw-semibold shadow-soft">
+                        <i class="fas fa-arrow-circle-right me-2"></i> Kelola Keuangan
                     </a>
                 </div>
             </div>
         </div>
     </div>
-    
-    <hr class="my-5">
 
     
-    <div class="row g-4 mb-5">
-        
-        
-        <div class="col-lg-8 col-12">
-            <div class="card shadow border-0 h-100" style="border-radius: 1.5rem;">
-                <div class="card-header bg-white py-3 border-bottom" style="border-top-left-radius: 1.5rem; border-top-right-radius: 1.5rem;">
-                    <h6 class="m-0 fw-bold text-primary"><i class="fas fa-chart-area me-2"></i> Statistik Pendaftaran Santri (Tahun Ini)</h6>
-                </div>
-                <div class="card-body pt-4 pb-2 px-3 px-md-4">
-                    <div style="height: 300px;"> 
-                        <canvas id="pendaftaranChart"></canvas>
-                    </div>
-                    
-                    
-                    <div id="chartPlaceholder" class="text-center text-muted p-5" style="display: none;">
-                        <i class="fas fa-chart-line display-4 mb-3"></i>
-                        <p class="mb-0">Belum ada data pendaftaran santri untuk tahun ini.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        
-        <div class="col-lg-4 col-12">
-            <div class="card shadow border-0 h-100" style="border-radius: 1.5rem;">
-                 <div class="card-header bg-white py-3 border-bottom" style="border-top-left-radius: 1.5rem; border-top-right-radius: 1.5rem;">
-                    <h6 class="m-0 fw-bold text-primary"><i class="fas fa-tasks me-2"></i> Status Keuangan</h6>
-                </div>
-                <div class="card-body p-4">
-                    <h4 class="h6 fw-semibold mb-3">Persentase Tagihan Lunas (Tahun Ini)</h4>
-                    
-                    
-                    <div class="mb-2 d-flex justify-content-between small text-muted">
-                        <span>Lunas:</span>
-                        <span><?php echo e($persentaseLunas ?? 0); ?>%</span>
-                    </div>
-                    
-                    <div class="progress mb-4" style="height: 12px; border-radius: 10px;">
-                        <div class="progress-bar bg-success" role="progressbar" style="width: <?php echo e($persentaseLunas ?? 0); ?>%; border-radius: 10px;" aria-valuenow="<?php echo e($persentaseLunas ?? 0); ?>" aria-valuemin="0" aria-valuemax="100"></div>
-                    </div>
-                    
-                    <h4 class="h6 fw-semibold mb-3 mt-4">Ringkasan Cepat Bulan Ini</h4>
-                    <ul class="list-group list-group-flush small">
-                        <li class="list-group-item d-flex justify-content-between align-items-center px-0">
-                            Tagihan Bulan Ini
-                            
-                            <span class="badge bg-primary rounded-pill"><?php echo e($tagihanBulanIni ?? 0); ?> Tagihan</span>
-                        </li>
-                        <li class="list-group-item d-flex justify-content-between align-items-center px-0">
-                            Terlambat Bayar
-                            
-                            <span class="badge bg-danger rounded-pill"><?php echo e($santriTerlambatBayar ?? 0); ?> Santri</span>
-                        </li>
-                    </ul>
-                    
-                    <p class="small text-muted mt-3 mb-0">Rincian lebih lanjut dapat dilihat di menu Keuangan.</p>
-                </div>
-            </div>
-        </div>
-    </div>
     
-    <hr class="my-5">
-
     
-    <div class="row g-3">
+    <div class="row">
         <div class="col-12">
-            <div class="card shadow border-0" style="border-radius: 1.5rem;">
-                <div class="card-header bg-white py-3 border-bottom" style="border-top-left-radius: 1.5rem; border-top-right-radius: 1.5rem;">
-                    <h6 class="m-0 fw-bold text-primary"><i class="fas fa-list-alt me-2"></i>Pengumuman Terbaru</h6>
+            <div class="card shadow-soft dashboard-card">
+                <div class="card-header bg-white border-bottom py-3">
+                    <h5 class="card-title fw-bold text-primary mb-0"><i class="fas fa-bullhorn me-2"></i> Pengumuman Terbaru</h5>
                 </div>
                 <div class="card-body p-0">
-                    <div class="table-responsive">
-                        <table class="table table-hover mb-0">
-                            <thead class="bg-light">
-                                <tr>
-                                    <th class="small py-3 text-uppercase text-nowrap">Judul</th>
-                                    
-                                    <th class="small py-3 text-uppercase d-none d-md-table-cell">Isi Singkat</th>
-                                    <th class="small py-3 text-uppercase text-nowrap">Tanggal</th>
-                                    <th class="small py-3 text-uppercase">Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php $__empty_1 = true; $__currentLoopData = $pengumumans; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $pengumuman): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
-                                <tr>
-                                    <td class="small fw-semibold"><?php echo e($pengumuman->judul); ?></td>
-                                    <td class="small text-muted d-none d-md-table-cell"><?php echo e(Str::limit(strip_tags($pengumuman->isi), 50)); ?></td>
-                                    <td class="small text-nowrap"><?php echo e(\Carbon\Carbon::parse($pengumuman->tanggal_publikasi)->translatedFormat('d M Y')); ?></td>
-                                    <td class="small">
-                                        <a href="<?php echo e(route('admin.pengumuman.show', $pengumuman)); ?>" class="btn btn-sm btn-outline-primary py-0 px-2">Lihat</a>
-                                    </td>
-                                </tr>
-                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
-                                <tr>
-                                    <td colspan="4" class="text-center text-muted py-4 small">Tidak ada pengumuman terbaru.</td>
-                                </tr>
-                                <?php endif; ?>
-                            </tbody>
-                        </table>
+                    <ul class="list-group list-group-flush">
+                        <?php $__empty_1 = true; $__currentLoopData = $pengumumans; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $pengumuman): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
+                            <li class="list-group-item d-flex justify-content-between align-items-center px-4 py-3 hover-bg-light">
+                                <div class="me-3">
+                                    <a href="<?php echo e(route('admin.pengumuman.show', $pengumuman->id)); ?>" class="fw-semibold text-dark text-decoration-none hover-primary" style="font-size: 1.05rem;">
+                                        <?php echo e($pengumuman->judul); ?>
+
+                                    </a>
+                                    <p class="mb-0 small-text text-muted mt-1">
+                                        Kategori: <span class="fw-medium"><?php echo e($pengumuman->kategori); ?></span>
+                                    </p>
+                                </div>
+                                <span class="badge bg-light text-muted small-text fw-medium py-2 px-3">
+                                    <?php echo e(\Carbon\Carbon::parse($pengumuman->tanggal_publikasi)->diffForHumans()); ?>
+
+                                </span>
+                            </li>
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
+                            <li class="list-group-item text-center text-muted py-4">
+                                Belum ada pengumuman yang dipublikasikan.
+                            </li>
+                        <?php endif; ?>
+                    </ul>
+                    <div class="card-footer bg-white text-center border-top-0">
+                        <a href="<?php echo e(route('admin.pengumuman.index')); ?>" class="small-text fw-semibold text-primary text-decoration-none">
+                            Lihat Semua Pengumuman <i class="fas fa-chevron-right ms-1 small"></i>
+                        </a>
                     </div>
-                </div>
-                <div class="card-footer bg-light text-center py-3" style="border-bottom-left-radius: 1.5rem; border-bottom-right-radius: 1.5rem;">
-                    <a href="<?php echo e(route('admin.pengumuman.index')); ?>" class="small fw-bold text-primary text-decoration-none">
-                        Lihat Semua Pengumuman <i class="fas fa-chevron-right ms-1"></i>
-                    </a>
                 </div>
             </div>
         </div>
     </div>
 
+</div>
 <?php $__env->stopSection(); ?>
 
-
-<?php $__env->startPush('js'); ?>
+<?php $__env->startPush('scripts'); ?>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script> 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    // 1. Cek Ketersediaan Chart.js
-    if (typeof Chart === 'undefined') {
-        console.error("Chart.js library not found. Please ensure it is loaded in the layout.");
-        return;
-    }
+    document.addEventListener('DOMContentLoaded', function() {
+        const ctx = document.getElementById('registrationChart');
+        const chartData = <?php echo json_encode($chartData, 15, 512) ?>;
 
-    // 2. Ambil Data dan Elemen
-    const chartData = <?php echo json_encode($chartData, 15, 512) ?>;
-    const ctx = document.getElementById('pendaftaranChart');
-    const placeholder = document.getElementById('chartPlaceholder');
-
-    if (!ctx) {
-        console.error("Elemen canvas dengan ID 'pendaftaranChart' tidak ditemukan.");
-        return;
-    }
-
-    // 3. Cek Apakah Ada Data Pendaftaran
-    // Cek apakah data ada dan setidaknya satu bulan memiliki pendaftaran > 0
-    const hasData = chartData && chartData.data && Array.isArray(chartData.data) && chartData.data.some(count => count > 0);
-
-    if (hasData) {
-        // Tampilkan canvas dan sembunyikan placeholder
-        ctx.style.display = 'block';
-        if (placeholder) {
-            placeholder.style.display = 'none';
-        }
-
-        // 4. Inisialisasi Chart.js
-        new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: chartData.labels,
-                datasets: [{
-                    label: 'Jumlah Pendaftaran Santri',
-                    data: chartData.data,
-                    backgroundColor: 'rgba(54, 162, 235, 0.7)',
-                    borderColor: 'rgba(54, 162, 235, 1)',
-                    borderWidth: 1,
-                    borderRadius: 5,
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        display: true,
-                        position: 'top',
-                    },
-                    tooltip: {
-                        mode: 'index',
-                        intersect: false,
-                    }
+        if (ctx) {
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: chartData.labels,
+                    datasets: [{
+                        label: 'Pendaftaran Santri Baru',
+                        data: chartData.data,
+                        backgroundColor: 'rgba(11, 47, 86, 0.1)', // Primary Color (10% Opacity)
+                        borderColor: 'var(--primary-color)',
+                        borderWidth: 3,
+                        tension: 0.4, 
+                        pointRadius: 5, 
+                        pointBackgroundColor: 'var(--primary-color)',
+                        fill: true,
+                    }]
                 },
-                scales: {
-                    x: {
-                        grid: {
-                            display: false
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false, 
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.08)', 
+                                borderDash: [5, 5]
+                            },
+                            ticks: {
+                                precision: 0 
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            }
                         }
                     },
-                    y: {
-                        beginAtZero: true,
-                        title: {
-                            display: true,
-                            text: 'Jumlah Santri'
+                    plugins: {
+                        legend: {
+                            display: false
                         },
-                        ticks: {
-                            callback: function(value) {
-                                // Pastikan nilai tick adalah integer (tidak ada 1.5 santri)
-                                if (Number.isInteger(value)) {
-                                    return value;
-                                }
-                            }
+                        tooltip: {
+                            backgroundColor: 'var(--primary-color)',
+                            titleFont: { weight: 'bold' }
                         }
                     }
                 }
-            }
-        });
-    } else {
-        // Sembunyikan canvas dan tampilkan placeholder
-        ctx.style.display = 'none';
-        if (placeholder) {
-            placeholder.style.display = 'block';
+            });
         }
-    }
-});
+    });
 </script>
 <?php $__env->stopPush(); ?>
 <?php echo $__env->make('layouts.admin', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH /home/axioo/Unduhan/_sisfo-laravel/resources/views/admin/dashboard.blade.php ENDPATH**/ ?>

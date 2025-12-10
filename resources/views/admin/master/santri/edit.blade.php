@@ -3,6 +3,102 @@
 @section('title', 'Edit Santri')
 @section('page_title', 'Edit Data Santri' )
 
+@section('styles')
+<style>
+    /* 1. KONTROL UTAMA & CARD */
+    .card-master {
+        border-radius: 0.75rem !important;
+        box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.1) !important;
+        border: none !important;
+    }
+    .header-primary {
+        background-color: var(--bs-primary);
+        color: #fff;
+        padding: 1.5rem;
+        border-radius: 0.75rem 0.75rem 0 0;
+    }
+
+    /* 2. PENYESUAIAN FONT DAN UKURAN INPUT */
+    .form-label.small {
+        font-size: 0.75rem; 
+        font-weight: 600 !important;
+        margin-bottom: 0.2rem;
+    }
+    .input-group-text {
+        font-size: 0.85rem;
+    }
+    .form-control, .form-select {
+        font-size: 0.9rem;
+    }
+    .invalid-feedback {
+        font-size: 0.75rem;
+    }
+    .alert-heading {
+        font-size: 1rem !important;
+    }
+    .alert-danger .small {
+        font-size: 0.75rem !important;
+    }
+    
+    /* 3. MOBILE ADJUSTMENTS (DIPERKETAT) */
+    @media (max-width: 767.98px) {
+        .card-body {
+            padding: 1rem !important;
+        }
+        .header-primary {
+            padding: 1rem;
+        }
+        .header-primary h4 {
+            font-size: 1.2rem !important;
+        }
+        .header-primary p.small {
+            font-size: 0.7rem !important;
+        }
+
+        /* Judul Section diperkecil */
+        h6.fs-6 {
+            font-size: 0.9rem !important;
+            margin-top: 1rem !important;
+        }
+
+        /* Spasi antar elemen form dikurangi */
+        .row.g-4 {
+            --bs-gutter-x: 0.75rem;
+            --bs-gutter-y: 1rem; 
+        }
+        
+        /* Input dan Label diperkecil lebih lanjut */
+        .form-label.small {
+            font-size: 0.65rem;
+        }
+        .input-group-text, .form-control, .form-select {
+            font-size: 0.8rem;
+            padding: 0.5rem 0.75rem;
+        }
+
+        /* Textarea Alamat */
+        textarea {
+            height: 80px !important;
+        }
+
+        /* Tombol Aksi Mobile (FOKUS PERBAIKAN DI SINI) */
+        .card-footer {
+            padding: 1rem !important;
+        }
+        .d-flex.justify-content-end {
+            flex-direction: column; 
+        }
+        /* Kelas kustom untuk tombol mobile yang kecil */
+        .btn.btn-sm-custom {
+            padding: 0.4rem 1rem !important; /* Padding minimal */
+            font-size: 0.75rem; /* Font tombol sangat kecil */
+            width: 100% !important;
+            margin-top: 0.5rem;
+        }
+    }
+</style>
+@endsection
+
 @section('header_actions')
 @endsection
 
@@ -11,14 +107,10 @@
 <div class="container-fluid">
     <div class="row">
         <div class="col-12">
-
-            {{-- Judul utama di atas card dipertahankan ukurannya agar jelas --}}
-            <h5 class="mb-4 text-dark fw-bold"><i class="fas fa-pencil-alt me-2 text-warning opacity-75"></i> Edit Santri: {{ $santri->nama_lengkap }}</h5>
-
-            <div class="card shadow-lg border-0 rounded-4 border-start border-5 border-warning">
+            <div class="card card-master shadow-lg rounded-3"> 
                 
-                {{-- HEADER CARD --}}
-                <div class="card-header bg-primary text-white p-4 rounded-top-4">
+                {{-- HEADER CARD PRIMARY --}}
+                <div class="card-header bg-primary text-white rounded-top-4 header-primary">
                     <h4 class="mb-0 fw-bold fs-5"><i class="fas fa-user-edit me-2"></i> Formulir Edit Data Santri</h4>
                     <p class="text-white-50 small mb-0">Lakukan perubahan data untuk santri {{ $santri->nama_lengkap }} dengan hati-hati.</p>
                 </div>
@@ -44,7 +136,6 @@
                         @method('PUT')
                         
                         {{-- Bagian I: Data Pribadi Santri --}}
-                        {{-- Judul bagian diubah ke fs-6 (ukuran font terkecil di Bootstrap) --}}
                         <h6 class="fw-bold text-dark mb-1 mt-2 text-warning fs-6"><i class="fas fa-id-card me-2"></i> Data Pribadi</h6>
                         <hr class="mt-2 mb-4 border-warning opacity-25">
                         
@@ -64,12 +155,12 @@
                             
                             {{-- NISN --}}
                             <div class="col-md-6">
-                                <label for="nisn" class="form-label fw-medium text-muted small">NISN <span class="text-danger">*</span></label>
+                                <label for="nisn" class="form-label fw-medium text-muted small">NIS <span class="text-danger">*</span></label>
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="fas fa-fingerprint"></i></span>
                                     <input type="text" name="nisn" id="nisn" 
                                            class="form-control @error('nisn') is-invalid @enderror" 
-                                           placeholder="Nomor Induk Siswa Nasional" value="{{ old('nisn', $santri->nisn) }}" required>
+                                           placeholder="Nomor Induk Santri" value="{{ old('nisn', $santri->nisn) }}" required>
                                     @error('nisn')<div class="invalid-feedback">{{ $message }}</div>@enderror
                                 </div>
                             </div>
@@ -105,7 +196,6 @@
                         <hr class="mt-5 mb-4 border-secondary opacity-25"> 
                         
                         {{-- Bagian II: Data Akademik dan Wali --}}
-                        {{-- Judul bagian diubah ke fs-6 --}}
                         <h6 class="fw-bold text-dark mb-1 mt-2 text-info fs-6"><i class="fas fa-graduation-cap me-2"></i> Data Akademik & Wali</h6>
                         <hr class="mt-2 mb-4 border-info opacity-25">
                         <div class="row g-4">
@@ -149,7 +239,6 @@
                         <hr class="mt-5 mb-4 border-secondary opacity-25">
 
                         {{-- Bagian III: Alamat dan Status --}}
-                        {{-- Judul bagian diubah ke fs-6 --}}
                         <h6 class="fw-bold text-dark mb-1 mt-2 text-success fs-6"><i class="fas fa-map-marker-alt me-2"></i> Alamat & Status</h6>
                         <hr class="mt-2 mb-4 border-success opacity-25">
                         <div class="row g-4">
@@ -184,10 +273,10 @@
                         
                         {{-- Tombol Aksi --}}
                         <div class="d-flex justify-content-end gap-2 pt-3">
-                            <a href="{{ route('admin.santri.index') }}" class="btn btn-outline-secondary px-4 shadow-sm fw-semibold rounded-pill">
+                            <a href="{{ route('admin.santri.index') }}" class="btn btn-outline-secondary shadow-sm fw-semibold rounded-pill w-100 w-md-auto btn-sm-custom">
                                 <i class="fas fa-times me-2"></i> Batal
                             </a>
-                            <button type="submit" class="btn btn-warning px-4 shadow-lg fw-bold text-dark rounded-pill">
+                            <button type="submit" class="btn btn-warning shadow-lg fw-bold text-dark rounded-pill w-100 w-md-auto btn-sm-custom">
                                 <i class="fas fa-redo me-2"></i> Update Data
                             </button>
                         </div>

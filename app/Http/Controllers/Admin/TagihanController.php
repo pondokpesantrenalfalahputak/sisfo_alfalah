@@ -6,19 +6,23 @@ use App\Http\Controllers\Controller;
 use App\Models\Tagihan;
 use App\Models\Santri;
 use App\Models\User; 
-use App\Events\PaymentStatusUpdated; 
+use App\Events\PaymentStatusUpdated;
+use App\Events\NewBillCreated; // ✅ Import Event Baru Tagihan
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;   
+use Illuminate\Support\Facades\Log;   
 
 class TagihanController extends Controller
 {
-    // Daftar jenis tagihan yang sudah diperbarui
+    // Daftar jenis tagihan
     protected $jenisTagihan = [
         'Kos Makan',
         'Galon',
         'Kas Diniah',
         'Denda',
         'Tabungan Wali Songo',
+        'LKS',
         'Lainnya'
     ];
     
@@ -35,6 +39,9 @@ class TagihanController extends Controller
         return view('admin.tagihan.create', compact('santris', 'jenisTagihan'));
     }
 
+    /**
+     * Menyimpan tagihan baru dan memicu notifikasi kepada Wali Santri.
+     */
     public function store(Request $request)
     {
         $validatedData = $request->validate([
@@ -48,9 +55,26 @@ class TagihanController extends Controller
         $validatedData['tanggal_tagihan'] = Carbon::now()->toDateString();
         $validatedData['status'] = 'Belum Lunas';
 
-        Tagihan::create($validatedData);
+        $tagihan = Tagihan::create($validatedData); 
 
-        return redirect()->route('admin.tagihan.index')->with('success', 'Tagihan berhasil ditambahkan.');
+        // 🔔 LOGIKA NOTIFIKASI TAGIHAN BARU 🔔
+        $santri = $tagihan->santri;
+
+        if ($santri && $santri->wali_santri_id) {
+            $waliSantri = User::find($santri->wali_santri_id);
+            
+            if ($waliSantri) {
+                
+                Log::debug("BILL CREATED: Attempting to notify Wali ID: " . $waliSantri->id . " for Tagihan ID: " . $tagihan->id);
+                
+                // ✅ FIX: Ganti PaymentStatusUpdated dengan NewBillCreated
+                event(new NewBillCreated($waliSantri, $tagihan)); 
+            }
+        }
+        // 🔔 END NOTIFIKASI TAGIHAN BARU 🔔
+
+        $pesan = 'Tagihan berhasil ditambahkan. Notifikasi tagihan baru telah dikirim.';
+        return redirect()->route('admin.tagihan.index')->with('success', $pesan);
     }
 
     public function show(Tagihan $tagihan)
@@ -95,7 +119,7 @@ class TagihanController extends Controller
     }
 
     /**
-     * Memproses konfirmasi atau penolakan pembayaran dari Admin.
+     * Memproses konfirmasi atau penolakan pembayaran dari Admin (Memicu Event Queue).
      */
     public function prosesKonfirmasi(Request $request, \App\Models\Pembayaran $pembayaran)
     {
@@ -104,42 +128,58 @@ class TagihanController extends Controller
         ]);
 
         $newStatus = $request->status;
-        
-        // 1. Update Status Pembayaran
-        $pembayaran->update([
-            'status_konfirmasi' => $newStatus,
-        ]);
-        
         $tagihan = $pembayaran->tagihan;
-        
-        // 2. Update status tagihan jika diperlukan
-        if ($newStatus === 'Dikonfirmasi') {
-            $totalPembayaranBelumDikonfirmasi = $tagihan->pembayarans()
-                                                ->where('status_konfirmasi', '!=', 'Dikonfirmasi')
-                                                ->count();
-                                                
-            if ($totalPembayaranBelumDikonfirmasi === 0) {
-                 $tagihan->update(['status' => 'Lunas']);
-            }
-        } 
 
-        // 🚀 START NOTIFIKASI WALI SANTRI - Pemicu Event
-        $santri = $tagihan->santri;
-        
-        if ($santri && $santri->wali_santri_id) {
-            $waliSantri = User::find($santri->wali_santri_id);
+        DB::beginTransaction(); 
+        try {
+            // 1. Update Status Pembayaran
+            $pembayaran->update([
+                'status_konfirmasi' => $newStatus,
+            ]);
             
-            if ($waliSantri) {
-                event(new PaymentStatusUpdated($waliSantri, $pembayaran, $newStatus));
-            }
-        }
-        // 🚀 END NOTIFIKASI WALI SANTRI
-        
-        $pesan = ($newStatus === 'Dikonfirmasi') 
-                 ? 'Pembayaran berhasil dikonfirmasi dan notifikasi telah dikirim.' 
-                 : 'Pembayaran berhasil ditolak dan notifikasi telah dikirim.';
+            // 2. Update status tagihan jika dikonfirmasi
+            if ($newStatus === 'Dikonfirmasi') {
+                $isFullyPaid = $tagihan->pembayarans()
+                                    ->where('status_konfirmasi', '!=', 'Dikonfirmasi')
+                                    ->doesntExist();
+                
+                if ($isFullyPaid) {
+                    $tagihan->update(['status' => 'Lunas']);
+                }
+            } 
 
-        return redirect()->route('admin.tagihan.konfirmasi.index')->with('success', $pesan);
+            // 3. Pemicu Event Notifikasi (ASINKRON)
+            $santri = $tagihan->santri;
+            
+            if ($santri && $santri->wali_santri_id) {
+                $waliSantri = User::find($santri->wali_santri_id);
+                
+                if ($waliSantri) {
+                    
+                    Log::debug("PAYMENT EVENT DISPATCH ATTEMPTED for Wali ID: " . $waliSantri->id . " Status: " . $newStatus . " | Pembayaran ID: " . $pembayaran->id);
+                    
+                    event(new PaymentStatusUpdated($waliSantri, $pembayaran, $newStatus));
+                } else {
+                    Log::warning("PAYMENT NOTIF FAILED: Wali Santri ID ({$santri->wali_santri_id}) tidak ditemukan di tabel users.");
+                }
+            } else {
+                $santriIdLog = $santri->id ?? 'N/A';
+                Log::warning("PAYMENT NOTIF FAILED: Santri ID ({$santriIdLog}) tidak memiliki wali_santri_id.");
+            }
+
+            DB::commit(); 
+            
+            $pesan = ($newStatus === 'Dikonfirmasi') 
+                    ? 'Pembayaran berhasil dikonfirmasi dan notifikasi telah dikirim ke Queue.' 
+                    : 'Pembayaran berhasil ditolak dan notifikasi telah dikirim ke Queue.';
+
+            return redirect()->route('admin.tagihan.konfirmasi.index')->with('success', $pesan);
+
+        } catch (\Exception $e) {
+            DB::rollBack(); 
+            Log::error("FATAL ERROR during prosesKonfirmasi: " . $e->getMessage() . " on line " . $e->getLine());
+            return back()->with('error', 'Gagal memproses konfirmasi: ' . $e->getMessage());
+        }
     }
 
     public function riwayatPembayaran()

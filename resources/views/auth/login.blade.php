@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Masuk - SIAP AL-FALAH</title>
     <meta name="description" content="Sistem Informasi Akademik Pesantren (SIAP) Al-Falah Putak: Akses data santri, pengumuman, tagihan, dan absensi harian secara real-time. Informasi terpusat untuk Wali Santri dan Staf." />
-    <link rel="icon" type="image/png" href="{{ asset('Images/kop pondok.png') }}" />
+    <link rel="icon" type="image/png" href="{{ asset('kop pondok.png') }}" />
+    
     {{-- ✅ Link Bootstrap CDN --}}
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     {{-- ✅ Link Font Inter --}}
@@ -13,7 +14,7 @@
     {{-- ✅ Link Font Awesome --}}
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
-    {{-- CSS KUSTOM (Responsif) --}}
+    {{-- CSS KUSTOM (Responsif & Perbaikan Font Mobile) --}}
     <style>
         body {
             font-family: 'Inter', sans-serif;
@@ -93,6 +94,50 @@
         .invalid-feedback.d-block {
             display: block !important;
         }
+
+        /* ========================================================= */
+        /* 🎨 PERBAIKAN FONT MOBILE (Semua yang < 768px) */
+        /* ========================================================= */
+        .card-login .h2.fw-bolder {
+            /* Judul utama "MASUK AKUN WALISANTRI" */
+            font-size: 1.5rem !important; 
+        }
+
+        .card-login .p-form p.small {
+            /* Teks di bawah judul */
+            font-size: 0.8rem !important;
+        }
+
+        .card-login .form-control-lg {
+            /* Input Form (Email/NIS dan Password) */
+            padding: 0.5rem 1rem !important; 
+            height: auto;
+            min-height: 44px;
+            font-size: 1rem !important; 
+        }
+        
+        .card-login .btn-lg {
+            /* Tombol MASUK */
+            padding: 0.6rem 1rem !important; 
+            font-size: 1rem !important; 
+        }
+
+        /* Penyesuaian Hero Text di Mobile (agar tidak terlalu menonjol) */
+        .hero-text-overlay + .position-relative h1.h3 {
+            font-size: 1.25rem !important; 
+        }
+        .hero-text-overlay + .position-relative p.h5 {
+            font-size: 1rem !important; 
+        }
+
+        /* Mengurangi jarak vertikal pada mobile */
+        @media (max-width: 767.98px) {
+            .mb-md-5 {
+                /* Mengganti margin-bottom 3rem dengan 1.5rem */
+                margin-bottom: 1.5rem !important; 
+            }
+        }
+
     </style>
 </head>
 <body>
@@ -171,7 +216,6 @@
                             </div>
 
                             @error('password')
-                                {{-- Menghapus d-block yang tidak perlu, biarkan Bootstrap yang mengurus --}}
                                 <div class="invalid-feedback small">{{ $message }}</div>
                             @enderror
                         </div>

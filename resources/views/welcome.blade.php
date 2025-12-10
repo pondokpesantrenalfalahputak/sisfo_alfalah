@@ -9,9 +9,9 @@
 
     <link rel="icon" href="{{ asset('Images/kop pondok.png') }}" sizes="32x32" />
     <link rel="icon" href="{{ asset('Images/kop pondok.png') }}" sizes="192x192" />
-    <link rel="apple-touch-icon" href="{{ asset('Images/kop pondok.png') }}" />
+    <link rel="apple-touch-icon" href="{{ asset('kop pondok.png') }}" />
     <meta name="msapplication-TileImage" content="{{ asset('Images/kop pondok.png') }}" />
-    <link rel="icon" type="image/png" href="{{ asset('Images/kop pondok.png') }}" />
+    <link rel="icon" type="image/png" href="{{ asset('kop pondok.png') }}" />
 
     <link rel="icon" type="image/png" href="{{ asset('Images/kop pondok.png') }}" />
     {{-- ✅ Link Bootstrap CDN --}}

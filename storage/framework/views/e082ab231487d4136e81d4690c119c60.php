@@ -14,18 +14,21 @@
         .mobile-card-item:hover {
             box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -2px rgba(0,0,0,0.06);
         }
+        
+        /* FONT SIZES (SUDAH DIPERKECIL SESUAI PERMINTAAN) */
         .mobile-header-text {
-            /* Font Santri di header mobile sedikit lebih kecil */
-            font-size: 0.9rem !important; 
+            /* Font Santri di header mobile sedikit lebih kecil (0.9rem -> 0.85rem) */
+            font-size: 0.85rem !important; 
         }
         .mobile-detail-text {
-            /* Detail info lebih halus */
-            font-size: 0.75rem !important; 
+            /* Detail info lebih halus (0.75rem -> 0.7rem) */
+            font-size: 0.7rem !important; 
         }
         .mobile-amount-text {
-             /* Jumlah bayar lebih dominan tapi tidak terlalu besar */
-            font-size: 1.25rem !important; 
+             /* Jumlah bayar lebih dominan tapi tidak terlalu besar (1.25rem -> 1.1rem) */
+            font-size: 1.1rem !important; 
         }
+        
         .mobile-action-btn {
             /* Tombol aksi mobile sedikit lebih kecil */
             padding: 0.375rem 0.5rem !important; 
@@ -40,17 +43,10 @@
 <div class="container-fluid">
     <div class="row">
         <div class="col-12">
-
-            
-            
-            
-            
-
             <div class="card shadow-lg border-0 rounded-4">
                 
                 
                 <div class="card-header bg-warning text-dark p-4 rounded-top-4">
-                    <h7 class="mb-2 fw-bolder fs-5"><i class="fas fa-check-double me-2"></i> Transaksi Menunggu Konfirmasi</h7>
                     <p class="mb-0 small fw-semibold">
                         Anda memiliki <span class="badge bg-danger text-white fs-6 fw-bolder"><?php echo e(count($pembayarans) ?? 0); ?></span> transaksi yang memerlukan persetujuan.
                     </p>
@@ -58,7 +54,6 @@
                 
                 <div class="card-body p-4">
 
-                    
                     
                     <div class="d-none d-md-block">
                         <div class="table-responsive">
@@ -151,14 +146,14 @@
                                     
                                     
                                     <div class="d-flex w-100 justify-content-between align-items-center mb-2 pb-2 border-bottom">
-                                        <span class="badge bg-warning text-dark fw-bolder me-2">#<?php echo e($loop->iteration); ?></span>
+                                        <span class="badge bg-warning text-dark fw-bolder me-2 mobile-detail-text">#<?php echo e($loop->iteration); ?></span>
                                         <h6 class="mb-0 fw-bold text-primary mobile-header-text"><?php echo e($pembayaran->tagihan->santri->nama_lengkap); ?></h6>
                                         <span class="badge bg-info text-dark fw-bold mobile-detail-text"><?php echo e($pembayaran->tagihan->santri->kelas->nama_kelas ?? 'N/A'); ?></span>
                                     </div>
 
                                     
                                     <div class="d-flex justify-content-between align-items-center mb-2">
-                                        <span class="small text-muted fw-normal">Jumlah Dibayar:</span>
+                                        <span class="small text-muted fw-normal mobile-detail-text">Jumlah Dibayar:</span>
                                         <span class="fw-bolder text-success mobile-amount-text">Rp <?php echo e(number_format($pembayaran->jumlah_bayar, 0, ',', '.')); ?></span>
                                     </div>
                                     

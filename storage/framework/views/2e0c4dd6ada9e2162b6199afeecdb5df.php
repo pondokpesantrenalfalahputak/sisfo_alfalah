@@ -51,22 +51,11 @@
 </style>
 <?php $__env->stopPush(); ?>
 
-
 <?php $__env->startSection('content'); ?>
 
 <div class="container-fluid">
     <div class="row">
         <div class="col-12">
-
-            
-            <?php if(session('success')): ?>
-                <div class="alert alert-success alert-dismissible fade show rounded-3 shadow-sm" role="alert">
-                    <i class="fas fa-check-circle me-2"></i> <?php echo e(session('success')); ?>
-
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            <?php endif; ?>
-
             <div class="card shadow-lg border-0 rounded-4">
                 
                 

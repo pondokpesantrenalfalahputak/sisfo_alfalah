@@ -1,6 +1,84 @@
 <?php $__env->startSection('title', 'Data Kelas'); ?>
 <?php $__env->startSection('page_title', 'Daftar Kelas'); ?>
 
+<?php $__env->startSection('styles'); ?>
+<style>
+    /* Global Card Style Consistency */
+    .card-master {
+        border-radius: 0.75rem !important;
+        box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.1) !important;
+        border: none !important;
+    }
+    
+    /* MOBILE ADJUSTMENTS */
+    @media (max-width: 767.98px) {
+        
+        /* Mengurangi padding di card body mobile */
+        .card-body.p-0 > .d-md-none {
+            padding: 0.75rem !important;
+        }
+
+        /* Styling Kartu Item */
+        .kelas-card-item {
+            border: 1px solid var(--bs-gray-300) !important;
+            box-shadow: none !important;
+            border-radius: 0.5rem !important;
+        }
+        .kelas-card-item .card-body {
+            padding: 0.9rem !important; /* Padding kartu lebih kecil */
+        }
+        
+        /* Judul dan Nomor Urut */
+        .kelas-card-item .card-title {
+            font-size: 0.95rem !important;
+            margin-bottom: 0 !important;
+        }
+        .kelas-card-item .small {
+            font-size: 0.7rem !important;
+        }
+        .kelas-card-item .badge {
+            padding: 0.3rem 0.6rem !important;
+            font-size: 0.7rem !important;
+        }
+
+        /* Tombol Tambah Kelas di Header Mobile */
+        .w-100.d-md-none .btn {
+             padding: 0.5rem 1rem !important;
+             font-size: 0.8rem;
+        }
+        
+        /* Action Group Mobile (FOKUS PERBAIKAN) */
+        .kelas-action-group {
+            padding-top: 0.75rem !important;
+            gap: 0.5rem !important;
+        }
+        /* Tombol Aksi di Mobile */
+        .kelas-action-group .btn {
+            padding: 0.3rem 0.6rem !important; /* Padding vertikal dan horizontal diminimalkan */
+            font-size: 0.75rem !important; /* Ukuran font/ikon */
+            line-height: 1 !important; /* Kunci line height */
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        /* Khusus Tombol Detail */
+        .kelas-action-group .btn-detail {
+            flex-grow: 1; /* Biarkan tombol detail mengambil ruang sisa */
+            width: 100%;
+        }
+
+        /* Khusus Tombol Edit/Hapus (Ikon only) */
+        .kelas-action-group .btn-icon-only {
+            width: 30px; /* Lebar dan Tinggi Kunci */
+            flex-shrink: 0;
+            padding: 0 !important;
+        }
+    }
+</style>
+<?php $__env->stopSection(); ?>
+
 <?php $__env->startSection('header_actions'); ?>
     <a href="<?php echo e(route('admin.kelas.create')); ?>" class="btn btn-primary btn-sm px-3 shadow-sm rounded-pill d-none d-md-flex align-items-center fw-semibold">
         <i class="fas fa-plus me-2"></i>
@@ -13,16 +91,17 @@
 <div class="container-fluid">
     <div class="row">
         <div class="col-12">
+
             
             <?php if(session('success')): ?>
                 <div class="alert alert-success alert-dismissible fade show rounded-3 shadow-sm border-0" role="alert">
-                    <i class="fas fa-check-circle me-2"></i>Berhasil! <?php echo e(session('success')); ?>
+                    <i class="fas fa-check-circle me-2"></i> Berhasil! <?php echo e(session('success')); ?>
 
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
             <?php endif; ?>
 
-            <div class="card shadow-lg border-0 rounded-4 overflow-hidden">
+            <div class="card card-master shadow-lg border-0 rounded-4 overflow-hidden">
                 
                 
                 <div class="card-header bg-white border-bottom p-4">
@@ -42,7 +121,7 @@
                         
                         
                         <div class="w-100 d-md-none">
-                            <a href="<?php echo e(route('admin.kelas.create')); ?>" class="btn btn-primary btn-sm w-100 shadow-sm rounded-pill d-flex align-items-center justify-content-center fw-semibold">
+                            <a href="<?php echo e(route('admin.kelas.create')); ?>" class="btn btn-primary w-100 shadow-sm rounded-pill d-flex align-items-center justify-content-center fw-semibold">
                                 <i class="fas fa-plus me-2"></i>
                                 Tambah Kelas Baru
                             </a>
@@ -129,11 +208,11 @@
                     
                     <div class="d-md-none p-3">
                         <?php $__empty_1 = true; $__currentLoopData = $kelas; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $k): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
-                            <div class="card mb-3 shadow-sm rounded-3 border">
+                            <div class="card mb-3 shadow-sm rounded-3 border kelas-card-item">
                                 <div class="card-body p-3">
                                     
                                     
-                                    <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
                                         <div class="me-2">
                                             <h6 class="card-title fw-bold text-dark mb-0 fs-6"><?php echo e($k->nama_kelas); ?></h6>
                                             <p class="text-muted small mb-0 mt-1">
@@ -147,15 +226,16 @@
                                         <span class="badge bg-info text-dark p-2 fw-bold text-nowrap flex-shrink-0"><i class="fas fa-layer-group me-1"></i> Level <?php echo e($k->tingkat); ?></span>
                                     </div>
                                     
-                                    <div class="d-flex gap-2 w-100 pt-2">
+                                    
+                                    <div class="d-flex gap-2 w-100 kelas-action-group">
                                         
                                         
-                                        <a href="<?php echo e(route('admin.kelas.show', ['kela' => $k])); ?>" class="btn btn-primary btn-sm w-100 fw-semibold">
+                                        <a href="<?php echo e(route('admin.kelas.show', ['kela' => $k])); ?>" class="btn btn-outline-primary btn-sm fw-semibold btn-detail">
                                             <i class="fas fa-eye me-1"></i> Detail
                                         </a>
 
                                         
-                                        <a href="<?php echo e(route('admin.kelas.edit', ['kela' => $k])); ?>" class="btn btn-warning btn-sm fw-semibold">
+                                        <a href="<?php echo e(route('admin.kelas.edit', ['kela' => $k])); ?>" class="btn btn-outline-warning btn-sm btn-icon-only" title="Edit">
                                             <i class="fas fa-edit"></i>
                                         </a>
                                         
@@ -163,7 +243,7 @@
                                         <form action="<?php echo e(route('admin.kelas.destroy', ['kela' => $k])); ?>" method="POST" class="d-inline">
                                             <?php echo csrf_field(); ?>
                                             <?php echo method_field('DELETE'); ?>
-                                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Yakin ingin menghapus kelas <?php echo e($k->nama_kelas); ?>?')">
+                                            <button type="submit" class="btn btn-outline-danger btn-sm btn-icon-only" title="Hapus" onclick="return confirm('Yakin ingin menghapus kelas <?php echo e($k->nama_kelas); ?>?')">
                                                 <i class="fas fa-trash"></i>
                                             </button>
                                         </form>

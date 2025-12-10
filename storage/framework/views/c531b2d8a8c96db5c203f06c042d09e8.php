@@ -6,28 +6,6 @@
     <div class="row">
         <div class="col-12">
             
-            <?php if(session('success')): ?>
-                <div class="alert alert-success alert-dismissible fade show border-0 shadow-sm rounded-3" role="alert">
-                    <i class="fas fa-check-circle me-2"></i> <?php echo e(session('success')); ?>
-
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            <?php endif; ?>
-            <?php if(session('error')): ?>
-                <div class="alert alert-danger alert-dismissible fade show border-0 shadow-sm rounded-3" role="alert">
-                    <i class="fas fa-exclamation-triangle me-2"></i> <?php echo e(session('error')); ?>
-
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            <?php endif; ?>
-            <?php if(session('warning')): ?>
-                <div class="alert alert-warning alert-dismissible fade show border-0 shadow-sm rounded-3" role="alert">
-                    <i class="fas fa-exclamation-circle me-2"></i> <?php echo e(session('warning')); ?>
-
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            <?php endif; ?>
-            
             
             <div class="card shadow mb-4 border-left-primary rounded-4"> 
                 <div class="card-header py-3 bg-primary text-white d-flex flex-column flex-md-row justify-content-between align-items-md-center rounded-top-4">
@@ -64,19 +42,19 @@
                             ?>
                             
                             
-                            <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 **col-12**"> 
+                            <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 col-12"> 
                                 <a href="<?php echo e(route('admin.absensi_baru.select_activity', $kelas->id)); ?>" class="text-decoration-none d-block card-link-item">
                                     
                                     <div class="card card-hover border-0 border-end border-5 border-<?php echo e($color); ?> shadow-sm h-100 rounded-4">
                                         <div class="card-body p-4 d-flex align-items-center">
                                             <div class="flex-grow-1">
                                                 
-                                                <div class="font-weight-bold text-uppercase text-<?php echo e($color); ?> **text-xs** mb-1"> 
+                                                <div class="font-weight-bold text-uppercase text-<?php echo e($color); ?> text-xs mb-1"> 
                                                     <?php echo e($level); ?>
 
                                                 </div>
                                                 
-                                                <div class="h5 mb-0 font-weight-bold text-dark **fs-4 text-truncate**"><?php echo e($kelas->nama_kelas); ?></div>
+                                                <div class="h5 mb-0 font-weight-bold text-dark fs-4 text-truncate"><?php echo e($kelas->nama_kelas); ?></div>
                                                 <p class="small text-muted mt-2 mb-0 fw-semibold">
                                                     <i class="fas fa-hand-point-right me-1"></i> Klik untuk Absensi
                                                 </p>

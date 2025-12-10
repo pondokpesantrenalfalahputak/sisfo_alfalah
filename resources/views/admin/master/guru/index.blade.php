@@ -3,6 +3,91 @@
 @section('title', 'Data Guru')
 @section('page_title', 'Daftar Guru')
 
+@section('styles')
+<style>
+    /* Global Card Style Consistency */
+    .card-master {
+        border-radius: 0.75rem !important;
+        box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.1) !important;
+        border: none !important;
+    }
+    .card-header-main {
+        padding: 1rem 1.5rem;
+    }
+    
+    /* MOBILE ADJUSTMENTS */
+    @media (max-width: 767.98px) {
+        
+        /* Mengurangi padding di card body mobile */
+        .card-body.p-0 > .d-md-none {
+            padding: 0.75rem !important;
+        }
+
+        /* Styling Kartu Item */
+        .guru-card-item {
+            border: 1px solid var(--bs-gray-300) !important;
+            box-shadow: none !important;
+            border-radius: 0.5rem !important;
+        }
+        .guru-card-item .card-body {
+            padding: 0.9rem !important; /* Padding kartu lebih kecil */
+        }
+        
+        /* Nama dan Jabatan */
+        .guru-card-item .card-title {
+            font-size: 0.9rem !important;
+            margin-bottom: 0.1rem !important;
+        }
+        .guru-card-item .badge {
+            padding: 0.3rem 0.6rem !important;
+            font-size: 0.65rem !important;
+        }
+        
+        /* Detail Tambahan (NUPTK, No HP) */
+        .guru-card-item .list-unstyled {
+            font-size: 0.75rem; 
+            margin-bottom: 0.75rem !important;
+            padding-top: 0.5rem;
+            border-top: 1px dashed var(--bs-gray-200);
+            margin-top: 0.5rem;
+        }
+        
+        /* Keterangan No Urut */
+        .no-urut-mobile {
+            font-size: 0.65rem;
+            padding: 0.2rem 0.5rem;
+            border-radius: 0.25rem;
+            background-color: var(--bs-light);
+        }
+
+        /* Tombol Aksi Mobile (FOKUS PERBAIKAN - Hanya Ikon) */
+        .guru-action-group .btn {
+            /* Sangat kecil: fokus pada ikon */
+            padding: 0.3rem 0.45rem !important; /* Padding vertikal dan horizontal diminimalkan */
+            font-size: 0.7rem !important; /* Ukuran ikon */
+            font-weight: 600 !important;
+            border-radius: 0.3rem; 
+        }
+        
+        /* Tombol Tambah Guru di Mobile */
+        .d-md-none .mb-3 .btn-primary {
+             padding: 0.5rem 1rem !important;
+             font-size: 0.8rem;
+        }
+        
+        /* Form Search di Header Mobile */
+        .card-header-main {
+            padding: 1rem !important;
+        }
+        .card-header-main .input-group-sm .form-control,
+        .card-header-main .input-group-sm .btn {
+            font-size: 0.8rem;
+            padding: 0.5rem 0.75rem;
+        }
+    }
+</style>
+@endsection
+
 {{-- Tombol aksi header disembunyikan di Mobile --}}
 @section('header_actions')
     <a href="{{ route('admin.guru.create') }}" class="btn btn-primary btn-sm px-3 shadow-sm rounded d-flex align-items-center fw-semibold d-none d-md-flex">
@@ -24,15 +109,14 @@
                 </div>
             @endif
 
-            <div class="card shadow-lg border-0 rounded-4 overflow-hidden">
+            <div class="card card-master rounded-4 overflow-hidden">
                 
                 {{-- Card Header: Judul dan Pencarian --}}
-                <div class="card-header bg-white border-bottom p-4">
-                    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center">
-                        
+                <div class="card-header bg-white border-bottom card-header-main">
+                    <div class="d-flex flex-column flex-md-row justify-content-end align-items-md-center">
                         
                         {{-- Form Search/Filter --}}
-                        <div class="w-100 w-md-auto mt-2 mt-md-0">
+                        <div class="w-100 w-md-auto">
                             <form action="{{ route('admin.guru.index') }}" method="GET" class="d-flex input-group input-group-sm">
                                 <input type="text" name="search" class="form-control shadow-none" placeholder="Cari Nama Pendidik..." value="{{ request('search') }}">
                                 <button type="submit" class="btn btn-outline-secondary" title="Cari Data"><i class="fas fa-search"></i></button>
@@ -112,50 +196,53 @@
                     <div class="d-md-none p-3">
                         {{-- Tombol Tambah Baru (Mobile Only) --}}
                         <div class="mb-3">
-                            <a href="{{ route('admin.guru.create') }}" class="btn btn-success w-100 fw-semibold shadow-sm">
+                            <a href="{{ route('admin.guru.create') }}" class="btn btn-primary w-100 fw-semibold shadow-sm rounded-pill">
                                 <i class="fas fa-plus me-1"></i> Tambah Guru Baru
                             </a>
                         </div>
                         
                         @forelse ($gurus as $guru)
-                            <div class="card mb-3 shadow-sm rounded-3 border">
+                            <div class="card mb-3 guru-card-item">
                                 <div class="card-body p-3">
                                     
                                     {{-- Baris Utama (Nama & Jabatan) --}}
-                                    <div class="d-flex justify-content-between align-items-start mb-3 pb-2 border-bottom">
+                                    <div class="d-flex justify-content-between align-items-center mb-1">
                                         <div class="me-2">
-                                            <h6 class="card-title fw-bold text-dark mb-1 fs-6">{{ $guru->nama_lengkap }}</h6>
-                                            <h7 class="badge bg-primary text-white p-2 fw-bold text-nowrap flex-shrink-0 mt-1"><i class="fas fa-user-tie me-1"></i> {{ $guru->jabatan }}</h7>
-                                            <p class="text-muted small mb-0">No Urut:{{ $loop->iteration }}</p>
+                                            <h6 class="card-title fw-bold text-dark mb-1">{{ $guru->nama_lengkap }}</h6>
+                                            <span class="badge bg-info text-dark p-1 fw-bold text-nowrap flex-shrink-0 mt-1"><i class="fas fa-user-tie me-1"></i> {{ $guru->jabatan }}</span>
                                         </div>
-                                        
+                                        <span class="text-muted no-urut-mobile">#{{ 
+                                            ($gurus instanceof \Illuminate\Pagination\LengthAwarePaginator) ? 
+                                            $loop->iteration + ($gurus->currentPage() - 1) * $gurus->perPage() : 
+                                            $loop->iteration 
+                                        }}</span>
                                     </div>
                                     
                                     
                                     {{-- Detail Tambahan --}}
                                     <ul class="list-unstyled small text-muted mb-3">
-                                        <li class="mb-1"><i class="fas fa-fingerprint me-2 text-secondary"></i> NUPTK: {{ $guru->nuptk }}</li>
-                                        <li class="mb-1"><i class="fas fa-phone me-2 text-secondary"></i> No HP: {{ $guru->no_hp }}</li>
+                                        <li class="mb-1"><i class="fas fa-fingerprint me-2 text-primary opacity-75"></i> NUPTK: <span class="fw-semibold text-dark">{{ $guru->nuptk }}</span></li>
+                                        <li class="mb-1"><i class="fas fa-phone me-2 text-primary opacity-75"></i> No HP: <span class="fw-semibold text-dark">{{ $guru->no_hp }}</span></li>
                                     </ul>
 
-                                    {{-- Aksi Mobile (3 Tombol Rata Kanan Bawah) --}}
-                                    <div class="d-flex justify-content-end pt-2">
-                                        <div class="d-flex gap-2 w-100" role="group">
+                                    {{-- Aksi Mobile (3 Tombol - HANYA IKON) --}}
+                                    <div class="d-flex justify-content-end pt-2 guru-action-group">
+                                        <div class="d-flex gap-2" role="group">
                                             {{-- Detail --}}
-                                            <a href="{{ route('admin.guru.show', $guru) }}" class="btn btn-primary btn-sm w-100 fw-semibold">
-                                                <i class="fas fa-eye"></i> Detail
+                                            <a href="{{ route('admin.guru.show', $guru) }}" class="btn btn-outline-primary" title="Detail">
+                                                <i class="fas fa-eye"></i>
                                             </a>
                                             {{-- Edit --}}
-                                            <a href="{{ route('admin.guru.edit', $guru) }}" class="btn btn-warning btn-sm w-100 fw-semibold">
-                                                <i class="fas fa-edit"></i> Edit
+                                            <a href="{{ route('admin.guru.edit', $guru) }}" class="btn btn-outline-warning" title="Edit">
+                                                <i class="fas fa-edit"></i>
                                             </a>
                                             
                                             {{-- Hapus --}}
-                                            <form action="{{ route('admin.guru.destroy', $guru) }}" method="POST" class="d-inline w-100">
+                                            <form action="{{ route('admin.guru.destroy', $guru) }}" method="POST" class="d-inline">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button type="submit" class="btn btn-danger btn-sm w-100" onclick="return confirm('Yakin ingin menghapus guru {{ $guru->nama_lengkap }}?')">
-                                                    <i class="fas fa-trash"></i> Hapus
+                                                <button type="submit" class="btn btn-outline-danger" title="Hapus" onclick="return confirm('Yakin ingin menghapus guru {{ $guru->nama_lengkap }}?')">
+                                                    <i class="fas fa-trash"></i>
                                                 </button>
                                             </form>
                                         </div>

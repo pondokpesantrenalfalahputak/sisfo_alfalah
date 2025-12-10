@@ -260,7 +260,7 @@
                     ?>
                     
                     
-                    <div class="card mb-3 mobile-tagihan-card rounded-3 border-start border-2 <?php echo e($statusClass); ?>">
+                    <div class="card mb-3 mobile-tagihan-card rounded-3 border-start border-1 <?php echo e($statusClass); ?>">
                         <div class="card-body p-3">
                             
                             

@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Daftar - SIAP AL-FALAH</title>
     <meta name="description" content="Sistem Informasi Akademik Pesantren (SIAP) Al-Falah Putak: Akses data santri, pengumuman, tagihan, dan absensi harian secara real-time. Informasi terpusat untuk Wali Santri dan Staf." />
-    <link rel="icon" type="image/png" href="{{ asset('Images/kop pondok.png') }}" />
+    <link rel="icon" type="image/png" href="{{ asset('kop pondok.png') }}" />
+    
     {{-- ✅ Link Bootstrap CDN --}}
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     {{-- ✅ Link Font Inter --}}
@@ -31,7 +32,7 @@
             /* Ganti path image sesuai lokasi */
             background-image: url('{{ asset('Images/1728115006026 copy.png') }}');
             background-size: cover;
-            /* 💥 PERBAIKAN: Background position disetel ke tengah-bawah untuk menampilkan subjek utama */
+            /* PERBAIKAN: Background position disetel ke tengah-bawah untuk menampilkan subjek utama */
             background-position: center 25%; 
             min-height: 280px;
         }
@@ -49,7 +50,7 @@
         .hero-text-overlay {
             position: absolute;
             inset: 0;
-            background-color: rgba(17, 24, 39, 0.5); /* Sedikit lebih gelap: 0.7 -> 0.75 */
+            background-color: rgba(17, 24, 39, 0.5); 
         }
         .password-input-container {
             position: relative;
@@ -72,6 +73,57 @@
         .btn-primary-custom:hover {
             background-color: var(--blue-dark);
             border-color: var(--blue-dark);
+        }
+
+        /* ========================================================= */
+        /* 🎨 PERBAIKAN FONT & SPACING MOBILE (Semua yang < 768px) */
+        /* ========================================================= */
+
+        /* Mengurangi Padding pada Form di Mobile (Agar Konten Lebih Banyak) */
+        @media (max-width: 767.98px) {
+            .col-md-6.bg-white {
+                padding: 1.5rem !important; /* Dari 2rem/p-4 menjadi 1.5rem */
+            }
+            
+            /* Judul utama "Buat Akun Wali Santri" */
+            .col-md-6.bg-white .h4 {
+                font-size: 1.25rem !important;
+            }
+
+            /* Subjudul Form ("Data Wali Santri", "Data Santri", dll) */
+            .col-md-6.bg-white .fs-6 {
+                font-size: 1rem !important;
+            }
+
+            /* Mengurangi ukuran input dan select agar lebih kompak */
+            .form-control, 
+            .form-select,
+            .form-control[type="date"],
+            .form-control[type="email"],
+            .form-control[type="text"],
+            .form-control[type="password"] {
+                padding: 0.5rem 0.75rem !important; /* Padding input lebih kecil */
+                height: auto;
+                min-height: 40px; /* Tinggi minimum input lebih rendah */
+                font-size: 0.95rem !important;
+            }
+
+            /* Mengurangi margin/jarak vertikal antar field */
+            .mb-3 {
+                margin-bottom: 0.8rem !important; /* Dari 1rem menjadi 0.8rem */
+            }
+            
+            /* Mengurangi margin di bawah alert */
+            .alert.alert-danger {
+                margin-bottom: 1rem !important;
+            }
+            
+            /* Mengurangi margin di bawah tombol Daftar */
+            .w-100.btn-lg {
+                margin-bottom: 1.5rem !important;
+                padding: 0.6rem 1rem !important;
+                font-size: 1rem !important;
+            }
         }
     </style>
 </head>
@@ -233,7 +285,6 @@
                             <div class="password-input-container">
                                 <input type="password" id="password_confirmation" name="password_confirmation" placeholder="Ulangi password Anda"
                                     class="form-control" required autocomplete="one-time-code">
-                                {{-- 💥 PERBAIKAN: Pastikan ikon default adalah fa-eye (mata terbuka) karena tipe input adalah 'password' --}}
                                 <span class="toggle-password" data-target="password_confirmation">
                                     <i class="fas fa-eye"></i>
                                 </span>

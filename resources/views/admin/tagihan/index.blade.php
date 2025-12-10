@@ -265,7 +265,7 @@
                     @endphp
                     
                     {{-- Card utama dengan shadow, border kiri, dan efek tap --}}
-                    <div class="card mb-3 mobile-tagihan-card rounded-3 border-start border-2 {{ $statusClass }}">
+                    <div class="card mb-3 mobile-tagihan-card rounded-3 border-start border-1 {{ $statusClass }}">
                         <div class="card-body p-3">
                             
                             {{-- Baris 1: Nama Santri & Status --}}

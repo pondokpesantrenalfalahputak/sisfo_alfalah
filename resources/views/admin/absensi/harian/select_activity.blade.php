@@ -44,7 +44,7 @@
                                 @endphp
                                 
                                 {{-- Card Kategori Kegiatan --}}
-                                <div class="card h-100 shadow-sm border-0 border-start border-4 border-{{ $borderColor }} card-hover rounded-4"> {{-- shadow-lg diubah menjadi shadow-sm --}}
+                                <div class="card h-100 shadow-sm border-0 border-start border-{{ $borderColor }} card-hover rounded-4"> {{-- shadow-lg diubah menjadi shadow-sm --}}
                                     <div class="card-body p-3 p-md-4"> {{-- Padding dikurangi di mobile --}}
                                         <h5 class="card-title font-weight-bold text-{{ $borderColor }} mb-3 pb-2 border-bottom border-{{ $borderColor }} fs-6"> {{-- Ukuran Judul Kategori dikecilkan (fs-6) --}}
                                             <i class="fas fa-layer-group me-2"></i> {{ $jenis }}

@@ -4,27 +4,111 @@
 
 @push('styles')
 <style>
-    /* Styling Card Modern */
+    /* Styling Card Modern (General) */
     .card-modern {
         border: none;
         border-radius: 1rem !important;
         box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.08);
     }
     
-    /* Warna Aksen */
+    /* Warna Aksen Desktop */
     .bg-dark-blue { background-color: #0d47a1 !important; } 
-    /* Mengubah nama kelas ini agar lebih generik untuk latar merah */
     .bg-danger-alpha-header { background-color: #dc3545 !important; } 
     
-    /* Mobile Styling (Sudah Baik) */
+    /* --- CUSTOM STYLING UNTUK DESKTOP (Minimalis) --- */
+    @media (min-width: 992px) {
+        /* Memastikan tombol aksi massal memiliki lebar yang cukup, tidak memanjang */
+        .btn-input-massal-desktop {
+            min-width: 180px; 
+            width: auto !important; 
+        }
+        
+        /* Set lebar spesifik untuk filter */
+        .filter-bulan-desktop { width: 150px !important; }
+        .filter-tahun-desktop { width: 90px !important; }
+    }
+    
+    /* --- MOBILE STYLING (RESPONSIVE - TABLE TO CARD) --- */
     @media (max-width: 767.98px) {
+        /* Menyembunyikan tampilan tabel di bawah 768px */
         .table-responsive table { border: 0; }
         .table-responsive table thead { display: none; }
-        .table-responsive table tr { display: block; margin-bottom: 0.8rem; border: 1px solid #dee2e6; border-radius: 0.5rem; }
-        .table-responsive table td { display: block; text-align: right !important; padding-left: 50% !important; position: relative; }
-        .table-responsive table td:before { content: attr(data-label); position: absolute; left: 0; width: 50%; padding-left: 1rem; font-weight: 600; text-align: left; color: #495057; }
-        .mobile-label-alpha { background-color: #f8d7da; font-weight: bold !important; }
-        .mobile-label-total { background-color: #ffc107; color: #212529; font-weight: bold !important; }
+        
+        /* Setiap baris (TR) menjadi blok data terpisah */
+        .table-responsive table tr { 
+            display: block; 
+            margin-bottom: 1rem; 
+            border: 1px solid #dee2e6; 
+            border-radius: 0.5rem; 
+            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.03);
+            overflow: hidden;
+        }
+        
+        /* Setiap sel (TD) diatur untuk responsif */
+        .table-responsive table td { 
+            display: block; 
+            text-align: right !important; 
+            padding-left: 50% !important; 
+            position: relative;
+            border: none;
+            border-bottom: 1px solid #f0f0f0; 
+            padding-top: 0.6rem !important;
+            padding-bottom: 0.6rem !important;
+        }
+        
+        /* Label Kolom */
+        .table-responsive table td:before { 
+            content: attr(data-label); 
+            position: absolute; 
+            left: 0; 
+            width: 50%; 
+            padding-left: 1rem; 
+            font-weight: 600; 
+            text-align: left; 
+            color: #495057; 
+            white-space: nowrap;
+            font-size: 0.85rem;
+        }
+        
+        /* Styling Khusus Baris NAMA */
+        .td-name {
+            background-color: #f8f9fa;
+            border-top-left-radius: 0.5rem;
+            border-top-right-radius: 0.5rem;
+            font-weight: 700;
+        }
+        
+        /* Styling Khusus Baris TOTAL ALPHA */
+        .td-total-alpha {
+            background-color: #fffae0; 
+            font-weight: bold;
+            color: #212529;
+            border-top: 1px solid #ffeeba !important;
+            border-bottom: none; 
+            font-size: 1.1rem;
+        }
+        
+        /* Styling Khusus Baris Aksi */
+        .td-action {
+            text-align: center !important;
+            border-top: 1px solid #f0f0f0 !important;
+            padding: 0.75rem 1rem !important;
+            padding-left: 1rem !important;
+        }
+        .td-action:before {
+            content: "";
+        }
+        .td-keterangan {
+            font-style: italic;
+            font-size: 0.8rem;
+            color: #6c757d;
+        }
+        
+        /* Memastikan tombol aksi massal mengambil lebar penuh di mobile */
+        .btn-input-massal-desktop {
+             width: 100% !important;
+             min-width: auto !important;
+        }
     }
 </style>
 @endpush
@@ -35,7 +119,7 @@
     use Carbon\Carbon;
     $alphaWarningLimit = 3; 
 
-    // Mendefinisikan fungsi helper untuk Action Buttons (Refactored untuk penataan)
+    // Mendefinisikan fungsi helper untuk Action Buttons
     function renderActionButtons($absensi) {
         $santriName = optional($absensi->santri)->nama_lengkap ?? 'Santri Tidak Dikenal'; 
         
@@ -51,15 +135,17 @@
         $deleteUrl = route('admin.absensi_rekap.destroy', $absensi->id);
 
         echo "
-        <a href=\"{$editUrl}\" class=\"btn btn-sm btn-warning rounded-pill px-3 shadow-sm\" title=\"Edit Data Satuan\">
-            <i class=\"fas fa-pencil-alt\"></i>
-        </a>
-        <form action=\"{$deleteUrl}\" method=\"POST\" class=\"d-inline\" onsubmit=\"return confirm('Yakin ingin menghapus REKAPITULASI ALPHA SANTRI {$santriName} bulan ini? Tindakan ini tidak dapat dibatalkan.');\">
-            " . csrf_field() . method_field('DELETE') . "
-            <button type=\"submit\" class=\"btn btn-sm btn-danger rounded-pill px-3 shadow-sm\" title=\"Hapus Data Satuan\">
-                <i class=\"fas fa-trash-alt\"></i>
-            </button>
-        </form>
+        <div class=\"d-flex justify-content-end justify-content-md-center gap-1\">
+            <a href=\"{$editUrl}\" class=\"btn btn-sm btn-warning rounded-pill px-3 shadow-sm\" title=\"Edit Data Satuan\">
+                <i class=\"fas fa-pencil-alt\"></i>
+            </a>
+            <form action=\"{$deleteUrl}\" method=\"POST\" class=\"d-inline\" onsubmit=\"return confirm('Yakin ingin menghapus REKAPITULASI ALPHA SANTRI {$santriName} bulan ini? Tindakan ini tidak dapat dibatalkan.');\">
+                " . csrf_field() . method_field('DELETE') . "
+                <button type=\"submit\" class=\"btn btn-sm btn-danger rounded-pill px-3 shadow-sm\" title=\"Hapus Data Satuan\">
+                    <i class=\"fas fa-trash-alt\"></i>
+                </button>
+            </form>
+        </div>
         ";
     }
 @endphp
@@ -78,31 +164,37 @@
                         <i class="fas fa-calendar-alt text-primary me-2"></i> Rekap Alpha: <span class="text-primary">{{ Carbon::createFromDate($tahun, $bulan)->translatedFormat('F Y') }}</span>
                     </h4>
                     
-                    {{-- Disesuaikan agar lebih rapih di desktop dan mobile --}}
+                    {{-- DIV UTAMA FILTER DAN AKSI --}}
                     <div class="d-flex justify-content-between align-items-center flex-column flex-lg-row pt-3 gap-3">
                         
-                        {{-- Formulir Pemilihan Bulan/Tahun (Filter) --}}
-                        <form method="GET" action="{{ route('admin.absensi_rekap.index') }}" class="d-flex flex-wrap justify-content-center align-items-center gap-2 p-0 w-100 w-lg-auto">
-                            
-                            <strong class="me-lg-1 text-dark small text-nowrap d-none d-lg-block">Filter Bulan:</strong>
-                            
-                            <select name="bulan" class="form-select form-select-sm fw-semibold flex-grow-1">
-                                @for ($m = 1; $m <= 12; $m++)
-                                    <option value="{{ $m }}" {{ $m == $bulan ? 'selected' : '' }}>
-                                        {{ Carbon::create()->month($m)->translatedFormat('F') }}
-                                    </option>
-                                @endfor
-                            </select>
-                            <select name="tahun" class="form-select form-select-sm fw-semibold" style="width: 100px;">
-                                @for ($y = Carbon::now()->year; $y >= 2020; $y--)
-                                    <option value="{{ $y }}" {{ $y == $tahun ? 'selected' : '' }}>{{ $y }}</option>
-                                @endfor
-                            </select>
-                            <button type="submit" class="btn btn-primary btn-sm px-3 flex-shrink-0"><i class="fas fa-search"></i> Cari</button>
+                        {{-- 1. FORMULIR FILTER (BULAN, TAHUN, CARI) --}}
+                        <form method="GET" action="{{ route('admin.absensi_rekap.index') }}" class="w-100 w-lg-auto order-lg-1">
+                            {{-- Menggunakan d-flex dan me-3 untuk jarak eksplisit --}}
+                            <div class="d-flex align-items-center">
+                                
+                                {{-- KOLOM BULAN --}}
+                                <select name="bulan" class="form-select form-select-sm fw-semibold me-3 filter-bulan-desktop">
+                                    @for ($m = 1; $m <= 12; $m++)
+                                        <option value="{{ $m }}" {{ $m == $bulan ? 'selected' : '' }}>
+                                            {{ Carbon::create()->month($m)->translatedFormat('F') }}
+                                        </option>
+                                    @endfor
+                                </select>
+                                
+                                {{-- KOLOM TAHUN --}}
+                                <select name="tahun" class="form-select form-select-sm fw-semibold me-3 filter-tahun-desktop">
+                                    @for ($y = Carbon::now()->year; $y >= 2020; $y--)
+                                        <option value="{{ $y }}" {{ $y == $tahun ? 'selected' : '' }}>{{ $y }}</option>
+                                    @endfor
+                                </select>
+                                
+                                {{-- TOMBOL CARI --}}
+                                <button type="submit" class="btn btn-primary btn-sm px-3 flex-shrink-0"><i class="fas fa-search"></i> Cari</button>
+                            </div>
                         </form>
 
-                        {{-- Tombol Aksi Pindah ke Form Input Massal --}}
-                        <a href="{{ route('admin.absensi_rekap.create_multi', ['bulan' => $bulan, 'tahun' => $tahun]) }}" class="btn btn-success btn-icon-split shadow rounded-pill px-4 flex-shrink-0 w-100 w-lg-auto">
+                        {{-- 2. TOMBOL AKSI (INPUT ABSENSI BARU) --}}
+                        <a href="{{ route('admin.absensi_rekap.create_multi', ['bulan' => $bulan, 'tahun' => $tahun]) }}" class="btn btn-success btn-icon-split shadow rounded-pill px-4 flex-shrink-0 w-lg-auto btn-input-massal-desktop order-lg-2">
                             <span class="text fw-bold">
                                 <i class="fas fa-edit me-1"></i> Input/Edit Massal
                             </span>
@@ -121,8 +213,8 @@
 
                     <div class="table-responsive">
                         
-                        {{-- DEKSTOP: Tabel Klasik (Menggunakan table-striped) --}}
-                        <table class="table table-striped table-bordered align-middle d-none d-md-table" width="100%" cellspacing="0">
+                        {{-- TABLE (Berfungsi Responsif) --}}
+                        <table class="table table-striped table-bordered align-middle" width="100%" cellspacing="0">
                             <thead class="bg-dark-blue text-white text-center shadow-sm">
                                 <tr>
                                     <th rowspan="2" class="align-middle text-nowrap" style="width: 5%;">No</th>
@@ -143,39 +235,46 @@
                                 @forelse ($absensis as $index => $absensi)
                                 @php
                                     $totalAlpha = $absensi->ngaji_alpha + $absensi->sholat_alpha + $absensi->roan_alpha;
-                                    // Highlight hanya total alpha cell, bukan seluruh baris (table-striped yang bekerja)
                                     $totalCellClass = ($totalAlpha >= $alphaWarningLimit) ? 'bg-danger-subtle fw-bolder text-danger' : 'bg-warning-subtle fw-bolder text-dark'; 
                                     $nameCellClass = ($totalAlpha >= $alphaWarningLimit) ? 'fw-bold text-danger' : 'fw-semibold text-dark'; 
                                 @endphp
                                 <tr>
-                                    <td class="text-center align-middle">{{ $absensis->firstItem() + $index }}</td>
-                                    <td class="align-middle {{ $nameCellClass }}">
+                                    {{-- Kolom Nomor --}}
+                                    <td data-label="No" class="text-center align-middle">{{ $absensis->firstItem() + $index }}</td>
+                                    
+                                    {{-- Kolom Nama Santri --}}
+                                    <td data-label="Nama Santri" class="align-middle td-name {{ $nameCellClass }}">
                                         {{ optional($absensi->santri)->nama_lengkap ?? 'N/A' }}
                                         @if ($totalAlpha >= $alphaWarningLimit)
-                                            {{-- Visual Badge Peringatan --}}
                                             <span class="badge bg-danger rounded-pill ms-1 p-1" title="Perlu Peringatan Keras (Alpha >= {{ $alphaWarningLimit }})">
                                                 <i class="fas fa-bell"></i> Peringatan
                                             </span>
                                         @endif
                                     </td>
-                                    <td class="text-center align-middle">{{ optional($absensi->kelas)->nama_kelas ?? '-' }}</td>
                                     
-                                    {{-- Alpha Status Ngaji, Sholat, Roan --}}
-                                    <td class="text-center align-middle">
+                                    {{-- Kolom Kelas --}}
+                                    <td data-label="Kelas" class="text-center align-middle">{{ optional($absensi->kelas)->nama_kelas ?? '-' }}</td>
+                                    
+                                    {{-- Kolom Ngaji --}}
+                                    <td data-label="Alpha Ngaji" class="text-center align-middle">
                                         @if ($absensi->ngaji_alpha > 0)
                                             <span class="badge rounded-pill bg-danger p-2">{{ $absensi->ngaji_alpha }}</span>
                                         @else
                                             <span class="badge rounded-pill text-success border border-success px-2 py-1 small fw-normal">0</span>
                                         @endif
                                     </td>
-                                    <td class="text-center align-middle">
+                                    
+                                    {{-- Kolom Sholat --}}
+                                    <td data-label="Alpha Sholat" class="text-center align-middle">
                                         @if ($absensi->sholat_alpha > 0)
                                             <span class="badge rounded-pill bg-danger p-2">{{ $absensi->sholat_alpha }}</span>
                                         @else
                                             <span class="badge rounded-pill text-success border border-success px-2 py-1 small fw-normal">0</span>
                                         @endif
                                     </td>
-                                    <td class="text-center align-middle">
+                                    
+                                    {{-- Kolom Roan --}}
+                                    <td data-label="Alpha Roan" class="text-center align-middle">
                                         @if ($absensi->roan_alpha > 0)
                                             <span class="badge rounded-pill bg-danger p-2">{{ $absensi->roan_alpha }}</span>
                                         @else
@@ -183,19 +282,17 @@
                                         @endif
                                     </td>
                                     
-                                    {{-- TOTAL ALPHA (Highlight & Bold) --}}
-                                    <td class="text-center align-middle {{ $totalCellClass }}">
+                                    {{-- KOLOM TOTAL ALPHA --}}
+                                    <td data-label="TOTAL ALPHA" class="text-center align-middle td-total-alpha {{ $totalCellClass }}">
                                         <span class="fs-6">{{ $totalAlpha }}</span>
                                     </td>
 
-                                    {{-- Keterangan --}}
-                                    <td class="small align-middle text-muted">{{ $absensi->keterangan ?? '-' }}</td>
+                                    {{-- Kolom Keterangan --}}
+                                    <td data-label="Keterangan" class="small align-middle text-muted td-keterangan">{{ $absensi->keterangan ?? '-' }}</td>
 
-                                    {{-- Aksi --}}
-                                    <td class="text-center align-middle text-nowrap">
-                                        <div class="d-flex justify-content-center gap-1">
-                                            @php renderActionButtons($absensi) @endphp 
-                                        </div>
+                                    {{-- Kolom Aksi --}}
+                                    <td data-label="Aksi" class="align-middle text-nowrap td-action">
+                                        @php renderActionButtons($absensi) @endphp 
                                     </td>
                                 </tr>
                                 @empty
@@ -210,72 +307,6 @@
                             </tbody>
                         </table>
                         
-                        {{-- MOBILE: Tabel dalam bentuk Card/List (Ditingkatkan visualisasinya) --}}
-                        <div class="d-md-none">
-                            @forelse ($absensis as $index => $absensi)
-                            @php
-                                $totalAlpha = $absensi->ngaji_alpha + $absensi->sholat_alpha + $absensi->roan_alpha;
-                                $cardClass = ($totalAlpha >= $alphaWarningLimit) ? 'border-danger shadow-lg' : 'border-light shadow-sm';
-                                $alphaBg = ($totalAlpha >= $alphaWarningLimit) ? 'bg-danger text-white' : 'bg-warning text-dark';
-                            @endphp
-                            <div class="card {{ $cardClass }} mb-3 rounded-3 border-start border-5 p-2">
-                                <div class="card-body p-3">
-                                    <div class="d-flex justify-content-between align-items-start mb-2 border-bottom pb-2">
-                                        <h6 class="mb-0 fw-bold text-dark">
-                                            {{ $absensis->firstItem() + $index }}. {{ optional($absensi->santri)->nama_lengkap ?? 'N/A' }}
-                                            @if ($totalAlpha >= $alphaWarningLimit)
-                                                <i class="fas fa-exclamation-circle text-danger ms-1" title="Perlu Peringatan"></i>
-                                            @endif
-                                        </h6>
-                                        <span class="badge bg-primary rounded-pill fw-bold">{{ optional($absensi->kelas)->nama_kelas ?? 'Non-Kelas' }}</span>
-                                    </div>
-
-                                    <div class="row g-2">
-                                        {{-- Total Alpha (Paling Menonjol) --}}
-                                        <div class="col-4">
-                                            <div class="p-2 text-center rounded {{ $alphaBg }}">
-                                                <small class="d-block text-uppercase fw-semibold opacity-75">Total</small>
-                                                <span class="fw-bolder fs-5">{{ $totalAlpha }}</span>
-                                            </div>
-                                        </div>
-                                        {{-- Rincian Alpha --}}
-                                        <div class="col-8">
-                                            <div class="d-flex justify-content-around text-center h-100 align-items-center">
-                                                <div class="flex-fill border-end pe-2">
-                                                    <small class="d-block fw-semibold text-muted small"><i class="fas fa-book-open"></i></small>
-                                                    <span class="badge bg-danger">{{ $absensi->ngaji_alpha }}</span>
-                                                </div>
-                                                <div class="flex-fill border-end px-2">
-                                                    <small class="d-block fw-semibold text-muted small"><i class="fas fa-mosque"></i></small>
-                                                    <span class="badge bg-danger">{{ $absensi->sholat_alpha }}</span>
-                                                </div>
-                                                <div class="flex-fill ps-2">
-                                                    <small class="d-block fw-semibold text-muted small"><i class="fas fa-broom"></i></small>
-                                                    <span class="badge bg-danger">{{ $absensi->roan_alpha }}</span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    
-                                    {{-- Keterangan --}}
-                                    <p class="small text-muted mt-3 mb-2 border-top pt-2">
-                                        <span class="fw-semibold"><i class="fas fa-comment-dots me-1"></i> Ket:</span> {{ $absensi->keterangan ?? '-' }}
-                                    </p>
-                                    
-                                    {{-- Aksi --}}
-                                    <div class="d-flex justify-content-end gap-2 mt-2">
-                                        @php renderActionButtons($absensi) @endphp
-                                    </div>
-                                </div>
-                            </div>
-                            @empty
-                            <div class="p-4 text-center text-muted bg-light rounded-4 border border-dashed border-secondary">
-                                <i class="fas fa-info-circle me-1 fa-3x text-info mb-2"></i><br>
-                                <h6 class="fw-bold">Tidak ada data rekapitulasi Alpha.</h6>
-                                <p class="small mb-0">Silakan pilih bulan/tahun lain atau klik tombol Input/Edit Rekap Massal di atas.</p>
-                            </div>
-                            @endforelse
-                        </div>
                     </div>
                     
                     <div class="d-flex justify-content-end mt-3">

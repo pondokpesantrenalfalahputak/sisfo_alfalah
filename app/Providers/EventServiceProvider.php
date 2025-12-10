@@ -5,21 +5,19 @@ namespace App\Providers;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
+use Illuminate\Support\Facades\Event;
 
 // 🚀 Import semua Event dan Listener yang digunakan
 use App\Events\PaymentStatusUpdated;
 use App\Events\AttendanceUpdated;
 use App\Events\NewAnnouncementPosted;
-// Ganti ini sesuai dengan nama Listener yang sebenarnya Anda buat
+use App\Events\NewBillCreated; // ✅ Event Baru
 use App\Listeners\SendCustomNotification; 
-use Illuminate\Support\Facades\Event;
 
 class EventServiceProvider extends ServiceProvider
 {
     /**
      * The event listener mappings for the application.
-     *
-     * Menggunakan syntax ::class untuk memastikan Laravel dapat menemukan kelas dengan benar.
      *
      * @var array<class-string, array<int, class-string>>
      */
@@ -27,7 +25,8 @@ class EventServiceProvider extends ServiceProvider
         Registered::class => [
             SendEmailVerificationNotification::class,
         ],
-        // ✅ PERBAIKAN: Menggunakan ::class untuk semua Event dan Listener
+        
+        // ✅ Konfigurasi Listener Tunggal untuk semua Event Notifikasi
         PaymentStatusUpdated::class => [
             SendCustomNotification::class,
         ],
@@ -35,6 +34,9 @@ class EventServiceProvider extends ServiceProvider
             SendCustomNotification::class,
         ],
         NewAnnouncementPosted::class => [
+            SendCustomNotification::class,
+        ],
+        NewBillCreated::class => [ // ✅ Tambahkan mapping Tagihan Baru
             SendCustomNotification::class,
         ],
     ];

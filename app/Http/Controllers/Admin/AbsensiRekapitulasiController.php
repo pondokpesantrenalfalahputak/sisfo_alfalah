@@ -6,16 +6,16 @@ use App\Http\Controllers\Controller;
 use App\Models\AbsensiRekapitulasi;
 use App\Models\Santri;
 use App\Models\KelasSantri;
+use App\Models\User; // ✅ Import User
+use App\Events\AttendanceUpdated; // ✅ Import Event
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 
 class AbsensiRekapitulasiController extends Controller
 {
-    /**
-     * READ: Menampilkan riwayat rekapitulasi (Index/Tabel Utama).
-     * Filter berdasarkan Bulan dan Tahun.
-     */
+    // ... (index, createMulti, edit, destroy methods tidak berubah) ...
+    
     public function index(Request $request)
     {
         $bulan = $request->input('bulan', Carbon::now()->month);
@@ -31,9 +31,6 @@ class AbsensiRekapitulasiController extends Controller
         return view('admin.absensi_rekap.index', compact('absensis', 'bulan', 'tahun'));
     }
 
-    /**
-     * CREATE: Menampilkan form input rekapitulasi bulanan massal (createMulti).
-     */
     public function createMulti(Request $request)
     {
         $bulan = $request->input('bulan', Carbon::now()->month);
@@ -49,7 +46,6 @@ class AbsensiRekapitulasiController extends Controller
                             ->orderBy('nama_lengkap')
                             ->get();
 
-            // Ambil data rekapitulasi yang sudah tersimpan
             $dataAbsensiTersimpan = AbsensiRekapitulasi::where('kelas_id', $kelasId)
                                   ->where('bulan', $bulan)
                                   ->where('tahun', $tahun)
@@ -67,8 +63,9 @@ class AbsensiRekapitulasiController extends Controller
         ));
     }
 
+
     /**
-     * STORE: Menyimpan data rekapitulasi bulanan massal (storeMulti).
+     * STORE: Menyimpan data rekapitulasi bulanan massal dan memicu Event Notifikasi (Queue).
      */
     public function storeMulti(Request $request)
     {
@@ -89,32 +86,55 @@ class AbsensiRekapitulasiController extends Controller
         $kelasId = $request->input('kelas_id');
         $waliInputId = auth()->id();
         
+        $tanggalRekap = Carbon::createFromDate($tahun, $bulan);
+        $bulanTahunStr = $tanggalRekap->translatedFormat('F Y');
+
         DB::beginTransaction();
         try {
             foreach ($request->absensi as $item) {
-                // Cari atau buat entri rekapitulasi bulanan
+                
+                $santri = Santri::find($item['santri_id']);
+                
                 $absensi = AbsensiRekapitulasi::firstOrNew([
                     'santri_id' => $item['santri_id'],
                     'bulan' => $bulan,
                     'tahun' => $tahun,
                 ]);
 
+                // Cek apakah ada perubahan data untuk Notifikasi
+                $isNewRecord = !$absensi->exists;
+                $isDataChanged = $isNewRecord || 
+                                 $absensi->ngaji_alpha != ($item['ngaji_alpha'] ?? 0) ||
+                                 $absensi->sholat_alpha != ($item['sholat_alpha'] ?? 0) ||
+                                 $absensi->roan_alpha != ($item['roan_alpha'] ?? 0);
+
                 // Update data rekapitulasi
                 $absensi->fill([
                     'wali_input_id' => $waliInputId,
                     'kelas_id' => $kelasId,
-                    
                     'ngaji_alpha' => $item['ngaji_alpha'] ?? 0,
                     'sholat_alpha' => $item['sholat_alpha'] ?? 0,
                     'roan_alpha' => $item['roan_alpha'] ?? 0,
-                    
                     'keterangan' => $item['keterangan'] ?? null,
                 ])->save();
+
+                // 🔔 Memicu Notifikasi Rekapitulasi Bulanan (Event Queue) 🔔
+                if ($santri && $santri->wali_santri_id && $isDataChanged) {
+                    $waliSantri = User::find($santri->wali_santri_id);
+                    
+                    if ($waliSantri) {
+                        event(new AttendanceUpdated(
+                            $waliSantri, // User Wali Santri (Penerima)
+                            'Bulanan', // Context
+                            $bulanTahunStr // Keterangan
+                        ));
+                    }
+                }
             }
             
             DB::commit();
             return redirect()->route('admin.absensi_rekap.index', ['bulan' => $bulan, 'tahun' => $tahun])
-                             ->with('success', 'Rekapitulasi absensi bulan ' . Carbon::createFromDate($tahun, $bulan)->translatedFormat('F Y') . ' berhasil disimpan.');
+                             ->with('success', 'Rekapitulasi absensi bulan ' . $bulanTahunStr . ' berhasil disimpan dan notifikasi dikirim ke queue.');
             
         } catch (\Exception $e) {
             DB::rollBack();
@@ -122,12 +142,8 @@ class AbsensiRekapitulasiController extends Controller
         }
     }
 
-    /**
-     * UPDATE: Menampilkan form edit (Diarahkan ke createMulti).
-     */
     public function edit(AbsensiRekapitulasi $absensi_rekap)
     {
-        // Redirect ke form input massal, membawa bulan, tahun, dan kelas untuk pre-select
         return redirect()->route('admin.absensi_rekap.create_multi', [
             'bulan' => $absensi_rekap->bulan,
             'tahun' => $absensi_rekap->tahun,
@@ -135,9 +151,6 @@ class AbsensiRekapitulasiController extends Controller
         ]);
     }
 
-    /**
-     * DELETE: Menghapus data absensi.
-     */
     public function destroy(AbsensiRekapitulasi $absensi_rekap)
     {
         $bulan = $absensi_rekap->bulan;

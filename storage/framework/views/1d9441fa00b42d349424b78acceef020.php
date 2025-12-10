@@ -11,15 +11,6 @@
 <?php $__env->startSection('content'); ?>
 
 
-<?php if(session('success')): ?>
-    <div class="alert alert-success alert-dismissible fade show" role="alert">
-        <i class="fas fa-check-circle me-2"></i> <?php echo e(session('success')); ?>
-
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-<?php endif; ?>
-
-
 
 <div class="d-block d-md-none mb-3 px-3">
     <a href="<?php echo e(route('admin.rekening.create')); ?>" class="btn btn-success shadow-sm d-flex align-items-center fw-semibold w-100">

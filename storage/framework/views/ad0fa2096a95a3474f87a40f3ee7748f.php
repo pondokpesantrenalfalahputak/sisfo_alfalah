@@ -32,7 +32,7 @@
                     <div class="row g-3 g-md-4"> 
                         <?php $__empty_1 = true; $__currentLoopData = $activities; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $jenis => $kegiatanList): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
                             
-                            <div class="col-lg-4 col-md-6 **col-12**"> 
+                            <div class="col-lg-4 col-md-6 col-12"> 
                                 <?php
                                     // SINKRONISASI: Penentuan warna border berdasarkan Jenis Kegiatan
                                     $borderColor = match ($jenis) {
@@ -44,9 +44,9 @@
                                 ?>
                                 
                                 
-                                <div class="card h-100 shadow-sm border-0 border-start border-4 border-<?php echo e($borderColor); ?> card-hover rounded-4"> 
+                                <div class="card h-100 shadow-sm border-0 border-start border-<?php echo e($borderColor); ?> card-hover rounded-4"> 
                                     <div class="card-body p-3 p-md-4"> 
-                                        <h5 class="card-title font-weight-bold text-<?php echo e($borderColor); ?> mb-3 pb-2 border-bottom border-<?php echo e($borderColor); ?> **fs-6**"> 
+                                        <h5 class="card-title font-weight-bold text-<?php echo e($borderColor); ?> mb-3 pb-2 border-bottom border-<?php echo e($borderColor); ?> fs-6"> 
                                             <i class="fas fa-layer-group me-2"></i> <?php echo e($jenis); ?>
 
                                         </h5>
@@ -58,7 +58,7 @@
                                                             'kelas' => $kelas_id,
                                                             'kegiatan_spesifik' => $kegiatan_spesifik 
                                                         ])); ?>" 
-                                                    class="list-group-item list-group-item-action **py-2 px-0** d-flex justify-content-between align-items-center fw-medium **text-sm**"> 
+                                                    class="list-group-item list-group-item-action py-2 px-0 d-flex justify-content-between align-items-center fw-medium text-sm"> 
                                                     <div class="text-truncate">
                                                         <i class="<?php echo e($icon); ?> me-2 text-<?php echo e($borderColor); ?>"></i> 
                                                         <span><?php echo e($kegiatan_spesifik); ?></span>

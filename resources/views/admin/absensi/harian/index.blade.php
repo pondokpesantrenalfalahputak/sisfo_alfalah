@@ -7,25 +7,6 @@
 <div class="container-fluid">
     <div class="row">
         <div class="col-12">
-            {{-- Pesan Sukses/Error/Warning (Diperhalus) --}}
-            @if(session('success'))
-                <div class="alert alert-success alert-dismissible fade show border-0 shadow-sm rounded-3" role="alert">
-                    <i class="fas fa-check-circle me-2"></i> {{ session('success') }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            @endif
-            @if(session('error'))
-                <div class="alert alert-danger alert-dismissible fade show border-0 shadow-sm rounded-3" role="alert">
-                    <i class="fas fa-exclamation-triangle me-2"></i> {{ session('error') }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            @endif
-            @if(session('warning'))
-                <div class="alert alert-warning alert-dismissible fade show border-0 shadow-sm rounded-3" role="alert">
-                    <i class="fas fa-exclamation-circle me-2"></i> {{ session('warning') }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            @endif
             
             {{-- CARD UTAMA --}}
             <div class="card shadow mb-4 border-left-primary rounded-4"> {{-- border-left-primary untuk penekanan --}}
